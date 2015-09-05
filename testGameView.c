@@ -12,7 +12,7 @@ int main()
     GameView gv;
     
     printf("Test basic empty initialisation\n");
-    PlayerMessage messages1[] = {};
+    PlayerMessage messages1[] = {'\0'};
     gv = newGameView("", messages1);
     assert(getCurrentPlayer(gv) == PLAYER_LORD_GODALMING);
     assert(getRound(gv) == 0);
