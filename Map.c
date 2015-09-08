@@ -33,7 +33,7 @@ Map newMap()
    assert(g != NULL);
    g->nV = NUM_MAP_LOCATIONS;
    for (i = 0; i < g->nV; i++){
-      g->connections[i] = NULL;
+	  g->connections[i] = NULL;
    }
    g->nE = 0;
    addConnections(g);
@@ -50,12 +50,12 @@ void destroyMap(Map g)
    assert(g->connections != NULL);
 
    for (i = 0; i < g->nV; i++){
-       curr = g->connections[i];
-       while(curr != NULL){
-          next = curr->next;
-          free(curr);
-          curr=next;
-       }
+	   curr = g->connections[i];
+	   while(curr != NULL){
+		  next = curr->next;
+		  free(curr);
+		  curr=next;
+	   }
    }
    free(g);
 }
@@ -84,9 +84,9 @@ void addLink(Map g, LocationID start, LocationID end, TransportID type)
 	assert(g != NULL);
 	// don't add edges twice
 	if (!inVList(g->connections[start],end,type)) {
-   	g->connections[start] = insertVList(g->connections[start],end,type);
-   	g->connections[end] = insertVList(g->connections[end],start,type);
-   	g->nE++;
+	g->connections[start] = insertVList(g->connections[start],end,type);
+	g->connections[end] = insertVList(g->connections[end],start,type);
+	g->nE++;
 	}
 }
 
@@ -97,17 +97,17 @@ void showMap(Map g)
    printf("V=%d, E=%d\n", g->nV, g->nE);
    int i;
    for (i = 0; i < g->nV; i++) {
-      VList n = g->connections[i];
-      while (n != NULL) {
-         printf("%s connects to %s ",idToName(i),idToName(n->v));
-         switch (n->type) {
-         case ROAD: printf("by road\n"); break;
-         case RAIL: printf("by rail\n"); break;
-         case BOAT: printf("by boat\n"); break;
-         default:   printf("by ????\n"); break;
-         }
-         n = n->next;
-      }
+	  VList n = g->connections[i];
+	  while (n != NULL) {
+		 printf("%s connects to %s ",idToName(i),idToName(n->v));
+		 switch (n->type) {
+		 case ROAD: printf("by road\n"); break;
+		 case RAIL: printf("by rail\n"); break;
+		 case BOAT: printf("by boat\n"); break;
+		 default:   printf("by ????\n"); break;
+		 }
+		 n = n->next;
+	  }
    }
 }
 
@@ -125,13 +125,13 @@ int numE(Map g, TransportID type)
    assert(g != NULL);
    assert(type >= 0 && type <= ANY);
    for (i = 0; i < g->nV; i++) {
-      VList n = g->connections[i];
-      while (n != NULL) {
-         if (n->type == type || type == ANY) nE++;
-         n = n->next;
-      }
-    }
-    return nE;
+	  VList n = g->connections[i];
+	  while (n != NULL) {
+		 if (n->type == type || type == ANY) nE++;
+		 n = n->next;
+	  }
+	}
+	return nE;
 }
 
 // Add edges to Graph representing map of Europe
