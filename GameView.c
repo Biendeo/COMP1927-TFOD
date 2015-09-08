@@ -7,7 +7,23 @@
 #include "GameView.h"
 #include "Places.h"
 // #include "Map.h"
-	 
+
+
+// This struct stores data that is common to each player.
+struct playerData {
+
+	// This tracks the ID of the player (using the PlayerID typedef in Globals.h).
+	PlayerID ID;
+
+	// This tracks the amount of health a player has. Dracula will have a
+	// different max amount.
+	int health;
+
+	// This tracks where on the map the player is.
+	LocationID location;
+};
+
+
 struct gameView {
 
 	// Each of these stores data types that are common to all players.
@@ -31,22 +47,7 @@ struct gameView {
 
 	// TODO: Storing the Dracula path? It's not in the header, so we may not need
 	// store it here.
-};
-
-// This struct stores data that is common to each player.
-struct playerData {
-
-	// This tracks the ID of the player (using the PlayerID typedef in Globals.h).
-	PlayerID ID;
-	
-	// This tracks the amount of health a player has. Dracula will have a
-	// different max amount.
-	int health;
-	
-	// This tracks where on the map the player is.
-	LocationID location;
-};
-	 
+}; 
 
 // Creates a new GameView to summarise the current state of the game
 GameView newGameView(char *pastPlays, PlayerMessage messages[])
