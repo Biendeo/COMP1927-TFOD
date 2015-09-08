@@ -40,7 +40,7 @@ struct gameView {
 	int score;
 
 	// This tracks the turn number of the game.
-	int turnNumber;
+	Round turnNumber;
 
 	// This tracks whose turn it is.
 	PlayerID whoseTurn;
