@@ -9,8 +9,9 @@
 // #include "Map.h" ... if you decide to use the Map ADT
 
 struct dracView {
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    int hello;
+	// As required by the assignment description
+	// DracView ADTs should use GameView in its implementation
+	GameView g;
 };
 
 
@@ -42,24 +43,19 @@ Round giveMeTheRound(DracView currentView)
 }
 
 // Get the current score
-int giveMeTheScore(DracView currentView)
-{
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return 0;
+int giveMeTheScore(DracView currentView) {
+	return getScore(currentView->g);
 }
 
 // Get the current health points for a given player
-int howHealthyIs(DracView currentView, PlayerID player)
-{
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return 0;
+int howHealthyIs(DracView currentView, PlayerID player) {
+	return getHealth(currentView->g, player);
 }
 
 // Get the current location id of a given player
-LocationID whereIs(DracView currentView, PlayerID player)
-{
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return 0;
+// Dracula knows where everyone is
+LocationID whereIs(DracView currentView, PlayerID player) {
+	return getLocation(currentView->g, player);
 }
 
 // Get the most recent move of a given player
