@@ -17,7 +17,7 @@ struct playerData {
 
 	// This tracks the amount of health a player has. Dracula will have a
 	// different max amount.
-	int health;
+	char health;
 
 	// This tracks where on the map the player is.
 	LocationID location;
