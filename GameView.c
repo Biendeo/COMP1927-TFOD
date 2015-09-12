@@ -50,8 +50,7 @@ struct gameView {
 }; 
 
 // Creates a new GameView to summarise the current state of the game
-GameView newGameView(char *pastPlays, PlayerMessage messages[])
-{
+GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
 	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	GameView gameView = malloc(sizeof(struct gameView));
 	return gameView;
@@ -59,9 +58,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
 	 
 	 
 // Frees all memory previously allocated for the GameView toBeDeleted
-void disposeGameView(GameView toBeDeleted)
-{
-	//COMPLETE THIS IMPLEMENTATION
+void disposeGameView (GameView toBeDeleted) {
 	free(toBeDeleted);
 }
 

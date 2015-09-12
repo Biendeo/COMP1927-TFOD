@@ -16,15 +16,16 @@ struct hunterView {
 
 // Creates a new HunterView to summarise the current state of the game
 HunterView newHunterView (char *pastPlays, PlayerMessage messages[]) {
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	HunterView hunterView = malloc(sizeof(struct hunterView));
+	hunterView->g = newGameView(pastPlays, messages);
+
 	return hunterView;
 }
 	 
 	 
 // Frees all memory previously allocated for the HunterView toBeDeleted
 void disposeHunterView (HunterView toBeDeleted) {
-	//COMPLETE THIS IMPLEMENTATION
+	disposeGameView(toBeDeleted->g);
 	free(toBeDeleted);
 }
 
