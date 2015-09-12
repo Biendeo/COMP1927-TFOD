@@ -62,7 +62,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
 void disposeGameView(GameView toBeDeleted)
 {
 	//COMPLETE THIS IMPLEMENTATION
-	free( toBeDeleted );
+	free(toBeDeleted);
 }
 
 
