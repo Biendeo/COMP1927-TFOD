@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "GameView.h"
 #include "DracView.h"
-// #include "Map.h" ... if you decide to use the Map ADT
+#include "Map.h"
 
 struct dracView {
 	// As required by the assignment description

@@ -26,8 +26,7 @@ static void addConnections(Map);
 
 // Create a new empty graph (for a map)
 // #Vertices always same as NUM_PLACES
-Map newMap()
-{
+Map newMap () {
    int i;
    Map g = malloc(sizeof(struct MapRep));
    assert(g != NULL);
@@ -41,8 +40,7 @@ Map newMap()
 }
 
 // Remove an existing graph
-void destroyMap(Map g)
-{
+void destroyMap (Map g) {
    int i;
    VList curr;
    VList next;
@@ -60,8 +58,7 @@ void destroyMap(Map g)
    free(g);
 }
 
-static VList insertVList(VList L, LocationID v, TransportID type)
-{
+static VList insertVList (VList L, LocationID v, TransportID type) {
    VList newV = malloc(sizeof(struct vNode));
    newV->v = v;
    newV->type = type;
@@ -69,8 +66,7 @@ static VList insertVList(VList L, LocationID v, TransportID type)
    return newV;
 }
 
-static int inVList(VList L, LocationID v, TransportID type)
-{
+static int inVList (VList L, LocationID v, TransportID type) {
 	VList cur;
 	for (cur = L; cur != NULL; cur = cur->next) {
 		if (cur->v == v && cur->type == type) return 1;
@@ -79,8 +75,7 @@ static int inVList(VList L, LocationID v, TransportID type)
 }
 
 // Add a new edge to the Map/Graph
-void addLink(Map g, LocationID start, LocationID end, TransportID type)
-{
+void addLink (Map g, LocationID start, LocationID end, TransportID type) {
 	assert(g != NULL);
 	// don't add edges twice
 	if (!inVList(g->connections[start],end,type)) {
@@ -91,8 +86,7 @@ void addLink(Map g, LocationID start, LocationID end, TransportID type)
 }
 
 // Display content of Map/Graph
-void showMap(Map g)
-{
+void showMap (Map g) {
    assert(g != NULL);
    printf("V=%d, E=%d\n", g->nV, g->nE);
    int i;
@@ -112,15 +106,13 @@ void showMap(Map g)
 }
 
 // Return count of nodes
-int numV(Map g)
-{
+int numV (Map g) {
    assert(g != NULL);
    return g->nV;
 }
 
 // Return count of edges of a particular type
-int numE(Map g, TransportID type)
-{
+int numE (Map g, TransportID type) {
    int i, nE=0;
    assert(g != NULL);
    assert(type >= 0 && type <= ANY);
@@ -135,8 +127,7 @@ int numE(Map g, TransportID type)
 }
 
 // Add edges to Graph representing map of Europe
-static void addConnections(Map g)
-{
+static void addConnections (Map g) {
    //### ROAD Connections ###
 
    addLink(g, ALICANTE, GRANADA, ROAD);

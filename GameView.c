@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "GameView.h"
 #include "Places.h"
-// #include "Map.h"
+#include "Map.h"
 
 
 // This struct stores data that is common to each player.
@@ -94,29 +94,37 @@ int getHealth(GameView currentView, PlayerID player)
 }
 
 // Get the current location id of a given player
-LocationID getLocation(GameView currentView, PlayerID player)
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return 0;
+LocationID getLocation (GameView currentView, PlayerID player) {
+	switch (player) {
+		case PLAYER_LORD_GODALMING:
+			return currentView->LG.location;
+		case PLAYER_DR_SEWARD:
+			return currentView->DS.location;
+		case PLAYER_VAN_HELSING:
+			return currentView->VH.location;
+		case PLAYER_MINA_HARKER:
+			return currentView->MH.location;
+		// TODO: Remove this when Dracula is moved to DracView.
+		case PLAYER_DRACULA:
+			return currentView->DR.location;
+	}
 }
 
 //// Functions that return information about the history of the game
 
 // Fills the trail array with the location ids of the last 6 turns
-void getHistory(GameView currentView, PlayerID player,
-							LocationID trail[TRAIL_SIZE])
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+void getHistory (GameView currentView, PlayerID player,
+							LocationID trail[TRAIL_SIZE]) {
+	// TODO: This when the queue is done.
 }
 
 //// Functions that query the map to find information about connectivity
 
 // Returns an array of LocationIDs for all directly connected locations
 
-LocationID *connectedLocations(GameView currentView, int *numLocations,
+LocationID *connectedLocations (GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
-							   int road, int rail, int sea)
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+							   int road, int rail, int sea) {
+	
 	return NULL;
 }
