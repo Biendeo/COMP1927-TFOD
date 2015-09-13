@@ -51,7 +51,6 @@ struct gameView {
 
 // Creates a new GameView to summarise the current state of the game
 GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	GameView gameView = malloc(sizeof(struct gameView));
 	return gameView;
 }
@@ -66,31 +65,35 @@ void disposeGameView (GameView toBeDeleted) {
 //// Functions to return simple information about the current state of the game
 
 // Get the current round
-Round getRound(GameView currentView)
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return 0;
+Round getRound (GameView currentView) {
+	return currentView->turnNumber;
 }
 
 // Get the id of current player - ie whose turn is it?
-PlayerID getCurrentPlayer(GameView currentView)
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return 0;
+PlayerID getCurrentPlayer (GameView currentView) {
+	return currentView->whoseTurn;
 }
 
 // Get the current score
-int getScore(GameView currentView)
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return 0;
+int getScore (GameView currentView) {
+	return currentView->score;
 }
 
 // Get the current health points for a given player
-int getHealth(GameView currentView, PlayerID player)
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return 0;
+int getHealth (GameView currentView, PlayerID player) {
+	switch (player) {
+		case PLAYER_LORD_GODALMING:
+			return currentView->LG.health;
+		case PLAYER_DR_SEWARD:
+			return currentView->DS.health;
+		case PLAYER_VAN_HELSING:
+			return currentView->VH.health;
+		case PLAYER_MINA_HARKER:
+			return currentView->MH.health;
+			// TODO: Remove this when Dracula is moved to DracView.
+		case PLAYER_DRACULA:
+			return currentView->DR.health;
+	}
 }
 
 // Get the current location id of a given player
