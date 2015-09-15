@@ -16,7 +16,7 @@ typedef struct MapRep *Map;
 
 // operations on graphs 
 Map  newMap();  
-void disposeMap(Map g); 
+void destroyMap(Map g); 
 void showMap(Map g); 
 int  numV(Map g);
 int  numE(Map g, TransportID t);

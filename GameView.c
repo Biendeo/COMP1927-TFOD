@@ -8,6 +8,8 @@
 #include "Places.h"
 #include "Map.h"
 
+#include "Queue.h"
+
 
 // This struct stores data that is common to each player.
 struct playerData {
@@ -45,19 +47,49 @@ struct gameView {
 	// This tracks whose turn it is.
 	PlayerID whoseTurn;
 
-	// TODO: Storing the Dracula path? It's not in the header, so we may not need
-	// store it here.
+	// This tracks Dracula's trail.
+	Trail trail;
 }; 
 
 // Creates a new GameView to summarise the current state of the game
 GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
 	GameView gameView = malloc(sizeof(struct gameView));
+	gameView->trail = newTrail(TRAIL_SIZE);
+
+	// TODO: Interpret the pastPlays and figure out the statistics.
+
+	gameView->whoseTurn = PLAYER_LORD_GODALMING;
+	gameView->turnNumber = 0;
+	gameView->score = GAME_START_SCORE;
+
+	// TODO: Make this a bit cleaner.
+	gameView->LG.ID = PLAYER_LORD_GODALMING;
+	gameView->LG.health = GAME_START_HUNTER_LIFE_POINTS;
+	gameView->LG.location = UNKNOWN_LOCATION;
+
+	gameView->DS.ID = PLAYER_DR_SEWARD;
+	gameView->DS.health = GAME_START_HUNTER_LIFE_POINTS;
+	gameView->DS.location = UNKNOWN_LOCATION;
+
+	gameView->VH.ID = PLAYER_VAN_HELSING;
+	gameView->VH.health = GAME_START_HUNTER_LIFE_POINTS;
+	gameView->VH.location = UNKNOWN_LOCATION;
+
+	gameView->MH.ID = PLAYER_MINA_HARKER;
+	gameView->MH.health = GAME_START_HUNTER_LIFE_POINTS;
+	gameView->MH.location = UNKNOWN_LOCATION;
+
+	gameView->DR.ID = PLAYER_DRACULA;
+	gameView->DR.health = GAME_START_BLOOD_POINTS;
+	gameView->DR.location = CASTLE_DRACULA;
+
 	return gameView;
 }
 	 
 	 
 // Frees all memory previously allocated for the GameView toBeDeleted
 void disposeGameView (GameView toBeDeleted) {
+	disposeTrail(toBeDeleted->trail);
 	free(toBeDeleted);
 }
 
@@ -94,7 +126,7 @@ int getHealth (GameView currentView, PlayerID player) {
 		case PLAYER_DRACULA:
 			return currentView->DR.health;
 		default:
-			return 0;
+			return -1;
 	}
 }
 
@@ -132,6 +164,8 @@ void getHistory (GameView currentView, PlayerID player,
 LocationID *connectedLocations (GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
 							   int road, int rail, int sea) {
-	
+	Map map = newMap();
+	// TODO: Any of this.
+	destroyMap(map);
 	return NULL;
 }

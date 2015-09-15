@@ -22,7 +22,7 @@ Trail newTrail (int size) {
 	newTrail->size = size;
 	// This just flushes the trail with null values.
 	for (int i = 0; i < size; i++) {
-		newTrail->trail[i] = NULL_TERM;
+		newTrail->trail[i] = UNKNOWN_LOCATION;
 	}
 	return newTrail;
 }
@@ -44,7 +44,7 @@ void prepend (Trail trail, LocationID place) {
 // This returns the element of a given index.
 LocationID showElement (Trail trail, int index) {
 	if (index >= trail->size || index < 0) {
-		return NULL_TERM;
+		return UNKNOWN_LOCATION;
 	} else {
 		return trail->trail[index];
 	}
@@ -61,13 +61,13 @@ void slide(Trail trail, int index) {
 		pop(trail);
 	} else {
 		trail->trail[index + 1] = trail->trail[index];
-		trail->trail[index] = NULL_TERM;
+		trail->trail[index] = UNKNOWN_LOCATION;
 	}
 }
 
 // This removes the last element and returns it.
 LocationID pop(Trail trail) {
 	LocationID returnLocation = trail->trail[trail->size - 1];
-	trail->trail[trail->size - 1] = NULL_TERM;
+	trail->trail[trail->size - 1] = UNKNOWN_LOCATION;
 	return returnLocation;
 }

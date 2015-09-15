@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include "Places.h"
 
-#define NULL_TERM -1
-
 typedef struct Trail *Trail;
 
 Trail newTrail (int size);

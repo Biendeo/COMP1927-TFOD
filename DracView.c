@@ -11,12 +11,7 @@
 #include "Queue.h"
 
 struct dracView {
-	// As required by the assignment description
-	// DracView ADTs should use GameView in its implementation
 	GameView g;
-
-	// This tracks Dracula's trail.
-	Trail trail;
 };
 
 
@@ -24,7 +19,6 @@ struct dracView {
 DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 	DracView dracView = malloc(sizeof(struct dracView));
 	dracView->g = newGameView(pastPlays, messages);
-	dracView->trail = newTrail(TRAIL_SIZE);
 	return dracView;
 }
 
@@ -32,7 +26,6 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 // Frees all memory previously allocated for the DracView toBeDeleted
 void disposeDracView (DracView toBeDeleted) {
 	disposeGameView(toBeDeleted->g);
-	disposeTrail(toBeDeleted->trail);
 	free(toBeDeleted);
 }
 
@@ -62,16 +55,14 @@ LocationID whereIs(DracView currentView, PlayerID player) {
 
 // Get the most recent move of a given player
 void lastMove(DracView currentView, PlayerID player,
-				 LocationID *start, LocationID *end)
-{
+				 LocationID *start, LocationID *end) {
 	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	return;
 }
 
 // Find out what minions are placed at the specified location
 void whatsThere(DracView currentView, LocationID where,
-						 int *numTraps, int *numVamps)
-{
+						 int *numTraps, int *numVamps) {
 	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	return;
 }
@@ -80,24 +71,23 @@ void whatsThere(DracView currentView, LocationID where,
 
 // Fills the trail array with the location ids of the last 6 turns
 void giveMeTheTrail(DracView currentView, PlayerID player,
-							LocationID trail[TRAIL_SIZE])
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+							LocationID trail[TRAIL_SIZE]) {
+	for (int i = 0; i < TRAIL_SIZE; i++) {
+		trail[i] = showElement((currentView->g)->trail, i);
+	}
 }
 
 //// Functions that query the map to find information about connectivity
 
 // What are my (Dracula's) possible next moves (locations)
-LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int sea)
-{
+LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int sea) {
 	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	return NULL;
 }
 
 // What are the specified player's next possible moves
 LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
-						   PlayerID player, int road, int rail, int sea)
-{
+						   PlayerID player, int road, int rail, int sea) {
 	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	return NULL;
 }
