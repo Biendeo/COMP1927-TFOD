@@ -93,6 +93,8 @@ int getHealth (GameView currentView, PlayerID player) {
 			// TODO: Remove this when Dracula is moved to DracView.
 		case PLAYER_DRACULA:
 			return currentView->DR.health;
+		default:
+			return 0;
 	}
 }
 
@@ -110,6 +112,8 @@ LocationID getLocation (GameView currentView, PlayerID player) {
 		// TODO: Remove this when Dracula is moved to DracView.
 		case PLAYER_DRACULA:
 			return currentView->DR.location;
+		default:
+			return -1;
 	}
 }
 

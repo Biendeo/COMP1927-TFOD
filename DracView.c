@@ -8,28 +8,32 @@
 #include "DracView.h"
 #include "Map.h"
 
+#include "Queue.h"
+
 struct dracView {
 	// As required by the assignment description
 	// DracView ADTs should use GameView in its implementation
 	GameView g;
+
+	// This tracks Dracula's trail.
+	Trail trail;
 };
 
 
 // Creates a new DracView to summarise the current state of the game
-DracView newDracView(char *pastPlays, PlayerMessage messages[])
-{
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 	DracView dracView = malloc(sizeof(struct dracView));
-
+	dracView->g = newGameView(pastPlays, messages);
+	dracView->trail = newTrail(TRAIL_SIZE);
 	return dracView;
 }
 
 
 // Frees all memory previously allocated for the DracView toBeDeleted
-void disposeDracView(DracView toBeDeleted)
-{
-	//COMPLETE THIS IMPLEMENTATION
-	free( toBeDeleted );
+void disposeDracView (DracView toBeDeleted) {
+	disposeGameView(toBeDeleted->g);
+	disposeTrail(toBeDeleted->trail);
+	free(toBeDeleted);
 }
 
 
