@@ -130,7 +130,11 @@ LocationID getLocation (GameView currentView, PlayerID player) {
 // Fills the trail array with the location ids of the last 6 turns
 void getHistory (GameView currentView, PlayerID player,
 							LocationID trail[TRAIL_SIZE]) {
-	// TODO: This when the queue is done.
+	// TODO: Does each player have a trail?
+	// I'm just assuming it's Dracula every time.
+	for (int i = 0; i < TRAIL_SIZE; i++) {
+		trail[i] = showElement(currentView->trail, i);
+	}
 }
 
 //// Functions that query the map to find information about connectivity
@@ -141,7 +145,27 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
 							   int road, int rail, int sea) {
 	Map map = newMap();
-	// TODO: Any of this.
-	destroyMap(map);
-	return NULL;
+	VList node = map->connections[from];
+	*numLocations = 0;
+	LocationID *connectedLocations = malloc(sizeof(LocationID) * *numLocations);
+	
+	while (node != NULL) {
+		if (road == 1 && node->type == ROAD) {
+			*numLocations++;
+			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
+			connectedLocations[*numLocations - 1] = node->v;
+		} else if (rail == 1 && node->type == RAIL) {
+			*numLocations++;
+			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
+			connectedLocations[*numLocations - 1] = node->v;
+		} else if (sea == 1 && node->type == SEA) {
+			*numLocations++;
+			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
+			connectedLocations[*numLocations - 1] = node->v;
+		}
+		node = node->next;
+	}
+
+	disposeMap(map);
+	return connectedLocations;
 }

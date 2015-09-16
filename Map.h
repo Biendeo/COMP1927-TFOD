@@ -5,10 +5,24 @@
 
 #include "Places.h"
 
+struct vNode {
+	LocationID  v;    // ALICANTE, etc
+	TransportID type; // ROAD, RAIL, BOAT
+	VList       next; // link to next node
+};
+
+struct MapRep {
+	int   nV;         // #vertices
+	int   nE;         // #edges
+	VList connections[NUM_MAP_LOCATIONS]; // array of lists
+};
+
+typedef struct vNode *VList;
+
 typedef struct edge{
-    LocationID  start;
-    LocationID  end;
-    TransportID type;
+	LocationID  start;
+	LocationID  end;
+	TransportID type;
 } Edge;
 
 // graph representation is hidden 
@@ -16,9 +30,11 @@ typedef struct MapRep *Map;
 
 // operations on graphs 
 Map  newMap();  
-void destroyMap(Map g); 
+void disposeMap(Map g); 
 void showMap(Map g); 
 int  numV(Map g);
 int  numE(Map g, TransportID t);
+
+VList getConnections(Map g);
 
 #endif
