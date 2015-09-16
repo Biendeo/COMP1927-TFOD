@@ -23,6 +23,9 @@ struct playerData {
 
 	// This tracks where on the map the player is.
 	LocationID location;
+
+	// This tracks each player's last 6 moves.
+	Trail trail;
 };
 
 
@@ -42,15 +45,11 @@ struct gameView {
 
 	// This tracks whose turn it is.
 	PlayerID whoseTurn;
-
-	// This tracks Dracula's trail.
-	Trail trail;
 }; 
 
 // Creates a new GameView to summarise the current state of the game
 GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
 	GameView gameView = malloc(sizeof(struct gameView));
-	gameView->trail = newTrail(TRAIL_SIZE);
 
 	// TODO: Interpret the pastPlays and figure out the statistics.
 
@@ -58,26 +57,18 @@ GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
 	gameView->turnNumber = 0;
 	gameView->score = GAME_START_SCORE;
 
-	// TODO: Make this a bit cleaner.
-	gameView->player[0].ID = PLAYER_LORD_GODALMING;
-	gameView->player[0].health = GAME_START_HUNTER_LIFE_POINTS;
-	gameView->player[0].location = UNKNOWN_LOCATION;
-
-	gameView->player[1].ID = PLAYER_DR_SEWARD;
-	gameView->player[1].health = GAME_START_HUNTER_LIFE_POINTS;
-	gameView->player[1].location = UNKNOWN_LOCATION;
-
-	gameView->player[2].ID = PLAYER_VAN_HELSING;
-	gameView->player[2].health = GAME_START_HUNTER_LIFE_POINTS;
-	gameView->player[2].location = UNKNOWN_LOCATION;
-
-	gameView->player[3].ID = PLAYER_MINA_HARKER;
-	gameView->player[3].health = GAME_START_HUNTER_LIFE_POINTS;
-	gameView->player[3].location = UNKNOWN_LOCATION;
-
-	gameView->player[4].ID = PLAYER_DRACULA;
-	gameView->player[4].health = GAME_START_BLOOD_POINTS;
-	gameView->player[4].location = CASTLE_DRACULA;
+	for (int i = 0; i < NUM_PLAYERS; i++) {
+		// This is a bit lazy, but it's short and easy.
+		gameView->player[i].ID = i;
+		if (i != PLAYER_DRACULA) {
+			gameView->player[i].health = GAME_START_HUNTER_LIFE_POINTS;
+			gameView->player[i].location = UNKNOWN_LOCATION;
+		} else {
+			gameView->player[i].health = GAME_START_BLOOD_POINTS;
+			gameView->player[i].location = CASTLE_DRACULA;
+		}
+		gameView->player[i].trail = newTrail(TRAIL_SIZE);
+	}
 
 	return gameView;
 }
@@ -85,7 +76,9 @@ GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
 	 
 // Frees all memory previously allocated for the GameView toBeDeleted
 void disposeGameView (GameView toBeDeleted) {
-	disposeTrail(toBeDeleted->trail);
+	for (int i = 0; i < NUM_PLAYERS; i++) {
+		disposeTrail(toBeDeleted->player[i].trail);
+	}
 	free(toBeDeleted);
 }
 
@@ -133,7 +126,7 @@ void getHistory (GameView currentView, PlayerID player,
 	// TODO: Does each player have a trail?
 	// I'm just assuming it's Dracula every time.
 	for (int i = 0; i < TRAIL_SIZE; i++) {
-		trail[i] = showElement(currentView->trail, i);
+		trail[i] = showElement(currentView->player[player].trail, i);
 	}
 }
 
