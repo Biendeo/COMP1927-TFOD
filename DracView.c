@@ -54,9 +54,12 @@ LocationID whereIs(DracView currentView, PlayerID player) {
 }
 
 // Get the most recent move of a given player
+// may need modification when Queue ADT is confirmed
 void lastMove(DracView currentView, PlayerID player,
 				 LocationID *start, LocationID *end) {
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	getHistory(currentview->g, player, LocationID trail[TRAIL_SIZE]);
+	*start = trail[1];
+	*end = trail[0];
 	return;
 }
 
