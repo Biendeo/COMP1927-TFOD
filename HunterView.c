@@ -68,9 +68,9 @@ void giveMeTheTrail (HunterView currentView, PlayerID player,
 //// Functions that query the map to find information about connectivity
 
 // What are my possible next moves (locations)
-LocationID *whereCanIgo (HunterView currentView, int *numLocations, int road, int sea) {
-	// TODO: That 0, do we need to calculate it?
-	return whereCanTheyGo(currentView, numLocations, getCurrentPlayer(currentView->g), road, 0, sea);
+LocationID *whereCanIgo (HunterView currentView, int *numLocations, int road, int rail, int sea) {
+	// TODO: Add current location.
+	return whereCanTheyGo(currentView, numLocations, getCurrentPlayer(currentView->g), road, rail, sea);
 }
 
 // What are the specified player's next possible moves
