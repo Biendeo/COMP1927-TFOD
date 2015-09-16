@@ -8,20 +8,6 @@
 #include "Map.h"
 #include "Places.h"
 
-typedef struct vNode *VList;
-
-struct vNode {
-   LocationID  v;    // ALICANTE, etc
-   TransportID type; // ROAD, RAIL, BOAT
-   VList       next; // link to next node
-};
-
-struct MapRep {
-   int   nV;         // #vertices
-   int   nE;         // #edges
-   VList connections[NUM_MAP_LOCATIONS]; // array of lists
-};
-
 static void addConnections(Map);
 
 // Create a new empty graph (for a map)
@@ -40,7 +26,7 @@ Map newMap () {
 }
 
 // Remove an existing graph
-void destroyMap (Map g) {
+void disposeMap (Map g) {
    int i;
    VList curr;
    VList next;
@@ -124,6 +110,10 @@ int numE (Map g, TransportID type) {
 	  }
 	}
 	return nE;
+}
+
+VList getConnections (Map g) {
+	return g->connections;
 }
 
 // Add edges to Graph representing map of Europe
