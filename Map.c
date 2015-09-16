@@ -112,10 +112,6 @@ int numE (Map g, TransportID type) {
 	return nE;
 }
 
-VList getConnections (Map g) {
-	return g->connections;
-}
-
 // Add edges to Graph representing map of Europe
 static void addConnections (Map g) {
    //### ROAD Connections ###

@@ -5,6 +5,8 @@
 
 #include "Places.h"
 
+typedef struct vNode *VList;
+
 struct vNode {
 	LocationID  v;    // ALICANTE, etc
 	TransportID type; // ROAD, RAIL, BOAT
@@ -17,7 +19,6 @@ struct MapRep {
 	VList connections[NUM_MAP_LOCATIONS]; // array of lists
 };
 
-typedef struct vNode *VList;
 
 typedef struct edge{
 	LocationID  start;

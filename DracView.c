@@ -72,9 +72,7 @@ void whatsThere(DracView currentView, LocationID where,
 // Fills the trail array with the location ids of the last 6 turns
 void giveMeTheTrail(DracView currentView, PlayerID player,
 							LocationID trail[TRAIL_SIZE]) {
-	for (int i = 0; i < TRAIL_SIZE; i++) {
-		trail[i] = showElement((currentView->g)->trail, i);
-	}
+	getHistory(currentView->g, player, trail);
 }
 
 //// Functions that query the map to find information about connectivity
@@ -88,8 +86,10 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 // What are the specified player's next possible moves
 LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
 						   PlayerID player, int road, int rail, int sea) {
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return NULL;
+	LocationID position = whereIs(currentView, player);
+	// TODO: I don't think this charts everything.
+	// A player may move up to three spaces by rail for example.
+	return connectedLocations(currentView->g, numLocations, position, player, giveMeTheRound(currentView), road, rail, sea);
 }
 
 
