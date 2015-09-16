@@ -17,7 +17,7 @@ struct Trail {
 
 // Makes a new trail of a given size
 Trail newTrail (int size) {
-	Trail newTrail = malloc(sizeof(Trail));
+	Trail newTrail = malloc(sizeof(struct Trail));
 	newTrail->trail = calloc(size, sizeof(LocationID));
 	newTrail->size = size;
 	// This just flushes the trail with null values.
