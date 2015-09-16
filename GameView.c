@@ -32,11 +32,7 @@ struct gameView {
 	// TODO: Vote on the names?
 	// TODO: Should this be an array? (could be convenient as the player IDs go
 	// from 0 to 4.
-	struct playerData LG;
-	struct playerData DS;
-	struct playerData VH;
-	struct playerData MH;
-	struct playerData DR;
+	struct playerData player[NUM_PLAYERS];
 
 	// This tracks the score of the game.
 	int score;
@@ -63,25 +59,25 @@ GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
 	gameView->score = GAME_START_SCORE;
 
 	// TODO: Make this a bit cleaner.
-	gameView->LG.ID = PLAYER_LORD_GODALMING;
-	gameView->LG.health = GAME_START_HUNTER_LIFE_POINTS;
-	gameView->LG.location = UNKNOWN_LOCATION;
+	gameView->player[0].ID = PLAYER_LORD_GODALMING;
+	gameView->player[0].health = GAME_START_HUNTER_LIFE_POINTS;
+	gameView->player[0].location = UNKNOWN_LOCATION;
 
-	gameView->DS.ID = PLAYER_DR_SEWARD;
-	gameView->DS.health = GAME_START_HUNTER_LIFE_POINTS;
-	gameView->DS.location = UNKNOWN_LOCATION;
+	gameView->player[1].ID = PLAYER_DR_SEWARD;
+	gameView->player[1].health = GAME_START_HUNTER_LIFE_POINTS;
+	gameView->player[1].location = UNKNOWN_LOCATION;
 
-	gameView->VH.ID = PLAYER_VAN_HELSING;
-	gameView->VH.health = GAME_START_HUNTER_LIFE_POINTS;
-	gameView->VH.location = UNKNOWN_LOCATION;
+	gameView->player[2].ID = PLAYER_VAN_HELSING;
+	gameView->player[2].health = GAME_START_HUNTER_LIFE_POINTS;
+	gameView->player[2].location = UNKNOWN_LOCATION;
 
-	gameView->MH.ID = PLAYER_MINA_HARKER;
-	gameView->MH.health = GAME_START_HUNTER_LIFE_POINTS;
-	gameView->MH.location = UNKNOWN_LOCATION;
+	gameView->player[3].ID = PLAYER_MINA_HARKER;
+	gameView->player[3].health = GAME_START_HUNTER_LIFE_POINTS;
+	gameView->player[3].location = UNKNOWN_LOCATION;
 
-	gameView->DR.ID = PLAYER_DRACULA;
-	gameView->DR.health = GAME_START_BLOOD_POINTS;
-	gameView->DR.location = CASTLE_DRACULA;
+	gameView->player[4].ID = PLAYER_DRACULA;
+	gameView->player[4].health = GAME_START_BLOOD_POINTS;
+	gameView->player[4].location = CASTLE_DRACULA;
 
 	return gameView;
 }
@@ -113,39 +109,19 @@ int getScore (GameView currentView) {
 
 // Get the current health points for a given player
 int getHealth (GameView currentView, PlayerID player) {
-	switch (player) {
-		case PLAYER_LORD_GODALMING:
-			return currentView->LG.health;
-		case PLAYER_DR_SEWARD:
-			return currentView->DS.health;
-		case PLAYER_VAN_HELSING:
-			return currentView->VH.health;
-		case PLAYER_MINA_HARKER:
-			return currentView->MH.health;
-			// TODO: Remove this when Dracula is moved to DracView.
-		case PLAYER_DRACULA:
-			return currentView->DR.health;
-		default:
-			return -1;
+	if (player >= NUM_PLAYERS || player < 0) {
+		return -1;
+	} else {
+		return currentView->player[player].health;
 	}
 }
 
 // Get the current location id of a given player
 LocationID getLocation (GameView currentView, PlayerID player) {
-	switch (player) {
-		case PLAYER_LORD_GODALMING:
-			return currentView->LG.location;
-		case PLAYER_DR_SEWARD:
-			return currentView->DS.location;
-		case PLAYER_VAN_HELSING:
-			return currentView->VH.location;
-		case PLAYER_MINA_HARKER:
-			return currentView->MH.location;
-		// TODO: Remove this when Dracula is moved to DracView.
-		case PLAYER_DRACULA:
-			return currentView->DR.location;
-		default:
-			return -1;
+	if (player >= NUM_PLAYERS || player < 0) {
+		return -1;
+	} else {
+		return currentView->player[player].location;
 	}
 }
 
