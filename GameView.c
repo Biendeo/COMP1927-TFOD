@@ -144,15 +144,15 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 	
 	while (node != NULL) {
 		if (road == 1 && node->type == ROAD) {
-			*numLocations++;
+			*numLocations += 1;
 			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
 			connectedLocations[*numLocations - 1] = node->v;
 		} else if (rail == 1 && node->type == RAIL) {
-			*numLocations++;
+			*numLocations += 1;
 			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
 			connectedLocations[*numLocations - 1] = node->v;
 		} else if (sea == 1 && node->type == SEA) {
-			*numLocations++;
+			*numLocations += 1;
 			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
 			connectedLocations[*numLocations - 1] = node->v;
 		}

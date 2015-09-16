@@ -4,22 +4,20 @@ BINS = testGameView testHunterView testDracView
 
 all : $(BINS)
 
-testGameView : testGameView.o GameView.o Map.o Places.o Queue.o
-testGameView.o : testGameView.c Globals.h Game.h 
-
-testHunterView : testHunterView.o HunterView.o Map.o Places.o GameView.o
-testHunterView.o : testHunterView.c Map.c Places.h
-
-testDracView : testDracView.o DracView.o Map.o Places.o Queue.o GameView.o
-testDracView.o : testDracView.c Map.c Places.h Queue.h
+testGameView : testGameView.o Places.o Map.o Queue.o GameView.o
+testHunterView : testHunterView.o HunterView.o Places.o Map.o Queue.o GameView.o
+testDracView : testDracView.o DracView.o Places.o Map.o Queue.o GameView.o
 
 Places.o : Places.c Places.h
-Map.o : Map.c Map.h Places.h
+Map.o : Map.c Map.h
+Queue.o : Queue.c Queue.h
 GameView.o : GameView.c GameView.h
 HunterView.o : HunterView.c HunterView.h
 DracView.o : DracView.c DracView.h
+testGameView.o : testGameView.c
+testHunterView.o : testHunterView.c
+testDracView.o : testDracView.c
 
-Queue.o : Queue.c Queue.h Places.h
 
 clean :
 	rm -f $(BINS) *.o core
