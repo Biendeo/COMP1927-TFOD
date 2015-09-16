@@ -10,8 +10,11 @@
 
 #include "Queue.h"
 
+
 struct dracView {
 	GameView g;
+	LocationID vampLocation; //can have at most one minion vampire at any time
+	int numTraps[NUM_MAP_LOCATIONS]; //an array that stores the number of traps for every LocationID
 };
 
 
@@ -19,6 +22,11 @@ struct dracView {
 DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 	DracView dracView = malloc(sizeof(struct dracView));
 	dracView->g = newGameView(pastPlays, messages);
+	dracView->vampLocation = NOWHERE;
+	int i;
+	for (i = 0, i < NUM_MAP_LOCATIONS, i++) {
+		dracView->numTraps[i] = 0;
+	}
 	return dracView;
 }
 
@@ -66,7 +74,12 @@ void lastMove(DracView currentView, PlayerID player,
 // Find out what minions are placed at the specified location
 void whatsThere(DracView currentView, LocationID where,
 						 int *numTraps, int *numVamps) {
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	if (where == currentView->vampLocation) {
+		*numVamps = 1;
+	} else {
+		*numVamps = 0;
+	}
+	*numTraps = currentView->numTraps[where];
 	return;
 }
 
