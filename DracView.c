@@ -96,16 +96,27 @@ void giveMeTheTrail(DracView currentView, PlayerID player,
 // What are my (Dracula's) possible next moves (locations)
 LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int sea) {
 	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	//In Round 0 Dracula can move to anywhere except for the hospitals.
 	return NULL;
 }
 
 // What are the specified player's next possible moves
 LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
 						   PlayerID player, int road, int rail, int sea) {
-	LocationID position = whereIs(currentView, player);
-	// TODO: I don't think this charts everything.
-	// A player may move up to three spaces by rail for example.
-	return connectedLocations(currentView->g, numLocations, position, player, giveMeTheRound(currentView), road, rail, sea);
+	LocationID *wctg;
+	if (player == PLAYER_DRACULA) {
+		wctg = whereCanIgo(currentView, numLocations, road, sea);
+	} else {
+		LocationID position = whereIs(currentView, player);
+		//DragView ADT is only used at Dracula's turns. Since Dracula moves last,
+		//the function finds where hunters can go in their next (rather than current) round
+		//also as a result we don't need to worry about where they can go in Round 0.
+		Round nextRound = giveMeTheRound(currentView)++; 
+		sum = nextRound + player;
+		//WORK-IN-PROGRESS, please don't alter yet!!!!!!!!!!
+		wctg = connectedLocations(currentView->g, numLocations, position, player, giveMeTheRound(currentView), road, rail, sea);
+	}
+	return wctg;
 }
 
 
