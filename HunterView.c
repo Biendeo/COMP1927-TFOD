@@ -76,6 +76,12 @@ LocationID *whereCanIgo (HunterView currentView, int *numLocations, int road, in
 // What are the specified player's next possible moves
 LocationID *whereCanTheyGo (HunterView currentView, int *numLocations,
 						   PlayerID player, int road, int rail, int sea) {
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return NULL;
+	LocationID *wctg;
+	if (player == PLAYER_DRACULA) {
+		wctg = connectedLocations(currentView->g, numLocations, player, road, 0, sea);
+		// TODO: Filter out hospitals.
+	} else {
+		
+	}
+	return wctg;
 }
