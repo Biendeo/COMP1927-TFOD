@@ -119,6 +119,7 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 		}
 	} else {
 		LocationID position = whereIs(currentView, PLAYER_DRACULA);
+		int rail = FALSE; //Dracula doesn't like the train
 		wcig = connectedLocations(currentView->g, numLocations, position, PLAYER_DRACULA, round, road, rail, sea);
 		//now that we've obtained the connected locations to Dracula's current position
 		//we shall rule out the ones which are currently in his trail, with 2 exceptions
@@ -139,7 +140,16 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 				doneDoubleBack = TRUE;
 			}
 		}
-		if (doneHide == FALSE)
+		if (doneHide == TRUE && doneDoubleBack == FALSE) {
+			//can do DOUBLE_BACK but can't do HIDE, remove the 1st location in trail from wcig array
+			LocationID removalTarget = trail[0];
+			i = 0;
+			while (wcig[i] != removalTarget) {
+				i++;
+			}
+			//TODO
+		}
+		
 	}
 	//nowhere Dracula can legally move to, automatically teleports back to CASTLE_DRACULA
 	if (*numLocations == 0) {
