@@ -151,11 +151,6 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 		}
 		
 	}
-	//nowhere Dracula can legally move to, automatically teleports back to CASTLE_DRACULA
-	if (*numLocations == 0) {
-		*wcig = CASTLE_DRACULA; //wcig points to a single location instead of an array of locations
-		*numLocations + 1;
-	}
 	return wcig;
 }
 
