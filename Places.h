@@ -86,8 +86,8 @@ typedef int LocationID;
 #define SARAGOSSA               56
 #define SARAJEVO                57
 #define SOFIA                   58
-#define STRASBOURG              59
-#define ST_JOSEPH_AND_ST_MARYS  60
+#define ST_JOSEPH_AND_ST_MARYS  59
+#define STRASBOURG              60
 #define SWANSEA                 61
 #define SZEGED                  62
 #define TOULOUSE                63
@@ -129,8 +129,8 @@ int nameToID(char *name);
 // given a Place abbreviation, return its ID number
 int abbrevToID(char *abbrev);
 
-#define isLand(place)  (typeOf(place) == LAND)
-#define isSea(place)  (typeOf(place) == SEA)
+#define isLand(place)  (idToType(place) == LAND)
+#define isSea(place)  (idToType(place) == SEA)
 
 #define validPlace(pid) (pid >= MIN_MAP_LOCATION && pid <= MAX_MAP_LOCATION)
 

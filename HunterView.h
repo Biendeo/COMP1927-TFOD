@@ -90,14 +90,15 @@ void giveMeTheTrail(HunterView currentView, PlayerID player,
 //// Functions that query the map to find information about connectivity
 
 // whereCanIgo() returns an array of LocationIDs giving
-//   all locations that Dracula could reach in his next move
-// road and/or sea connections should only be considered
-//   if the road and/or sea parameters are TRUE.
+//   all locations that the current player could reach in his next move
+// road, rail and/or sea connections should only be considered
+//   if the road, rail and/or sea parameters are TRUE.
 // The size of the array is stored in the variable pointed to by numLocations
 // The array can be in any order but must contain unique entries
 // The current location should be included in the array (could rest)
 
-LocationID *whereCanIgo(HunterView currentView, int *numLocations, int road, int rail, int sea);
+LocationID *whereCanIgo(HunterView currentView, int *numLocations,
+                        int road, int rail, int sea);
 
 // whereCanTheyGo() returns an array of LocationIDs giving all of the
 //   locations that the given Player could reach from their current location
