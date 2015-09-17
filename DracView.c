@@ -112,9 +112,7 @@ LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
 		//the function finds where hunters can go in their next (rather than current) round
 		//also as a result we don't need to worry about where they can go in Round 0.
 		Round nextRound = giveMeTheRound(currentView)++; 
-		sum = nextRound + player;
-		//WORK-IN-PROGRESS, please don't alter yet!!!!!!!!!!
-		wctg = connectedLocations(currentView->g, numLocations, position, player, giveMeTheRound(currentView), road, rail, sea);
+		wctg = connectedLocations(currentView->g, numLocations, position, player, nextRound, road, rail, sea);
 	}
 	return wctg;
 }
