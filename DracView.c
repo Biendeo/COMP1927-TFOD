@@ -24,7 +24,7 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 	dracView->g = newGameView(pastPlays, messages);
 	dracView->vampLocation = NOWHERE;
 	int i;
-	for (i = 0, i < NUM_MAP_LOCATIONS, i++) {
+	for (i = 0; i < NUM_MAP_LOCATIONS; i++) {
 		dracView->numTraps[i] = 0;
 	}
 	return dracView;
@@ -57,8 +57,11 @@ int howHealthyIs(DracView currentView, PlayerID player) {
 
 // Get the current location id of a given player
 // Dracula knows where everyone is
+// This function may need correction. getLocation() in GameView may return a special location
+// such as HIDE, DOUBLE_BACK_? and TELEPORT but this function shall return the exact location
 LocationID whereIs(DracView currentView, PlayerID player) {
 	return getLocation(currentView->g, player);
+	//use getHistory instead to identify exact location when getLocation() returns a special location
 }
 
 // Get the most recent move of a given player
@@ -94,10 +97,61 @@ void giveMeTheTrail(DracView currentView, PlayerID player,
 //// Functions that query the map to find information about connectivity
 
 // What are my (Dracula's) possible next moves (locations)
+// Question 1: should hide and double back be considered here? 
+// Question 2: does Dracula's teleportation only happen when there is no legal move possible?
+// (currently the function is implemented assuming positive answers to both questions)
 LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int sea) {
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	//In Round 0 Dracula can move to anywhere except for the hospitals.
-	return NULL;
+	//this function can only be called by Dracula himself
+	assert(getCurrentPlayer(currentView->g) == PLAYER_DRACULA);
+	LocationID *wcig;
+	int i;
+	Round round = giveMeTheRound(currentView);
+	//In Round 0 Dracula can move to anywhere except for the hospital
+	if (round == 0) {
+		*numLocations = NUM_MAP_lOCATIONS - 1;
+		wcig = (LocationID *)malloc(sizeof(LocationID) * (*numLocations));
+		for (i = 0; i < *numLocations; i++) {
+			if (i < ST_JOSEPH_AND_ST_MARYS) {
+				wcig[i] = i;
+			} else {
+				wcig[i] = i + 1;
+			}
+		}
+	} else {
+		LocationID position = whereIs(currentView, PLAYER_DRACULA);
+		int rail = FALSE; //Dracula doesn't like the train
+		wcig = connectedLocations(currentView->g, numLocations, position, PLAYER_DRACULA, round, road, rail, sea);
+		//now that we've obtained the connected locations to Dracula's current position
+		//we shall rule out the ones which are currently in his trail, with 2 exceptions
+		//1) if Dracula doesn't have a HIDE move in his trail, 
+		//   he may choose to stay in current position
+		//2) if Dracula doesn't ahve a DOUBLE_BACK move in his trail, 
+		//   he may choose to revisit an adjacent location in his trail
+		//Note that HIDE and DOUBLE_BACK_? are labelled as special locations in Places.h
+		LocationID *trail = (LocationID *)(malloc(sizeof(LocationID)*TRAIL_SIZE));
+		giveMeTheTrail (currentView, PLAYER_DRACULA, trail);
+		int doneHide = FALSE;
+		int doneDoubleBack = FALSE;
+		for (i = 0; i < TRAIL_SIZE; i++) {
+			if (trail[i] == HIDE) {
+				doneHide = TRUE;
+			}
+			if (trail[i] >= DOUBLE_BACK_1 && trail[i] <= DOUBLE_BACK_5) {
+				doneDoubleBack = TRUE;
+			}
+		}
+		if (doneHide == TRUE && doneDoubleBack == FALSE) {
+			//can do DOUBLE_BACK but can't do HIDE, remove the 1st location in trail from wcig array
+			LocationID removalTarget = trail[0];
+			i = 0;
+			while (wcig[i] != removalTarget) {
+				i++;
+			}
+			//TODO
+		}
+		
+	}
+	return wcig;
 }
 
 // What are the specified player's next possible moves
@@ -111,10 +165,8 @@ LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
 		//DragView ADT is only used at Dracula's turns. Since Dracula moves last,
 		//the function finds where hunters can go in their next (rather than current) round
 		//also as a result we don't need to worry about where they can go in Round 0.
-		Round nextRound = giveMeTheRound(currentView)++; 
-		sum = nextRound + player;
-		//WORK-IN-PROGRESS, please don't alter yet!!!!!!!!!!
-		wctg = connectedLocations(currentView->g, numLocations, position, player, giveMeTheRound(currentView), road, rail, sea);
+		Round nextRound = giveMeTheRound(currentView) + 1; 
+		wctg = connectedLocations(currentView->g, numLocations, position, player, nextRound, road, rail, sea);
 	}
 	return wctg;
 }
