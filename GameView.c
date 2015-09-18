@@ -48,7 +48,7 @@ struct gameView {
 }; 
 
 // Creates a new GameView to summarise the current state of the game
-GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
+GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 	GameView gameView = malloc(sizeof(struct gameView));
 
 	// TODO: Interpret the pastPlays and figure out the statistics.
@@ -68,6 +68,16 @@ GameView newGameView (char *pastPlays, PlayerMessage messages[]) {
 			gameView->player[i].location = CASTLE_DRACULA;
 		}
 		gameView->player[i].trail = newTrail(TRAIL_SIZE);
+	}
+
+	char *currentPlayMarker = pastPlays;
+	char currentPlay[8] = {'\0'};
+	while (currentPlayMarker != NULL) {
+		memcpy(currentPlay, currentPlayMarker, 8);
+		// TODO: Compute each part of input.
+
+		if (currentPlay[7] == '\0') break;
+		currentPlayMarker += 8;
 	}
 
 	return gameView;
