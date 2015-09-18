@@ -9,6 +9,7 @@
 #include "Map.h"
 
 #include "Queue.h"
+#include "Set.h"
 
 
 // This struct stores data that is common to each player.

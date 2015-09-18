@@ -7,9 +7,11 @@
 #include "GameView.h"
 #include "HunterView.h"
 #include "Map.h"
+
+#include "Queue.h"
+#include "Set.h"
 	 
 struct hunterView {
-	// TODO: Any of this. What do the hunters see that Dracula doesn't?
 	GameView g;
 };
 	 
@@ -62,26 +64,18 @@ LocationID whereIs (HunterView currentView, PlayerID player) {
 // Fills the trail array with the location ids of the last 6 turns
 void giveMeTheTrail (HunterView currentView, PlayerID player,
 							LocationID trail[TRAIL_SIZE]) {
-	//REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	return getHistory(currentView, player, trail);
 }
 
 //// Functions that query the map to find information about connectivity
 
 // What are my possible next moves (locations)
 LocationID *whereCanIgo (HunterView currentView, int *numLocations, int road, int rail, int sea) {
-	// TODO: Add current location.
 	return whereCanTheyGo(currentView, numLocations, getCurrentPlayer(currentView->g), road, rail, sea);
 }
 
 // What are the specified player's next possible moves
 LocationID *whereCanTheyGo (HunterView currentView, int *numLocations,
 						   PlayerID player, int road, int rail, int sea) {
-	LocationID *wctg;
-	if (player == PLAYER_DRACULA) {
-		wctg = connectedLocations(currentView->g, numLocations, player, road, 0, sea);
-		// TODO: Filter out hospitals.
-	} else {
-		
-	}
-	return wctg;
+	return connectedLocations(currentView->g, numLocations, getLocation(currentView->g, player), player, getRound(currentView->g), road, rail, sea);
 }
