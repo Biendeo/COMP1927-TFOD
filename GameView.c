@@ -68,7 +68,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 			gameView->player[i].health = GAME_START_BLOOD_POINTS;
 			gameView->player[i].location = CASTLE_DRACULA;
 		}
-		gameView->player[i].trail = newTrail(TRAIL_SIZE);
+		gameView->player[i].trail = newTrail(TRAIL_SIZE + 5);
 	}
 
 	char *currentPlayMarker = pastPlays;
