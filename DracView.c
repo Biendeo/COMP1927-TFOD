@@ -9,10 +9,12 @@
 #include "Map.h"
 
 #include "Queue.h"
+#include "Set.h"
 
 
 struct dracView {
 	GameView g;
+	// TODO: Should numTraps be moved to the GameView so we can catch them as we run through the input? HunterView can't access them since nothing really calls them.
 	LocationID vampLocation; //can have at most one minion vampire at any time
 	int numTraps[NUM_MAP_LOCATIONS]; //an array that stores the number of traps for every LocationID
 };
@@ -68,10 +70,11 @@ LocationID whereIs(DracView currentView, PlayerID player) {
 // may need modification when Queue ADT is confirmed
 void lastMove(DracView currentView, PlayerID player,
 				 LocationID *start, LocationID *end) {
-	getHistory(currentview->g, player, LocationID trail[TRAIL_SIZE]);
+	LocationID *trail = malloc(sizeof(LocationID) * TRAIL_SIZE);
+	getHistory(currentView->g, player, trail);
 	*start = trail[1];
 	*end = trail[0];
-	return;
+	free(trail);
 }
 
 // Find out what minions are placed at the specified location
