@@ -25,8 +25,7 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 	DracView dracView = malloc(sizeof(struct dracView));
 	dracView->g = newGameView(pastPlays, messages);
 	dracView->vampLocation = NOWHERE;
-	int i;
-	for (i = 0; i < NUM_MAP_LOCATIONS; i++) {
+	for (int i = 0; i < NUM_MAP_LOCATIONS; i++) {
 		dracView->numTraps[i] = 0;
 	}
 	return dracView;

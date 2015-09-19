@@ -52,8 +52,6 @@ struct gameView {
 GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 	GameView gameView = malloc(sizeof(struct gameView));
 
-	// TODO: Interpret the pastPlays and figure out the statistics.
-
 	gameView->whoseTurn = PLAYER_LORD_GODALMING;
 	gameView->turnNumber = 0;
 	gameView->score = GAME_START_SCORE;
@@ -63,7 +61,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 		gameView->player[i].ID = i;
 		if (i != PLAYER_DRACULA) {
 			gameView->player[i].health = GAME_START_HUNTER_LIFE_POINTS;
-			gameView->player[i].location = UNKNOWN_LOCATION;
+			gameView->player[i].location = NOWHERE;
 		} else {
 			gameView->player[i].health = GAME_START_BLOOD_POINTS;
 			gameView->player[i].location = CASTLE_DRACULA;
@@ -73,9 +71,79 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 
 	char *currentPlayMarker = pastPlays;
 	char currentPlay[8] = {'\0'};
+	char givenLocation[3] = {'0'};
 	while (currentPlayMarker != NULL) {
 		memcpy(currentPlay, currentPlayMarker, 8);
-		// TODO: Compute each part of input.
+
+		// As long as we track whoseTurn properly, we shouldn't need to read
+		// the first character.
+
+		// We isolate the location part for easy access.
+		memcpy(currentPlay[1], givenLocation, 2);
+		
+		// We get the location and set the player's location to there.
+		gameView->player[gameView->whoseTurn].location = abbrevToID(givenLocation);
+
+		// We also push the location to that person's trail.
+		prepend(gameView->player[gameView->whoseTurn].trail, abbrevToID(givenLocation));
+
+		// TODO: Compute Dracula's health lost.
+
+		// Then we parse each of the next four characters.
+		// TRAPS ARE TRACKED IN DRACVIEW, SO THERE'S EMPTY BITS HERE.
+		for (int i = 3; i < 7; i++) {
+			// HUNTERS
+			if (gameView->whoseTurn != PLAYER_DRACULA) {
+				switch (currentPlay[i]) {
+					// TRAP FOUND
+					case 'T':
+						break;
+						// VAMPIRE FOUND
+					case 'V':
+						break;
+						// DRACULA FOUND
+					case 'D':
+						break;
+						// NOTHING
+					default:
+						break;
+				}
+			// DRACULA
+			} else {
+				if (i == 3 || i == 4) {
+					switch (currentPlay[i]) {
+						// TRAP PLACED
+						case 'T':
+							break;
+						// VAMPIRE PLACED
+						case 'V':
+							break;
+						// NOTHING
+						default:
+							break;
+					}
+				} else if (i == 5) {
+					switch (currentPlay[i]) {
+						// TRAP LEAVES
+						case 'M':
+							break;
+						// VAMPIRE MATURES
+						case 'V':
+							break;
+						// NOTHING
+						default:
+							break;
+					}
+				}
+			}
+		}
+
+		// Then increment whoseTurn (moving it back down if needed).
+		// This anticipates the next turn, so it should return the right turn to the AI.
+		gameView->whoseTurn++;
+		if (gameView->whoseTurn >= NUM_PLAYERS) {
+			gameView->whoseTurn = 0;
+		}
 
 		if (currentPlay[7] == '\0') break;
 		currentPlayMarker += 8;
@@ -146,7 +214,7 @@ void getHistory (GameView currentView, PlayerID player,
 LocationID *connectedLocations (GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
 							   int road, int rail, int sea) {
-	if (from == UNKNOWN_LOCATION || from == CITY_UNKNOWN || from == SEA_UNKNOWN) {
+	if (from == NOWHERE || from == CITY_UNKNOWN || from == SEA_UNKNOWN) {
 		LocationID *connectedLocations = malloc(sizeof(LocationID));
 		*connectedLocations = from;
 		return connectedLocations;
