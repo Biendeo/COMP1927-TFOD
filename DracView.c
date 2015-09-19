@@ -110,7 +110,7 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 	Round round = giveMeTheRound(currentView);
 	//In Round 0 Dracula can move to anywhere except for the hospital
 	if (round == 0) {
-		*numLocations = NUM_MAP_lOCATIONS - 1;
+		*numLocations = NUM_MAP_LOCATIONS - 1;
 		wcig = (LocationID *)malloc(sizeof(LocationID) * (*numLocations));
 		for (i = 0; i < *numLocations; i++) {
 			if (i < ST_JOSEPH_AND_ST_MARYS) {

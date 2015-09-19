@@ -7,7 +7,7 @@
 
 typedef struct Set *Set;
 
-Set newTrail ();
+Set newSet();
 void disposeSet (Set set);
 void setAdd (Set set, LocationID place);
 int isElem (Set set, LocationID place);

@@ -75,6 +75,7 @@ LocationID *copySetToArray (Set set) {
 		arr[i] = node->value;
 		i++;
 	}
+	return arr;
 }
 
 // ---

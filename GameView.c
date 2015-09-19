@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "Globals.h"
 #include "Game.h"
 #include "GameView.h"
@@ -33,9 +34,6 @@ struct playerData {
 struct gameView {
 
 	// Each of these stores data types that are common to all players.
-	// TODO: Vote on the names?
-	// TODO: Should this be an array? (could be convenient as the player IDs go
-	// from 0 to 4.
 	struct playerData player[NUM_PLAYERS];
 
 	// This tracks the score of the game.
@@ -57,21 +55,25 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 	gameView->score = GAME_START_SCORE;
 
 	for (int i = 0; i < NUM_PLAYERS; i++) {
-		// This is a bit lazy, but it's short and easy.
 		gameView->player[i].ID = i;
 		if (i != PLAYER_DRACULA) {
 			gameView->player[i].health = GAME_START_HUNTER_LIFE_POINTS;
-gameView->player[i].location = NOWHERE;
+			gameView->player[i].location = NOWHERE;
 		} else {
-		gameView->player[i].health = GAME_START_BLOOD_POINTS;
-		gameView->player[i].location = CASTLE_DRACULA;
+			gameView->player[i].health = GAME_START_BLOOD_POINTS;
+			gameView->player[i].location = CASTLE_DRACULA;
 		}
 		gameView->player[i].trail = newTrail(TRAIL_SIZE + 5);
 	}
 
+	// If pastPlays is empty, we just return early.
+	if (strcmp(pastPlays, "") == 0) {
+		return gameView;
+	}
+
 	char *currentPlayMarker = pastPlays;
 	char currentPlay[8] = {'\0'};
-	char givenLocation[3] = {'0'};
+	char givenLocation[3] = {'\0'};
 	while (currentPlayMarker != NULL) {
 		memcpy(currentPlay, currentPlayMarker, 8);
 
@@ -79,7 +81,8 @@ gameView->player[i].location = NOWHERE;
 		// the first character.
 
 		// We isolate the location part for easy access.
-		memcpy(currentPlay[1], givenLocation, 2);
+		// TODO: abbrevToID() does not work for unknown city. Extend the function.
+		memcpy(givenLocation, currentPlay + 1, 2);
 
 		// We get the location and set the player's location to there.
 		gameView->player[gameView->whoseTurn].location = abbrevToID(givenLocation);
@@ -93,12 +96,15 @@ gameView->player[i].location = NOWHERE;
 				gameView->player[gameView->whoseTurn].health += LIFE_GAIN_REST;
 			}
 		} else {
-			// If Dracula ends a turn at sea, he loses health.
-			if (idToType(abbrevToID(givenLocation)) == SEA) {
-				gameView->player[PLAYER_DRACULA].health -= LIFE_LOSS_SEA;
-				// If Dracula ends a turn at his castle, he gains health.
-			} else if (abbrevToID(givenLocation) == CASTLE_DRACULA) {
-				gameView->player[PLAYER_DRACULA].health += LIFE_GAIN_CASTLE_DRACULA;
+			// This bit is to avoid the assert.
+			if (abbrevToID(givenLocation) >= 0) {
+				// If Dracula ends a turn at sea, he loses health.
+				if (idToType(abbrevToID(givenLocation)) == SEA) {
+					gameView->player[PLAYER_DRACULA].health -= LIFE_LOSS_SEA;
+					// If Dracula ends a turn at his castle, he gains health.
+				} else if (abbrevToID(givenLocation) == CASTLE_DRACULA) {
+					gameView->player[PLAYER_DRACULA].health += LIFE_GAIN_CASTLE_DRACULA;
+				}
 			}
 		}
 
@@ -184,6 +190,7 @@ gameView->player[i].location = NOWHERE;
 		gameView->whoseTurn++;
 		if (gameView->whoseTurn >= NUM_PLAYERS) {
 			gameView->whoseTurn = 0;
+			gameView->turnNumber += 1;
 		}
 
 		if (currentPlay[7] == '\0') break;
