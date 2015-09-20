@@ -7,18 +7,23 @@
 #include <stdlib.h>
 #include "Map.h"
 #include "Places.h"
+#include "Queue.h"
+#include "Set.h"
+#include "Stack.h"
 
 static void addConnections(Map);
 
 // Create a new empty graph (for a map)
 // #Vertices always same as NUM_PLACES
 Map newMap () {
-   int i;
    Map g = malloc(sizeof(struct MapRep));
+   g->locations = malloc(sizeof(struct vNode));
    assert(g != NULL);
    g->nV = NUM_MAP_LOCATIONS;
+   int i, j
    for (i = 0; i < g->nV; i++){
-	  g->connections[i] = NULL;
+	  for (j = 0;j <g->nV;i++) g->edges[i][j] = 0;
+	  locations[i] = NULL;
    }
    g->nE = 0;
    addConnections(g);
@@ -28,36 +33,13 @@ Map newMap () {
 // Remove an existing graph
 void disposeMap (Map g) {
    int i;
-   VList curr;
-   VList next;
    assert(g != NULL);
-   assert(g->connections != NULL);
+   assert (g->locations != NULL);
 
-   for (i = 0; i < g->nV; i++){
-	   curr = g->connections[i];
-	   while(curr != NULL){
-		  next = curr->next;
-		  free(curr);
-		  curr=next;
-	   }
+   for (i = 0;i < g->nv;i++) {
+		free(locations[i]);
    }
    free(g);
-}
-
-static VList insertVList (VList L, LocationID v, TransportID type) {
-   VList newV = malloc(sizeof(struct vNode));
-   newV->v = v;
-   newV->type = type;
-   newV->next = L;
-   return newV;
-}
-
-static int inVList (VList L, LocationID v, TransportID type) {
-	VList cur;
-	for (cur = L; cur != NULL; cur = cur->next) {
-		if (cur->v == v && cur->type == type) return 1;
-	}
-	return 0;
 }
 
 // Add a new edge to the Map/Graph
@@ -75,20 +57,14 @@ void addLink (Map g, LocationID start, LocationID end, TransportID type) {
 void showMap (Map g) {
    assert(g != NULL);
    printf("V=%d, E=%d\n", g->nV, g->nE);
-   int i;
+   printf("Adjacency matrix in form [LocationID] road|rail|boat\n");
+   int i, j;
    for (i = 0; i < g->nV; i++) {
-	  VList n = g->connections[i];
-	  while (n != NULL) {
-		 printf("%s connects to %s ",idToName(i),idToName(n->v));
-		 switch (n->type) {
-		 case ROAD: printf("by road\n"); break;
-		 case RAIL: printf("by rail\n"); break;
-		 case BOAT: printf("by boat\n"); break;
-		 default:   printf("by ????\n"); break;
-		 }
-		 n = n->next;
+	  for (j = 0; j < g->nV; j++) {
+		printf("%d|%d|%d\/", g->edges[i][j]->road, g->edges[i][j]->rail, g->edges[i][j]->boat);
 	  }
-   }
+		printf("\n");
+	}
 }
 
 // Return count of nodes
@@ -112,6 +88,22 @@ int numE (Map g, TransportID type) {
 	return nE;
 }
 
+
+static VList insertVList (VList L, LocationID v, TransportID type) {
+   VList newV = malloc(sizeof(struct vNode));
+   newV->v = v;
+   newV->type = type;
+   newV->next = L;
+   return newV;
+}
+
+static int inVList (VList L, LocationID v, TransportID type) {
+	VList cur;
+	for (cur = L; cur != NULL; cur = cur->next) {
+		if (cur->v == v && cur->type == type) return 1;
+	}
+	return 0;
+}
 // Add edges to Graph representing map of Europe
 static void addConnections (Map g) {
    //### ROAD Connections ###
