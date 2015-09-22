@@ -12,6 +12,8 @@
 #include "Queue.h"
 #include "Set.h"
 
+#define LONG_TRAIL_SIZE 11
+
 int IDToType(GameView g, LocationID p);
 LocationID AbbrevToID(char *abbrev);
 
@@ -65,7 +67,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 			gameView->player[i].health = GAME_START_BLOOD_POINTS;
 			gameView->player[i].location = CASTLE_DRACULA;
 		}
-		gameView->player[i].trail = newTrail(TRAIL_SIZE + 5);
+		gameView->player[i].trail = newTrail(LONG_TRAIL_SIZE);
 	}
 
 	// If pastPlays is empty, we just return early.
@@ -98,7 +100,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 			}
 		} else {
 			// If Dracula ends a turn at sea, he loses health.
-			if (IDToType(AbbrevToID(givenLocation)) == SEA) {
+			if (IDToType(gameView, AbbrevToID(givenLocation)) == SEA) {
 				gameView->player[PLAYER_DRACULA].health -= LIFE_LOSS_SEA;
 				// If Dracula ends a turn at his castle, he gains health.
 			} else if (AbbrevToID(givenLocation) == CASTLE_DRACULA) {
@@ -309,21 +311,21 @@ int IDToType(GameView g, LocationID p) {
 		case DOUBLE_BACK_3:
 		case DOUBLE_BACK_4:
 		case DOUBLE_BACK_5:
-			for (int i = 0; i < TRAIL_SIZE + 5; i++) {
+			for (int i = 0; i < LONG_TRAIL_SIZE; i++) {
 				if (showElement(g->player[g->whoseTurn].trail, i) == p) {
 					switch (p) {
 						case HIDE:
 							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 1));
 						case DOUBLE_BACK_1:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 2));
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 1));
 						case DOUBLE_BACK_2:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 3));
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 2));
 						case DOUBLE_BACK_3:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 4));
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 3));
 						case DOUBLE_BACK_4:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 5));
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 4));
 						case DOUBLE_BACK_5:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 6));
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 5));
 					}
 				}
 			}
