@@ -12,6 +12,8 @@
 #include "Queue.h"
 #include "Set.h"
 
+int IDToType(GameView g, LocationID p);
+LocationID AbbrevToID(char *abbrev);
 
 // This struct stores data that is common to each player.
 struct playerData {
@@ -80,15 +82,14 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 		// As long as we track whoseTurn properly, we shouldn't need to read
 		// the first character.
 
-		// We isolate the location part for easy access.
-		// TODO: abbrevToID() does not work for unknown city. Extend the function.
+		// We isolate the location part for easy access..
 		memcpy(givenLocation, currentPlay + 1, 2);
 
 		// We get the location and set the player's location to there.
-		gameView->player[gameView->whoseTurn].location = abbrevToID(givenLocation);
+		gameView->player[gameView->whoseTurn].location = AbbrevToID(givenLocation);
 
 		// We also push the location to that person's trail.
-		prepend(gameView->player[gameView->whoseTurn].trail, abbrevToID(givenLocation));
+		prepend(gameView->player[gameView->whoseTurn].trail, AbbrevToID(givenLocation));
 
 		if (gameView->whoseTurn != PLAYER_DRACULA) {
 			// If a hunter stays at the same city, they gain health from rest.
@@ -96,15 +97,12 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 				gameView->player[gameView->whoseTurn].health += LIFE_GAIN_REST;
 			}
 		} else {
-			// This bit is to avoid the assert.
-			if (abbrevToID(givenLocation) >= 0) {
-				// If Dracula ends a turn at sea, he loses health.
-				if (idToType(abbrevToID(givenLocation)) == SEA) {
-					gameView->player[PLAYER_DRACULA].health -= LIFE_LOSS_SEA;
-					// If Dracula ends a turn at his castle, he gains health.
-				} else if (abbrevToID(givenLocation) == CASTLE_DRACULA) {
-					gameView->player[PLAYER_DRACULA].health += LIFE_GAIN_CASTLE_DRACULA;
-				}
+			// If Dracula ends a turn at sea, he loses health.
+			if (IDToType(AbbrevToID(givenLocation)) == SEA) {
+				gameView->player[PLAYER_DRACULA].health -= LIFE_LOSS_SEA;
+				// If Dracula ends a turn at his castle, he gains health.
+			} else if (AbbrevToID(givenLocation) == CASTLE_DRACULA) {
+				gameView->player[PLAYER_DRACULA].health += LIFE_GAIN_CASTLE_DRACULA;
 			}
 		}
 
@@ -116,7 +114,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 				switch (currentPlay[i]) {
 					// TRAP FOUND
 					case 'T':
-						// Vampire data handled by DracView.
+						// Trap data handled by DracView.
 						gameView->player[gameView->whoseTurn].health -= LIFE_LOSS_TRAP_ENCOUNTER;
 						break;
 					// VAMPIRE FOUND
@@ -295,4 +293,69 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 
 	disposeMap(map);
 	return connectedLocations;
+}
+
+// This converts a location ID to a type. Unlike the Places.c version, it
+// also returns unknown places.
+int IDToType(GameView g, LocationID p) {
+	switch (p) {
+		case CITY_UNKNOWN:
+			return LAND;
+		case SEA_UNKNOWN:
+			return SEA;
+		case HIDE:
+		case DOUBLE_BACK_1:
+		case DOUBLE_BACK_2:
+		case DOUBLE_BACK_3:
+		case DOUBLE_BACK_4:
+		case DOUBLE_BACK_5:
+			for (int i = 0; i < TRAIL_SIZE + 5; i++) {
+				if (showElement(g->player[g->whoseTurn].trail, i) == p) {
+					switch (p) {
+						case HIDE:
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 1));
+						case DOUBLE_BACK_1:
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 2));
+						case DOUBLE_BACK_2:
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 3));
+						case DOUBLE_BACK_3:
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 4));
+						case DOUBLE_BACK_4:
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 5));
+						case DOUBLE_BACK_5:
+							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 6));
+					}
+				}
+			}
+		case TELEPORT:
+			return LAND;
+		default:
+			return idToType(p);
+	}
+}
+
+// This converts an abbreviation to a location ID. Unlike the Places.c version,
+// it also converts non-city places.
+LocationID AbbrevToID(char *abbrev) {
+	if (strcmp(abbrev, "C?") == 0) {
+		return CITY_UNKNOWN;
+	} else if (strcmp(abbrev, "S?") == 0) {
+		return SEA_UNKNOWN;
+	} else if (strcmp(abbrev, "HI") == 0) {
+		return HIDE;
+	} else if (strcmp(abbrev, "D1") == 0) {
+		return DOUBLE_BACK_1;
+	} else if (strcmp(abbrev, "D2") == 0) {
+		return DOUBLE_BACK_2;
+	} else if (strcmp(abbrev, "D3") == 0) {
+		return DOUBLE_BACK_3;
+	} else if (strcmp(abbrev, "D4") == 0) {
+		return DOUBLE_BACK_4;
+	} else if (strcmp(abbrev, "D5") == 0) {
+		return DOUBLE_BACK_5;
+	} else if (strcmp(abbrev, "TP") == 0) {
+		return TELEPORT;
+	} else {
+		return abbrevToID(abbrev);
+	}
 }
