@@ -5,6 +5,7 @@
 
 #include "Places.h"
 
+<<<<<<< HEAD
 typedef struct vNode *vertex;
 
 struct vNode {
@@ -24,11 +25,34 @@ struct MapRep {
 	EdgeType **edges  //adjacency matrix of edges
 	vertex *locations //use this to store useful things like maybe vertex degree?
 };
+=======
+typedef struct vNode *VList;
+
+struct vNode {
+	LocationID  v;    // ALICANTE, etc
+	TransportID type; // ROAD, RAIL, BOAT
+	VList       next; // link to next node
+};
+
+struct MapRep {
+	int   nV;         // #vertices
+	int   nE;         // #edges
+	VList connections[NUM_MAP_LOCATIONS]; // array of lists
+};
+
+
+typedef struct edge{
+	LocationID  start;
+	LocationID  end;
+	TransportID type;
+} Edge;
+>>>>>>> Biendeo/master
 
 // graph representation is hidden 
 typedef struct MapRep *Map; 
 
 // operations on graphs 
+<<<<<<< HEAD
 Map newMap (void);  
 void disposeMap (Map g); 
 void showMap (Map g); 
@@ -39,5 +63,14 @@ LocationID *BFS (Map m, LocationID src, LocationID dest, int *sizeArr);	//uses B
 LocationID *DFS (Map m, LocationID src, LocationID dest, int *sizeArr); //same deal except use DFS. Include both maybe itll be good to use both
 //prototypes for possible future functions
 //int hasPathK (Map m, LocationID src, LocationID dest, int k); //uses some matrix multiplication to find if theres a path of length k. NOTE very expensive O(nV^2)
+=======
+Map  newMap();  
+void disposeMap(Map g); 
+void showMap(Map g); 
+int  numV(Map g);
+int  numE(Map g, TransportID t);
+>>>>>>> Biendeo/master
+
+VList getConnections(Map g);
 
 #endif

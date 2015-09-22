@@ -25,8 +25,12 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 	DracView dracView = malloc(sizeof(struct dracView));
 	dracView->g = newGameView(pastPlays, messages);
 	dracView->vampLocation = NOWHERE;
+<<<<<<< HEAD
 	int i;
 	for (i = 0; i < NUM_MAP_LOCATIONS; i++) {
+=======
+	for (int i = 0; i < NUM_MAP_LOCATIONS; i++) {
+>>>>>>> Biendeo/master
 		dracView->numTraps[i] = 0;
 	}
 	return dracView;
@@ -111,7 +115,11 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 	Round round = giveMeTheRound(currentView);
 	//In Round 0 Dracula can move to anywhere except for the hospital
 	if (round == 0) {
+<<<<<<< HEAD
 		*numLocations = NUM_MAP_lOCATIONS - 1;
+=======
+		*numLocations = NUM_MAP_LOCATIONS - 1;
+>>>>>>> Biendeo/master
 		wcig = (LocationID *)malloc(sizeof(LocationID) * (*numLocations));
 		for (i = 0; i < *numLocations; i++) {
 			if (i < ST_JOSEPH_AND_ST_MARYS) {

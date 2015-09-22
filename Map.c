@@ -7,9 +7,12 @@
 #include <stdlib.h>
 #include "Map.h"
 #include "Places.h"
+<<<<<<< HEAD
 #include "Queue.h"
 #include "Set.h"
 #include "Stack.h"
+=======
+>>>>>>> Biendeo/master
 
 static void addConnections(Map);
 

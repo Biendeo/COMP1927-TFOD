@@ -42,7 +42,7 @@ static void disposeNode(Link);
 // Makes a new trail of a given size
 Trail newTrail (int size) {
 	Trail newTrail = malloc(sizeof(struct Trail));
-	newTrail->trail = calloc(size, sizeof(LocationID));
+	newTrail->trail = malloc(sizeof(LocationID) * size);
 	newTrail->size = size;
 	// This just flushes the trail with null values.
 	for (int i = 0; i < size; i++) {
@@ -59,7 +59,7 @@ void disposeTrail (Trail trail) {
 
 // This adds an element to the beginning of the queue.
 void prepend (Trail trail, LocationID place) {
-	for (int i = trail->size; i > 0; i--) {
+	for (int i = trail->size - 1; i >= 0; i--) {
 		slide(trail, i);
 	}
 	trail->trail[0] = place;
