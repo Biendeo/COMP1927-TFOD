@@ -15,6 +15,7 @@
 #define LONG_TRAIL_SIZE 11
 
 int IDToType(GameView g, LocationID p);
+LocationID getTrueLocation(GameView g, LocationID p);
 LocationID AbbrevToID(char *abbrev);
 
 // This struct stores data that is common to each player.
@@ -62,11 +63,10 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 		gameView->player[i].ID = i;
 		if (i != PLAYER_DRACULA) {
 			gameView->player[i].health = GAME_START_HUNTER_LIFE_POINTS;
-			gameView->player[i].location = NOWHERE;
 		} else {
 			gameView->player[i].health = GAME_START_BLOOD_POINTS;
-			gameView->player[i].location = CASTLE_DRACULA;
 		}
+		gameView->player[i].location = NOWHERE;
 		gameView->player[i].trail = newTrail(LONG_TRAIL_SIZE);
 	}
 
@@ -88,7 +88,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 		memcpy(givenLocation, currentPlay + 1, 2);
 
 		// We get the location and set the player's location to there.
-		gameView->player[gameView->whoseTurn].location = AbbrevToID(givenLocation);
+		gameView->player[gameView->whoseTurn].location = getTrueLocation(gameView, AbbrevToID(givenLocation));
 
 		// We also push the location to that person's trail.
 		prepend(gameView->player[gameView->whoseTurn].trail, AbbrevToID(givenLocation));
@@ -239,9 +239,9 @@ int getHealth (GameView currentView, PlayerID player) {
 // Get the current location id of a given player
 LocationID getLocation (GameView currentView, PlayerID player) {
 	if (player >= NUM_PLAYERS || player < 0) {
-		return -1;
+		return UNKNOWN_LOCATION;
 	} else {
-		return currentView->player[player].location;
+		return showElement(currentView->player[player].trail, 0);
 	}
 }
 
@@ -297,6 +297,10 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 	return connectedLocations;
 }
 
+// ----------------------------------------
+// THESE FUNCTIONS BELOW ARE NOT IN THE ADT
+// ----------------------------------------
+
 // This converts a location ID to a type. Unlike the Places.c version, it
 // also returns unknown places.
 int IDToType(GameView g, LocationID p) {
@@ -311,28 +315,45 @@ int IDToType(GameView g, LocationID p) {
 		case DOUBLE_BACK_3:
 		case DOUBLE_BACK_4:
 		case DOUBLE_BACK_5:
-			for (int i = 0; i < LONG_TRAIL_SIZE; i++) {
-				if (showElement(g->player[g->whoseTurn].trail, i) == p) {
-					switch (p) {
-						case HIDE:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 1));
-						case DOUBLE_BACK_1:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 1));
-						case DOUBLE_BACK_2:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 2));
-						case DOUBLE_BACK_3:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 3));
-						case DOUBLE_BACK_4:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 4));
-						case DOUBLE_BACK_5:
-							return IDToType(g, showElement(g->player[g->whoseTurn].trail, i + 5));
-					}
-				}
-			}
+			return IDToType(g, getTrueLocation(g, p));
 		case TELEPORT:
 			return LAND;
 		default:
 			return idToType(p);
+	}
+}
+
+// This runs through Dracula's special moves to determine his true location.
+LocationID getTrueLocation(GameView g, LocationID p) {
+	switch (p) {
+		case HIDE:
+		case DOUBLE_BACK_1:
+		case DOUBLE_BACK_2:
+		case DOUBLE_BACK_3:
+		case DOUBLE_BACK_4:
+		case DOUBLE_BACK_5:
+			for (int i = 0; i < LONG_TRAIL_SIZE; i++) {
+				if (showElement(g->player[g->whoseTurn].trail, i) == p) {
+					switch (p) {
+						case HIDE:
+							return getTrueLocation(g, showElement(g->player[g->whoseTurn].trail, i + 1));
+						case DOUBLE_BACK_1:
+							return getTrueLocation(g, showElement(g->player[g->whoseTurn].trail, i + 1));
+						case DOUBLE_BACK_2:
+							return getTrueLocation(g, showElement(g->player[g->whoseTurn].trail, i + 2));
+						case DOUBLE_BACK_3:
+							return getTrueLocation(g, showElement(g->player[g->whoseTurn].trail, i + 3));
+						case DOUBLE_BACK_4:
+							return getTrueLocation(g, showElement(g->player[g->whoseTurn].trail, i + 4));
+						case DOUBLE_BACK_5:
+							return getTrueLocation(g, showElement(g->player[g->whoseTurn].trail, i + 5));
+					}
+				}
+			}
+		case TELEPORT:
+			return CASTLE_DRACULA;
+		default:
+			return p;
 	}
 }
 
