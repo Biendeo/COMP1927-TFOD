@@ -1,6 +1,5 @@
 // GameView.c ... GameView ADT implementation
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
@@ -15,9 +14,6 @@
 
 #define LONG_TRAIL_SIZE 11
 
-int getCurrentScore(char * pastPlays);
-int getTurnNumber(char * pastPlays);
-int getWhoseTurn(char*pastPlays);
 int IDToType(GameView g, LocationID p);
 LocationID getTrueLocation(GameView g, LocationID p);
 LocationID AbbrevToID(char *abbrev);
@@ -59,10 +55,9 @@ struct gameView {
 GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 	GameView gameView = malloc(sizeof(struct gameView));
 
-    //Simon and I are thinking these three lines shouldn't be used as we don't want it to always be godalmings turn when we call this function (i.e. on draculas turn)
-	gameView->whoseTurn = getWhoseTurn(pastPlays);
-	gameView->turnNumber = getTurnNumber(pastPlays);
-	gameView->score = getCurrentScore(pastPlays);
+	gameView->whoseTurn = PLAYER_LORD_GODALMING;
+	gameView->turnNumber = 0;
+	gameView->score = GAME_START_SCORE;
 
 	for (int i = 0; i < NUM_PLAYERS; i++) {
 		gameView->player[i].ID = i;
@@ -212,8 +207,8 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 
 	return gameView;
 }
-
-
+	 
+	 
 // Frees all memory previously allocated for the GameView toBeDeleted
 void disposeGameView (GameView toBeDeleted) {
 	for (int i = 0; i < NUM_PLAYERS; i++) {
@@ -285,7 +280,7 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 	*numLocations = 1;
 	LocationID *connectedLocations = malloc(sizeof(LocationID) * *numLocations);
 	connectedLocations[0] = from;
-
+	
 	while (node != NULL) {
 		// TODO: Add a Dracula check for hospitals.
 		// There is no check for the trail though.
@@ -395,59 +390,3 @@ LocationID AbbrevToID(char *abbrev) {
 		return abbrevToID(abbrev);
 	}
 }
-
-//Gets ID of last player in past plays
-int getWhoseTurn(char*pastPlays){
-
-   int size = strlen(pastPlays);
-   char whoseTurn = pastPlays[size-7];
-
-   int turnReturn;
-
-   switch (whoseTurn){
-
-      case 'G':
-         turnReturn = 0;
-         break;
-      case 'S':
-         turnReturn = 1;
-         break;
-      case 'H':
-         turnReturn = 2;
-         break;
-      case 'M':
-         turnReturn = 3;
-         break;
-      case 'D':
-         turnReturn = 4;
-         break;
-      default :
-         printf("ERRROR-INVALID PLAYER ID\n");
-         //Just to make things somewhat work if it screws up
-         turnReturn = 0;
-   }
-
-   return turnReturn;
-
-}
-
-//gets current turn Number
-int getTurnNumber(char * pastPlays){
-
-   int size = strlen(pastPlays);
-   int turnNo = (size+1)/8;
-
-   return turnNo;
-
-}
-
-//gets the score. This is gonna take awhile. Currently just returns (max turns)-(turns passed)
-int getCurrentScore(char * pastPlays){
-
-   int baseScore = GAME_START_SCORE - getTurnNumber(pastPlays);
-
-   return baseScore;
-}
-
-
-
