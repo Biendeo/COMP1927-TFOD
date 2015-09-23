@@ -55,6 +55,7 @@ struct gameView {
 GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 	GameView gameView = malloc(sizeof(struct gameView));
 
+    //Simon and I are thinking these three lines shouldn't be used as we don't want it to always be godalmings turn when we call this function (i.e. on draculas turn)
 	gameView->whoseTurn = PLAYER_LORD_GODALMING;
 	gameView->turnNumber = 0;
 	gameView->score = GAME_START_SCORE;
@@ -207,8 +208,8 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 
 	return gameView;
 }
-	 
-	 
+
+
 // Frees all memory previously allocated for the GameView toBeDeleted
 void disposeGameView (GameView toBeDeleted) {
 	for (int i = 0; i < NUM_PLAYERS; i++) {
@@ -280,7 +281,7 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 	*numLocations = 1;
 	LocationID *connectedLocations = malloc(sizeof(LocationID) * *numLocations);
 	connectedLocations[0] = from;
-	
+
 	while (node != NULL) {
 		// TODO: Add a Dracula check for hospitals.
 		// There is no check for the trail though.
