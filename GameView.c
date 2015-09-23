@@ -109,7 +109,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 			if (IDToType(gameView, AbbrevToID(givenLocation)) == SEA) {
 				gameView->player[PLAYER_DRACULA].health -= LIFE_LOSS_SEA;
 				// If Dracula ends a turn at his castle, he gains health.
-			} else if (AbbrevToID(givenLocation) == CASTLE_DRACULA) {
+			} else if (gameView->player[PLAYER_DRACULA].location == CASTLE_DRACULA) {
 				gameView->player[PLAYER_DRACULA].health += LIFE_GAIN_CASTLE_DRACULA;
 			}
 		}
