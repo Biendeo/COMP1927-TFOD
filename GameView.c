@@ -15,6 +15,7 @@
 
 #define LONG_TRAIL_SIZE 11
 
+int getCurrentScore(char * pastPlays);
 int getTurnNumber(char * pastPlays);
 int getWhoseTurn(char*pastPlays);
 int IDToType(GameView g, LocationID p);
@@ -61,7 +62,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
     //Simon and I are thinking these three lines shouldn't be used as we don't want it to always be godalmings turn when we call this function (i.e. on draculas turn)
 	gameView->whoseTurn = getWhoseTurn(pastPlays);
 	gameView->turnNumber = getTurnNumber(pastPlays);
-	gameView->score = GAME_START_SCORE;
+	gameView->score = getCurrentScore(pastPlays);
 
 	for (int i = 0; i < NUM_PLAYERS; i++) {
 		gameView->player[i].ID = i;
@@ -439,5 +440,14 @@ int getTurnNumber(char * pastPlays){
    return turnNo;
 
 }
+
+//gets the score. This is gonna take awhile. Currently just returns (max turns)-(turns passed)
+int getCurrentScore(char * pastPlays){
+
+   int baseScore = GAME_START_SCORE - getTurnNumber(pastPlays);
+
+   return baseScore;
+}
+
 
 
