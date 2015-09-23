@@ -87,6 +87,11 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 		// We isolate the location part for easy access..
 		memcpy(givenLocation, currentPlay + 1, 2);
 
+		// If a hunter has been dead, then he'll be back to life.
+		if (gameView->whoseTurn != PLAYER_DRACULA && gameView->player[gameView->whoseTurn].health == 0) {
+			gameView->player[gameView->whoseTurn].health = GAME_START_HUNTER_LIFE_POINTS;
+		}
+
 		// We get the location and set the player's location to there.
 		gameView->player[gameView->whoseTurn].location = getTrueLocation(gameView, AbbrevToID(givenLocation));
 
@@ -132,6 +137,10 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 					default:
 						break;
 				}
+				// If the hunter is dead, they don't do anything else.
+				if (gameView->player[gameView->whoseTurn].health <= 0) {
+					break;
+				}
 				// DRACULA
 			} else {
 				if (i == 3 || i == 4) {
@@ -165,22 +174,21 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 			}
 		}
 
-		// TODO: Fix this logic bit.
 		if (gameView->whoseTurn != PLAYER_DRACULA) {
 			// When a hunter dies, they're moved to the hospital.
-			if (gameView->player[gameView->whoseTurn].health <= 0 && gameView->player[gameView->whoseTurn].location != ST_JOSEPH_AND_ST_MARYS) {
+			if (gameView->player[gameView->whoseTurn].health <= 0) {
 				gameView->player[gameView->whoseTurn].location = ST_JOSEPH_AND_ST_MARYS;
 				gameView->player[gameView->whoseTurn].health = 0;
 				gameView->score -= SCORE_LOSS_HUNTER_HOSPITAL;
-			// If they've spent their turn there, they heal.
-			} else if (gameView->player[gameView->whoseTurn].health == 0 && gameView->player[gameView->whoseTurn].location == ST_JOSEPH_AND_ST_MARYS) {
-				gameView->player[gameView->whoseTurn].health = GAME_START_HUNTER_LIFE_POINTS;
 			}
 			// Hunters can't exceed their maximum life.
 			if (gameView->player[gameView->whoseTurn].health > GAME_START_HUNTER_LIFE_POINTS) {
 				gameView->player[gameView->whoseTurn].health = GAME_START_HUNTER_LIFE_POINTS;
 			}
 		} else {
+			if (gameView->player[gameView->whoseTurn].location == CASTLE_DRACULA) {
+				gameView->player[gameView->whoseTurn].health += LIFE_GAIN_CASTLE_DRACULA;
+			}
 			// Dracula always lowers the score each turn.
 			gameView->score -= SCORE_LOSS_DRACULA_TURN;
 		}
