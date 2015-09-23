@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "Globals.h"
 #include "Game.h"
 #include "GameView.h"
@@ -14,9 +15,9 @@
 
 struct dracView {
 	GameView g;
-	// TODO: Should numTraps be moved to the GameView so we can catch them as we run through the input? HunterView can't access them since nothing really calls them.
+
 	LocationID vampLocation; //can have at most one minion vampire at any time
-	int numTraps[NUM_MAP_LOCATIONS]; //an array that stores the number of traps for every LocationID
+	Trail traps;
 };
 
 
@@ -25,8 +26,66 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 	DracView dracView = malloc(sizeof(struct dracView));
 	dracView->g = newGameView(pastPlays, messages);
 	dracView->vampLocation = NOWHERE;
-	for (int i = 0; i < NUM_MAP_LOCATIONS; i++) {
-		dracView->numTraps[i] = 0;
+	dracView->traps = newTrail(TRAIL_SIZE);
+
+	// If pastPlays is empty, we just return early.
+	if (strcmp(pastPlays, "") == 0) {
+		return dracView;
+	}
+
+	char *currentPlayMarker = pastPlays;
+	char currentPlay[8] = {'\0'};
+	char givenLocation[3] = {'\0'};
+	LocationID currentPlace = NOWHERE;
+	while (currentPlayMarker != NULL) {
+		memcpy(currentPlay, currentPlayMarker, 8);
+
+		if (currentPlay[0] == 'D') {
+			// We isolate the location part for easy access..
+			memcpy(givenLocation, currentPlay + 1, 2);
+			
+			currentPlace = abbrevToID(givenLocation);
+			
+			// Then we parse each of the next four characters.
+			// TRAPS ARE TRACKED IN DRACVIEW, SO THERE'S EMPTY BITS HERE.
+			for (int i = 3; i < 6; i++) {
+				if (i == 3 || i == 4) {
+					switch (currentPlay[i]) {
+						// TRAP PLACED
+						case 'T':
+							prepend(dracView->traps, currentPlace);
+							break;
+							// VAMPIRE PLACED
+						case 'V':
+							dracView->vampLocation = currentPlace;
+							break;
+							// NOTHING
+						default:
+							break;
+					}
+				} else if (i == 5) {
+					switch (currentPlay[i]) {
+						// TRAP LEAVES
+						case 'M':
+							while (showElement(dracView->traps, TRAIL_SIZE - 1) != NOWHERE) {
+								prepend(dracView->traps, NOWHERE);
+							}
+							prepend(dracView->traps, NOWHERE);
+							break;
+							// VAMPIRE MATURES
+						case 'V':
+							dracView->vampLocation = NOWHERE;
+							break;
+							// NOTHING
+						default:
+							break;
+					}
+				}
+			}
+		}
+
+		if (currentPlay[7] == '\0') break;
+		currentPlayMarker += 8;
 	}
 	return dracView;
 }
@@ -35,6 +94,7 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 // Frees all memory previously allocated for the DracView toBeDeleted
 void disposeDracView (DracView toBeDeleted) {
 	disposeGameView(toBeDeleted->g);
+	disposeTrail(toBeDeleted->traps);
 	free(toBeDeleted);
 }
 
@@ -84,7 +144,13 @@ void whatsThere(DracView currentView, LocationID where,
 	} else {
 		*numVamps = 0;
 	}
-	*numTraps = currentView->numTraps[where];
+
+	*numTraps = 0;
+	for (int i = 0; i < TRAIL_SIZE; i++) {
+		if (showElement(currentView->traps, i) == where) {
+			*numTraps += 1;
+		}
+	}
 	return;
 }
 
