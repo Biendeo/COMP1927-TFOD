@@ -1,5 +1,6 @@
 // GameView.c ... GameView ADT implementation
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
@@ -14,6 +15,7 @@
 
 #define LONG_TRAIL_SIZE 11
 
+int getWhoseTurn(char*pastPlays);
 int IDToType(GameView g, LocationID p);
 LocationID getTrueLocation(GameView g, LocationID p);
 LocationID AbbrevToID(char *abbrev);
@@ -56,7 +58,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 	GameView gameView = malloc(sizeof(struct gameView));
 
     //Simon and I are thinking these three lines shouldn't be used as we don't want it to always be godalmings turn when we call this function (i.e. on draculas turn)
-	gameView->whoseTurn = PLAYER_LORD_GODALMING;
+	gameView->whoseTurn = getWhoseTurn(pastPlays);
 	gameView->turnNumber = 0;
 	gameView->score = GAME_START_SCORE;
 
@@ -391,3 +393,38 @@ LocationID AbbrevToID(char *abbrev) {
 		return abbrevToID(abbrev);
 	}
 }
+
+int getWhoseTurn(char*pastPlays){
+
+   int size = strlen(pastPlays);
+   char whoseTurn = pastPlays[size-7];
+
+   int turnReturn;
+
+   switch (whoseTurn){
+
+      case 'G':
+         turnReturn = 0;
+         break;
+      case 'S':
+         turnReturn = 1;
+         break;
+      case 'H':
+         turnReturn = 2;
+         break;
+      case 'M':
+         turnReturn = 3;
+         break;
+      case 'D':
+         turnReturn = 4;
+         break;
+      default :
+         printf("ERRROR-INVALID PLAYER ID\n");
+         //Just to make things somewhat work if it screws up
+         turnReturn = 0;
+   }
+
+   return turnReturn;
+
+}
+
