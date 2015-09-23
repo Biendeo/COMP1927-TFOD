@@ -7,111 +7,116 @@
 #include <stdlib.h>
 #include "Map.h"
 #include "Places.h"
+#include "Queue.h"
+#include "Set.h"
+#include "Stack.h"
 
 static void addConnections(Map);
+static int inMatrix (Map m, LocationID src, LocationID dest, TransportID type);
 
 // Create a new empty graph (for a map)
 // #Vertices always same as NUM_PLACES
-Map newMap () {
-   int i;
-   Map g = malloc(sizeof(struct MapRep));
+Map newMap (void) {
+   Map m = malloc(sizeof(struct MapRep));
+   m->nV = NUM_MAP_LOCATIONS;
+   m->locations = malloc(m->nV*sizeof(struct vNode));
    assert(g != NULL);
-   g->nV = NUM_MAP_LOCATIONS;
+   
+   int i, j, k
    for (i = 0; i < g->nV; i++){
-	  g->connections[i] = NULL;
+	  for (j = 0;j < g->nV;i++) {
+		  for (k = MIN_TRANSPORT; k <= MAX_TRANSPORT;k++) {
+			  m->edges[i][j][k] = 0;
+		  }
+	  }
    }
-   g->nE = 0;
-   addConnections(g);
-   return g;
+   m->nE = 0;
+   addConnections(m);
+   return m;
 }
 
 // Remove an existing graph
-void disposeMap (Map g) {
+void disposeMap (Map m) {
    int i;
-   VList curr;
-   VList next;
-   assert(g != NULL);
-   assert(g->connections != NULL);
-
-   for (i = 0; i < g->nV; i++){
-	   curr = g->connections[i];
-	   while(curr != NULL){
-		  next = curr->next;
-		  free(curr);
-		  curr=next;
-	   }
-   }
-   free(g);
-}
-
-static VList insertVList (VList L, LocationID v, TransportID type) {
-   VList newV = malloc(sizeof(struct vNode));
-   newV->v = v;
-   newV->type = type;
-   newV->next = L;
-   return newV;
-}
-
-static int inVList (VList L, LocationID v, TransportID type) {
-	VList cur;
-	for (cur = L; cur != NULL; cur = cur->next) {
-		if (cur->v == v && cur->type == type) return 1;
-	}
-	return 0;
+   assert(m != NULL);
+   free(m);
 }
 
 // Add a new edge to the Map/Graph
-void addLink (Map g, LocationID start, LocationID end, TransportID type) {
-	assert(g != NULL);
-	// don't add edges twice
-	if (!inVList(g->connections[start],end,type)) {
-	g->connections[start] = insertVList(g->connections[start],end,type);
-	g->connections[end] = insertVList(g->connections[end],start,type);
-	g->nE++;
-	}
+void addLink (Map m, LocationID start, LocationID end, TransportID type) {
+	if (inMatrix(g, start, end, type) return;
+	m->edges[start][end][type] = 1;
 }
 
 // Display content of Map/Graph
-void showMap (Map g) {
-   assert(g != NULL);
-   printf("V=%d, E=%d\n", g->nV, g->nE);
-   int i;
-   for (i = 0; i < g->nV; i++) {
-	  VList n = g->connections[i];
-	  while (n != NULL) {
-		 printf("%s connects to %s ",idToName(i),idToName(n->v));
-		 switch (n->type) {
-		 case ROAD: printf("by road\n"); break;
-		 case RAIL: printf("by rail\n"); break;
-		 case BOAT: printf("by boat\n"); break;
-		 default:   printf("by ????\n"); break;
-		 }
-		 n = n->next;
+void showMap (Map m) {
+   assert(m != NULL);
+   printf("V=%d, E=%d\n", m->nV, m->nE);
+   printf("Adjacency matrix in form [LocationID] road|rail|boat\n");
+   int i, j;
+   for (i = 0; i < m->nV; i++) {
+	  for (j = 0; j < m->nV; j++) {
+		printf("%c|%c|%c\/", m->edges[i][j][ROAD], m->edges[i][j][RAIL], m->edges[i][j][BOAT]);
 	  }
-   }
+		printf("\n");
+	}
 }
 
 // Return count of nodes
-int numV (Map g) {
-   assert(g != NULL);
-   return g->nV;
+int numV (Map m) {
+   assert(m != NULL);
+   return m->nV;
 }
 
 // Return count of edges of a particular type
-int numE (Map g, TransportID type) {
-   int i, nE=0;
-   assert(g != NULL);
-   assert(type >= 0 && type <= ANY);
-   for (i = 0; i < g->nV; i++) {
-	  VList n = g->connections[i];
-	  while (n != NULL) {
-		 if (n->type == type || type == ANY) nE++;
-		 n = n->next;
-	  }
+int numE (Map m, TransportID type) {
+	int count = 0, i, j;
+	for (i = 0;i < NUM_MAP_LOCATIONS; i++) {
+		for (j = 0;j < NUM_MAP_LOCATIONS;j++) {
+			if (m->edges[i][j][type]) count += 1;
+		}
 	}
-	return nE;
+	return count;
 }
 
+
+//find a path from src to dest with breadth-first search. *sizeArr is the size of the returned path 
+LocationID *BFS (Map m, LocationID src, LocationID dest, int *sizeArr) {
+	Queue toDo = newQueue():
+	enterQueue(toDo, src);
+	LocationID *path = malloc((NUM_MAP_LOCATIONS+5)*4);		//a big number because i dont know how long the path could be
+	Set seenPlaces = newSet():
+	insertInto(seenPlaces, src);
+    LocationID next = src;
+	int *sizeArr;
+	
+	
+	
+	
+	
+	return path;
+}
+
+//find a path from src to dest with depth first search. *sizeArr is the size of the returned path
+LocationID *DFS (Map m, LocationID src, LocationID dest, int *sizeArr) {
+	Stack toDo = newStack():
+	enterQueue(toDo, src);
+	LocationID *path = malloc((NUM_MAP_LOCATIONS+5)*4);		//a big number because i dont know how long the path could be
+	Set seenPlaces = newSet():
+	insertInto(seenPlaces, src);
+    LocationID next = src;
+	int *sizeArr;
+	
+	
+	
+	
+	return path;
+}
+
+static int inMatrix (Map m, LocationID src, LocationID dest, TransportID type) {
+	return (m->edges[src][dest][type]);
+}
+	
 // Add edges to Graph representing map of Europe
 static void addConnections (Map g) {
    //### ROAD Connections ###

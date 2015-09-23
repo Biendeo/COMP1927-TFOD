@@ -64,7 +64,11 @@ LocationID whereIs (HunterView currentView, PlayerID player) {
 // Fills the trail array with the location ids of the last 6 turns
 void giveMeTheTrail (HunterView currentView, PlayerID player,
 							LocationID trail[TRAIL_SIZE]) {
+<<<<<<< HEAD
+	return getHistory(currentView, player, trail);
+=======
 	return getHistory(currentView->g, player, trail);
+>>>>>>> Biendeo/master
 }
 
 //// Functions that query the map to find information about connectivity

@@ -75,7 +75,10 @@ LocationID *copySetToArray (Set set) {
 		arr[i] = node->value;
 		i++;
 	}
+<<<<<<< HEAD
+=======
 	return arr;
+>>>>>>> Biendeo/master
 }
 
 // ---
