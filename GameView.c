@@ -92,11 +92,12 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 			gameView->player[gameView->whoseTurn].health = GAME_START_HUNTER_LIFE_POINTS;
 		}
 
+		// We also push the location to that person's trail.
+		prepend(gameView->player[gameView->whoseTurn].trail, AbbrevToID(givenLocation));
+
 		// We get the location and set the player's location to there.
 		gameView->player[gameView->whoseTurn].location = getTrueLocation(gameView, AbbrevToID(givenLocation));
 
-		// We also push the location to that person's trail.
-		prepend(gameView->player[gameView->whoseTurn].trail, AbbrevToID(givenLocation));
 
 		if (gameView->whoseTurn != PLAYER_DRACULA) {
 			// If a hunter stays at the same city, they gain health from rest.
