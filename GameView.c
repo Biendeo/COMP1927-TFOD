@@ -15,6 +15,7 @@
 
 #define LONG_TRAIL_SIZE 11
 
+int getTurnNumber(char * pastPlays);
 int getWhoseTurn(char*pastPlays);
 int IDToType(GameView g, LocationID p);
 LocationID getTrueLocation(GameView g, LocationID p);
@@ -59,7 +60,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[]) {
 
     //Simon and I are thinking these three lines shouldn't be used as we don't want it to always be godalmings turn when we call this function (i.e. on draculas turn)
 	gameView->whoseTurn = getWhoseTurn(pastPlays);
-	gameView->turnNumber = 0;
+	gameView->turnNumber = getTurnNumber(pastPlays);
 	gameView->score = GAME_START_SCORE;
 
 	for (int i = 0; i < NUM_PLAYERS; i++) {
@@ -394,6 +395,7 @@ LocationID AbbrevToID(char *abbrev) {
 	}
 }
 
+//Gets ID of last player in past plays
 int getWhoseTurn(char*pastPlays){
 
    int size = strlen(pastPlays);
@@ -427,4 +429,15 @@ int getWhoseTurn(char*pastPlays){
    return turnReturn;
 
 }
+
+//gets current turn Number
+int getTurnNumber(char * pastPlays){
+
+   int size = strlen(pastPlays);
+   int turnNo = (size+1)/8;
+
+   return turnNo;
+
+}
+
 
