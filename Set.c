@@ -99,6 +99,11 @@ LocationID *copySetToArray(Set set) {
 	return arr;
 }
 
+// Returns the size.
+int getSetSize(Set set) {
+	return set->size;
+}
+
 // Creates a set with all the elements of the array (but with no duplicates).
 Set copyArrayToSet(LocationID *arr, int size) {
 	Set set = newSet();

@@ -271,39 +271,61 @@ void getHistory (GameView currentView, PlayerID player,
 LocationID *connectedLocations (GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
 							   int road, int rail, int sea) {
-	if (from == NOWHERE || from == CITY_UNKNOWN || from == SEA_UNKNOWN) {
-		LocationID *connectedLocations = malloc(sizeof(LocationID));
-		*connectedLocations = from;
-		return connectedLocations;
-	}
-	Map map = newMap();
-	VList node = map->connections[from];
-	*numLocations = 1;
-	LocationID *connectedLocations = malloc(sizeof(LocationID) * *numLocations);
-	connectedLocations[0] = from;
-	
-	while (node != NULL) {
-		// TODO: Add a Dracula check for hospitals.
-		// There is no check for the trail though.
-		if (road == 1 && node->type == ROAD) {
-			*numLocations += 1;
-			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
-			connectedLocations[*numLocations - 1] = node->v;
-		} else if (rail == 1 && node->type == RAIL) {
-			// TODO: We're going to need a set, and check recursively for this.
-			*numLocations += 1;
-			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
-			connectedLocations[*numLocations - 1] = node->v;
-		} else if (sea == 1 && node->type == SEA) {
-			*numLocations += 1;
-			connectedLocations = realloc(connectedLocations, sizeof(LocationID) * *numLocations);
-			connectedLocations[*numLocations - 1] = node->v;
-		}
-		node = node->next;
+	int railDistance = 0;
+	if (rail == TRUE) {
+		railDistance = ((player + round) % 4);
 	}
 
-	disposeMap(map);
-	return connectedLocations;
+	Set set = newSet();
+
+	LocationID *arrConnected;
+	switch (from) {
+		case NOWHERE:
+		case CITY_UNKNOWN:
+		case SEA_UNKNOWN:
+		case HIDE:
+		case DOUBLE_BACK_1:
+		case DOUBLE_BACK_2:
+		case DOUBLE_BACK_3:
+		case DOUBLE_BACK_4:
+		case DOUBLE_BACK_5:
+			arrConnected = malloc(sizeof(LocationID));
+			*arrConnected = from;
+			*numLocations = 1;
+			return arrConnected;
+		default:
+			if (road == 1) {
+				fillPlacesOneAway(set, from, ROAD);
+			}
+			if (sea == 1) {
+				fillPlacesOneAway(set, from, SEA);
+			}
+			if (rail == 1) {
+				Set setRail = newSet();
+				setAdd(setRail, from);
+				LocationID *arrRail;
+				int railSize = 1;
+				for (int i = 0; i < railDistance; i++) {
+					railSize = getSetSize(setRail);
+					arrRail = copySetToArray(setRail);
+					for (int j = 0; j < railSize; j++) {
+						fillPlacesOneAway(set, arrRail[j], rail);
+					}
+					free(arrRail);
+				}
+				arrRail = copySetToArray(setRail);
+				for (int j = 0; j < getSetSize(setRail); j++) {
+					setAdd(set, arrRail[j]);
+				}
+				disposeSet(setRail);
+			}
+
+			arrConnected = copySetToArray(set);
+			*numLocations = getSetSize(set);
+	}
+
+	disposeSet(set);
+	return arrConnected;
 }
 
 // ----------------------------------------

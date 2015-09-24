@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Werror -g
+CFLAGS = -Wall -Werror -g -std=c99
 BINS = testGameView testHunterView testDracView
 
 all : $(BINS)

@@ -8,6 +8,27 @@
 #include "Map.h"
 #include "Places.h"
 
+#include "Queue.h"
+#include "Set.h"
+
+struct vNode {
+	LocationID  v;    // ALICANTE, etc
+	TransportID type; // ROAD, RAIL, BOAT
+	VList       next; // link to next node
+};
+
+struct MapRep {
+	int   nV;         // #vertices
+	int   nE;         // #edges
+	VList connections[NUM_MAP_LOCATIONS]; // array of lists
+};
+
+typedef struct edge {
+	LocationID  start;
+	LocationID  end;
+	TransportID type;
+} Edge;
+
 static void addConnections(Map);
 
 // Create a new empty graph (for a map)
@@ -98,18 +119,25 @@ int numV (Map g) {
 }
 
 // Return count of edges of a particular type
-int numE (Map g, TransportID type) {
-   int i, nE=0;
-   assert(g != NULL);
-   assert(type >= 0 && type <= ANY);
-   for (i = 0; i < g->nV; i++) {
-	  VList n = g->connections[i];
-	  while (n != NULL) {
-		 if (n->type == type || type == ANY) nE++;
-		 n = n->next;
-	  }
+int numE(Map g, TransportID type) {
+	int i, nE = 0;
+	assert(g != NULL);
+	assert(type >= 0 && type <= ANY);
+	for (i = 0; i < g->nV; i++) {
+		VList n = g->connections[i];
+		while (n != NULL) {
+			if (n->type == type || type == ANY) nE++;
+			n = n->next;
+		}
 	}
 	return nE;
+}
+
+// Adds all the locations connected to place by type type to the set.
+void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
+	Map g = newMap();
+
+	disposeMap(g);
 }
 
 // Add edges to Graph representing map of Europe
