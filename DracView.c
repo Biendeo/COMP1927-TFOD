@@ -191,11 +191,6 @@ LocationID *whereCanTheyGo(DracView currentView, int *numLocations, PlayerID pla
 			}
 		}
 
-		if (isElem(setConnected, ST_JOSEPH_AND_ST_MARYS)) {
-			setRemove(setConnected, ST_JOSEPH_AND_ST_MARYS);
-			*numLocations -= 1;
-		}
-
 		free(arrConnected);
 		arrConnected = copySetToArray(setConnected);
 	}

@@ -323,6 +323,11 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 
 			arrConnected = copySetToArray(set);
 			*numLocations = getSetSize(set);
+
+			if (player == PLAYER_DRACULA && isElem(set, ST_JOSEPH_AND_ST_MARYS)) {
+				setRemove(set, ST_JOSEPH_AND_ST_MARYS);
+				*numLocations -= 1;
+			}
 	}
 
 	disposeSet(set);
