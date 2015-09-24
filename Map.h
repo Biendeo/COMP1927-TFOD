@@ -5,6 +5,11 @@
 
 #include "Places.h"
 
+typedef struct vNode *VList;
+
+// graph representation is hidden 
+typedef struct MapRep *Map;
+
 struct vNode {
 	LocationID  v;    // ALICANTE, etc
 	TransportID type; // ROAD, RAIL, BOAT
@@ -17,16 +22,12 @@ struct MapRep {
 	VList connections[NUM_MAP_LOCATIONS]; // array of lists
 };
 
-typedef struct vNode *VList;
-
 typedef struct edge{
 	LocationID  start;
 	LocationID  end;
 	TransportID type;
 } Edge;
-
-// graph representation is hidden 
-typedef struct MapRep *Map; 
+ 
 
 // operations on graphs 
 Map  newMap();  
@@ -34,7 +35,5 @@ void disposeMap(Map g);
 void showMap(Map g); 
 int  numV(Map g);
 int  numE(Map g, TransportID t);
-
-VList getConnections(Map g);
 
 #endif

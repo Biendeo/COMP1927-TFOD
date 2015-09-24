@@ -169,74 +169,17 @@ void giveMeTheTrail(DracView currentView, PlayerID player,
 // Question 2: does Dracula's teleportation only happen when there is no legal move possible?
 // (currently the function is implemented assuming positive answers to both questions)
 LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int sea) {
-	//this function can only be called by Dracula himself
-	assert(getCurrentPlayer(currentView->g) == PLAYER_DRACULA);
-	LocationID *wcig;
-	int i;
-	Round round = giveMeTheRound(currentView);
-	//In Round 0 Dracula can move to anywhere except for the hospital
-	if (round == 0) {
-		*numLocations = NUM_MAP_LOCATIONS - 1;
-		wcig = (LocationID *)malloc(sizeof(LocationID) * (*numLocations));
-		for (i = 0; i < *numLocations; i++) {
-			if (i < ST_JOSEPH_AND_ST_MARYS) {
-				wcig[i] = i;
-			} else {
-				wcig[i] = i + 1;
-			}
-		}
-	} else {
-		LocationID position = whereIs(currentView, PLAYER_DRACULA);
-		int rail = FALSE; //Dracula doesn't like the train
-		wcig = connectedLocations(currentView->g, numLocations, position, PLAYER_DRACULA, round, road, rail, sea);
-		//now that we've obtained the connected locations to Dracula's current position
-		//we shall rule out the ones which are currently in his trail, with 2 exceptions
-		//1) if Dracula doesn't have a HIDE move in his trail, 
-		//   he may choose to stay in current position
-		//2) if Dracula doesn't ahve a DOUBLE_BACK move in his trail, 
-		//   he may choose to revisit an adjacent location in his trail
-		//Note that HIDE and DOUBLE_BACK_? are labelled as special locations in Places.h
-		LocationID *trail = (LocationID *)(malloc(sizeof(LocationID)*TRAIL_SIZE));
-		giveMeTheTrail (currentView, PLAYER_DRACULA, trail);
-		int doneHide = FALSE;
-		int doneDoubleBack = FALSE;
-		for (i = 0; i < TRAIL_SIZE; i++) {
-			if (trail[i] == HIDE) {
-				doneHide = TRUE;
-			}
-			if (trail[i] >= DOUBLE_BACK_1 && trail[i] <= DOUBLE_BACK_5) {
-				doneDoubleBack = TRUE;
-			}
-		}
-		if (doneHide == TRUE && doneDoubleBack == FALSE) {
-			//can do DOUBLE_BACK but can't do HIDE, remove the 1st location in trail from wcig array
-			LocationID removalTarget = trail[0];
-			i = 0;
-			while (wcig[i] != removalTarget) {
-				i++;
-			}
-			//TODO
-		}
-		
-	}
-	return wcig;
-
-	// If you want Zaisi, we can just call this one.
-	// (although the spec says whereCanTheyGo() should call this function.
-	/*
 	return whereCanTheyGo(currentView, numLocations, PLAYER_DRACULA, road, 0, sea);
-	*/
 }
 
 // What are the specified player's next possible moves
-LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
-						   PlayerID player, int road, int rail, int sea) {
+LocationID *whereCanTheyGo(DracView currentView, int *numLocations, PlayerID player, int road, int rail, int sea) {
 	// This will get ALL the connected locations.
 	LocationID *arrConnected = connectedLocations(currentView->g, numLocations, getLocation(currentView->g, player), player, getRound(currentView->g), road, rail, sea);
 
 	// The only trick is that Dracula must remove his trail.
 	if (player == PLAYER_DRACULA) {
-		Set setConnected = copyArrayToSet(arrConnected, numLocations);
+		Set setConnected = copyArrayToSet(arrConnected, *numLocations);
 
 		LocationID pastSix[TRAIL_SIZE] = {0};
 		giveMeTheTrail(currentView, player, pastSix);
@@ -249,7 +192,7 @@ LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
 		}
 
 		if (isElem(setConnected, ST_JOSEPH_AND_ST_MARYS)) {
-			setRemove(setConnected, pastSix[i]);
+			setRemove(setConnected, ST_JOSEPH_AND_ST_MARYS);
 			*numLocations -= 1;
 		}
 
@@ -257,3 +200,4 @@ LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
 		arrConnected = copySetToArray(setConnected);
 	}
 	return arrConnected;
+}
