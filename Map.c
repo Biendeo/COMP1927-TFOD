@@ -19,14 +19,14 @@ static int inMatrix (Map m, LocationID src, LocationID dest, TransportID type);
 Map newMap (void) {
    Map m = malloc(sizeof(struct MapRep));
    m->nV = NUM_MAP_LOCATIONS;
-   m->locations = malloc(m->nV*sizeof(struct vNode));
    assert(g != NULL);
    
    int i, j, k
    for (i = 0; i < g->nV; i++){
 	  for (j = 0;j < g->nV;i++) {
-		  for (k = MIN_TRANSPORT; k <= MAX_TRANSPORT;k++) {
-			  m->edges[i][j][k] = 0;
+		  for (k = 1; k <= ANY;k++) {
+			  m->edges[i][j][k] = 0; //initially no connections
+			  m->edges[i][j][NONE] = 1;
 		  }
 	  }
    }
@@ -45,7 +45,8 @@ void disposeMap (Map m) {
 // Add a new edge to the Map/Graph
 void addLink (Map m, LocationID start, LocationID end, TransportID type) {
 	if (inMatrix(g, start, end, type) return;
-	m->edges[start][end][type] = 1;
+	m->edges[start][end][type] = m->edges[start][end][ANY] = 1;
+	m->edges[start][end][NONE] = 0;
 }
 
 // Display content of Map/Graph
@@ -82,18 +83,30 @@ int numE (Map m, TransportID type) {
 
 //find a path from src to dest with breadth-first search. *sizeArr is the size of the returned path 
 LocationID *BFS (Map m, LocationID src, LocationID dest, int *sizeArr) {
-	Queue toDo = newQueue():
-	enterQueue(toDo, src);
-	LocationID *path = malloc((NUM_MAP_LOCATIONS+5)*4);		//a big number because i dont know how long the path could be
-	Set seenPlaces = newSet():
-	insertInto(seenPlaces, src);
+	Queue toDo = newQueue(); //new queue
+	enterQueue(toDo, src); //put first thing in the queue
+	LocationID *path = malloc((NUM_MAP_LOCATIONS+5)*sizeof(int);		//a big number because i dont know how long the path could be
+	Set seenPlaces = newSet(); //seen set
+	insertInto(seenPlaces, src); //we've seen where we started
     LocationID next = src;
-	int *sizeArr;
+	path[0] = src; //the zeroth place is always the best place to start
+	int *sizeArr = 1;
+	int i, j = 1;
 	
-	
-	
-	
-	
+	while (!emptyQueue(toDo) && path[j] != dest) {
+		for (i = 0; i < m->nV; i++) {
+			if(m->edges[next][i][ANY] == 1 && !isElem(seenPlaces, i)) { //checks if src and i (which is a location ID)
+				setAdd (seenPlaces, i);									//are connected, and not already seen.
+				enterQueue (toDo, i);
+			}
+		}
+		next = leaveQueue(toDo); //pop next location to search
+		path[j] = next;
+		*sizeArr++;
+		j++;
+	}
+	disposeQueue(toDo);
+	disposeSet (seenPlaces);
 	return path;
 }
 
@@ -105,10 +118,24 @@ LocationID *DFS (Map m, LocationID src, LocationID dest, int *sizeArr) {
 	Set seenPlaces = newSet():
 	insertInto(seenPlaces, src);
     LocationID next = src;
-	int *sizeArr;
+	path[0] = src; //the zeroth place is always the best place to start
+	int *sizeArr = 1;
+	int i, j = 1;
 	
-	
-	
+	while (!emptyStack(toDo) && path[j] != dest) {
+		for (i = 0; i < m->nV; i++) {
+			if(m->edges[next][i][ANY] == 1 && !isElem(seenPlaces, i)) { //checks if src and i (which is a location ID)
+				setAdd (seenPlaces, i);									//are connected, and not already seen.
+				pushOnto (toDo, i);
+			}
+		}
+		next = popFrom(toDo); //pop next location to search
+		path[j] = next;
+		*sizeArr++;
+		j++;
+	}
+	disposeStack(toDo);
+	disposeSet(seenPlaces);
 	
 	return path;
 }

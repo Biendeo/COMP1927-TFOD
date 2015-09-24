@@ -10,7 +10,7 @@ typedef unsigned char bool
 struct MapRep {
 	int   nV;         // #vertices
 	int   nE;         // #edges
-	bool edges[NUM_MAP_LOCATIONS][NUM_MAP_LOCATIONS][MAX_TRANSPORT+1]  //adjacency matrix of edges containing transport type
+	bool edges[NUM_MAP_LOCATIONS][NUM_MAP_LOCATIONS][MAX_TRANSPORT+2]  //adjacency matrix of edges containing transport type
 	//vertex *locations //could use this to store useful things like maybe vertex degree?
 };
 // graph representation is hidden 
