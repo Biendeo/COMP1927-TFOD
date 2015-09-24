@@ -137,6 +137,12 @@ int numE(Map g, TransportID type) {
 void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
 	Map g = newMap();
 
+	for (VList node = g->connections[place]; node != NULL; node = node->next) {
+		if (node->type == type) {
+			setAdd(set, node->v);
+		}
+	}
+
 	disposeMap(g);
 }
 
