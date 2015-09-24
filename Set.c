@@ -25,6 +25,7 @@ SetNode getLast(Set set);
 Set newSet () {
 	Set newSet = malloc(sizeof(struct Set));
 	newSet->size = 0;
+	newSet->start = NULL;
 	return newSet;
 }
 
@@ -47,9 +48,11 @@ void setAdd(Set set, LocationID place) {
 		if (end == NULL) {
 			set->start = malloc(sizeof(struct SetNode));
 			set->start->value = place;
+			set->start->next = NULL;
 		} else {
 			end->next = malloc(sizeof(struct SetNode));
 			end->next->value = place;
+			end->next->next = NULL;
 		}
 		set->size++;
 	}

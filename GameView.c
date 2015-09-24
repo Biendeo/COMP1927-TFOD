@@ -277,6 +277,7 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 	}
 
 	Set set = newSet();
+	setAdd(set, from);
 
 	LocationID *arrConnected;
 	switch (from) {
