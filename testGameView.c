@@ -88,6 +88,25 @@ int main()
 	printf("passed\n");
 	disposeGameView(gv);
 
+	printf("Test for hunter dying"\n);
+	//insert moves where hunter meets dracula twice
+	//hunter health should be 0
+	//hunter should be at hospital
+
+    printf("Test for hunter dying, then reviving on next turn"\n);
+	//insert moves where hunter meets dracula twice, then makes next move.
+	//hunter health should be 9
+
+	printf("Test for dracula double backing into hunter\n");
+	//insert moves where dracula backs into hunter
+	//hunter health should have decreased
+	//Drac hp decreased
+
+	printf("Test for teleporty things\n");
+	//insert string where dracula teleports
+	//Dracula location should be Castle Dracula
+	//Dracula should have 10 more blood points
+
 	printf("Test for connections\n");
 	int size, seen[NUM_MAP_LOCATIONS], *edges;
 	gv = newGameView("", messages1);
