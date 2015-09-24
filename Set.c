@@ -55,6 +55,27 @@ void setAdd(Set set, LocationID place) {
 	}
 }
 
+// Removes an element from the set, unless it's not there.
+void setRemove(Set set, LocationID place) {
+	if (isElem(set, place)) {
+		SetNode previousNode = set->start;
+		SetNode currentNode = set->start;
+		while (currentNode->value != place) {
+			if (currentNode != set->start) {
+				previousNode = currentNode;
+			}
+			currentNode = currentNode->next;
+		}
+		SetNode nextNode = currentNode->next;
+		if (currentNode == set->start) {
+			set->start = nextNode;
+		} else {
+			previousNode->next = nextNode;
+		}
+		free(currentNode);
+	}
+}
+
 // Returns 1 if the element is in the set, or 0 if it isn't.
 int isElem(Set set, LocationID place) {
 	for (SetNode node = set->start; node != NULL; node = node->next) {
@@ -64,7 +85,7 @@ int isElem(Set set, LocationID place) {
 }
 
 // Creates an array with all the elements in the set.
-LocationID *copySetToArray (Set set) {
+LocationID *copySetToArray(Set set) {
 	int size = 0;
 	for (SetNode node = set->start; node != NULL; node = node->next) {
 		size++;
@@ -75,10 +96,16 @@ LocationID *copySetToArray (Set set) {
 		arr[i] = node->value;
 		i++;
 	}
-<<<<<<< HEAD
-=======
 	return arr;
->>>>>>> Biendeo/master
+}
+
+// Creates a set with all the elements of the array (but with no duplicates).
+Set copyArrayToSet(LocationID *arr, int size) {
+	Set set = newSet();
+	for (int i = 0; i < size; i++) {
+		setAdd(set, arr[i]);
+	}
+	return set;
 }
 
 // ---

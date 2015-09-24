@@ -220,73 +220,40 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 		
 	}
 	return wcig;
+
+	// If you want Zaisi, we can just call this one.
+	// (although the spec says whereCanTheyGo() should call this function.
+	/*
+	return whereCanTheyGo(currentView, numLocations, PLAYER_DRACULA, road, 0, sea);
+	*/
 }
 
 // What are the specified player's next possible moves
 LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
 						   PlayerID player, int road, int rail, int sea) {
-	LocationID *wctg;
+	// This will get ALL the connected locations.
+	LocationID *arrConnected = connectedLocations(currentView->g, numLocations, getLocation(currentView->g, player), player, getRound(currentView->g), road, rail, sea);
+
+	// The only trick is that Dracula must remove his trail.
 	if (player == PLAYER_DRACULA) {
-		wctg = whereCanIgo(currentView, numLocations, road, sea);
-	} else {
-		LocationID position = whereIs(currentView, player);
-		//DragView ADT is only used at Dracula's turns. Since Dracula moves last,
-		//the function finds where hunters can go in their next (rather than current) round
-		//also as a result we don't need to worry about where they can go in Round 0.
-		Round nextRound = giveMeTheRound(currentView) + 1; 
-		wctg = connectedLocations(currentView->g, numLocations, position, player, nextRound, road, rail, sea);
+		Set setConnected = copyArrayToSet(arrConnected, numLocations);
+
+		LocationID pastSix[TRAIL_SIZE] = {0};
+		giveMeTheTrail(currentView, player, pastSix);
+
+		for (int i = 0; i < TRAIL_SIZE; i++) {
+			if (isElem(setConnected, pastSix[i])) {
+				setRemove(setConnected, pastSix[i]);
+				*numLocations -= 1;
+			}
+		}
+
+		if (isElem(setConnected, ST_JOSEPH_AND_ST_MARYS)) {
+			setRemove(setConnected, pastSix[i]);
+			*numLocations -= 1;
+		}
+
+		free(arrConnected);
+		arrConnected = copySetToArray(setConnected);
 	}
-	return wctg;
-}
-
-
-
-/*
-
-"We Are The Champions"
-
-I've paid my dues
-Time after time.
-I've done my sentence
-But committed no crime.
-And bad mistakes ‒
-I've made a few.
-I've had my share of sand kicked in my face
-But I've come through.
-
-(And I need just go on and on, and on, and on)
-
-We are the champions, my friends,
-And we'll keep on fighting 'til the end.
-We are the champions.
-We are the champions.
-No time for losers
-'Cause we are the champions of the world.
-
-I've taken my bows
-And my curtain calls
-You brought me fame and fortune and everything that goes with it
-I thank you all
-
-But it's been no bed of roses,
-No pleasure cruise.
-I consider it a challenge before the whole human race
-And I ain't gonna lose.
-
-(And I need just go on and on, and on, and on)
-
-We are the champions, my friends,
-And we'll keep on fighting 'til the end.
-We are the champions.
-We are the champions.
-No time for losers
-'Cause we are the champions of the world.
-
-We are the champions, my friends,
-And we'll keep on fighting 'til the end.
-We are the champions.
-We are the champions.
-No time for losers
-'Cause we are the champions.
-
-*/
+	return arrConnected;

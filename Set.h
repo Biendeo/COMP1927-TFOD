@@ -7,12 +7,10 @@
 
 typedef struct Set *Set;
 
-<<<<<<< HEAD
 Set newSet ();
-=======
-Set newSet();
->>>>>>> Biendeo/master
 void disposeSet (Set set);
 void setAdd (Set set, LocationID place);
+void setRemove (Set set, LocationID place);
 int isElem (Set set, LocationID place);
 LocationID *copySetToArray (Set set);
+Set copyArrayToSet (LocationID *arr, int size);
