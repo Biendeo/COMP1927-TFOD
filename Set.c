@@ -75,7 +75,7 @@ void setRemove(Set set, LocationID place) {
 		} else {
 			previousNode->next = nextNode;
 		}
-		free(currentNode);
+		free(currentNode); // set->size--?
 	}
 }
 
@@ -92,7 +92,7 @@ LocationID *copySetToArray(Set set) {
 	int size = 0;
 	for (SetNode node = set->start; node != NULL; node = node->next) {
 		size++;
-	}
+	} // could call getSetSize(set) here?
 	LocationID *arr = malloc(sizeof(LocationID) * size);
 	int i = 0;
 	for (SetNode node = set->start; node != NULL; node = node->next) {
