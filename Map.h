@@ -5,27 +5,36 @@
 
 #include "Places.h"
 
-typedef unsigned char bool
+struct vNode {
+	LocationID  v;    // ALICANTE, etc
+	TransportID type; // ROAD, RAIL, BOAT
+	VList       next; // link to next node
+};
 
 struct MapRep {
 	int   nV;         // #vertices
 	int   nE;         // #edges
-	bool edges[NUM_MAP_LOCATIONS][NUM_MAP_LOCATIONS][MAX_TRANSPORT+1]  //adjacency matrix of edges containing transport type
-	//vertex *locations //could use this to store useful things like maybe vertex degree?
+	VList connections[NUM_MAP_LOCATIONS]; // array of lists
 };
+
+typedef struct vNode *VList;
+
+typedef struct edge{
+	LocationID  start;
+	LocationID  end;
+	TransportID type;
+} Edge;
+
 // graph representation is hidden 
 typedef struct MapRep *Map; 
 
 // operations on graphs 
-Map newMap (void);  
-void disposeMap (Map m); 
-void showMap (Map m); 
-int  numV (Map m);
-int  numE (Map m, TransportID t);
-LocationID *BFS (Map m, LocationID src, LocationID dest, int *sizeArr);	//uses BFS to find shortest path from src to dest and stores in order
-																			//in returned array. size of array in sizeArr
-LocationID *DFS (Map m, LocationID src, LocationID dest, int *sizeArr); //same deal except use DFS. Include both maybe itll be good to use both
-//prototypes for possible future functions
-//int hasPathK (Map m, LocationID src, LocationID dest, int k); //uses some matrix multiplication to find if theres a path of length k. NOTE very expensive O(nV^2)
+Map  newMap();  
+void disposeMap(Map g); 
+void showMap(Map g); 
+int  numV(Map g);
+int  numE(Map g, TransportID t);
+
+VList getConnections(Map g);
 
 #endif
