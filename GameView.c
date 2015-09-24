@@ -299,7 +299,7 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 				fillPlacesOneAway(set, from, ROAD);
 			}
 			if (sea == 1) {
-				fillPlacesOneAway(set, from, SEA);
+				fillPlacesOneAway(set, from, BOAT);
 			}
 			if (rail == 1) {
 				Set setRail = newSet();
