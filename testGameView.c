@@ -56,6 +56,7 @@ int main()
 	getHistory(gv,PLAYER_DR_SEWARD,history);
 	assert(history[0] == ATLANTIC_OCEAN);
 	assert(history[1] == UNKNOWN_LOCATION);
+        assert(getScore(gv) == (GAME_START_SCORE - 1));
 	printf("passed\n");        
 	disposeGameView(gv);
 
@@ -69,6 +70,7 @@ int main()
 	assert(history[1] == SEA_UNKNOWN);
 	assert(getHealth(gv,PLAYER_DRACULA) == GAME_START_BLOOD_POINTS - 4);
 	assert(getCurrentPlayer(gv) == 0);
+        assert(getScore(gv) == (GAME_START_SCORE - 2));
 	printf("passed\n");
 	disposeGameView(gv);
 
@@ -82,6 +84,7 @@ int main()
 	assert(history[1] == ENGLISH_CHANNEL);
 	assert(getHealth(gv,PLAYER_DRACULA) == GAME_START_BLOOD_POINTS - 4);
 	assert(getCurrentPlayer(gv) == 0);
+        assert(getScore(gv) == (GAME_START_SCORE - 2));
 	printf("passed\n");
 	disposeGameView(gv);
 
