@@ -82,8 +82,21 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 					}
 				}
 			}
+		} else { // currentPlay is by one of the hunters
+			for (int i = 3; i < 7; i++) {
+				switch (currentPlay[i]) {
+					// TRAP FOUND
+					case 'T':
+						memcpy(givenLocation, currentPlay + 1, 2);
+						removeElement(dracView->traps, AbbrevToID(givenLocation));
+						break;
+					// VAMPIRE FOUND
+					case 'V':
+						dracView->vampLocation = NOWHERE;
+						break;
+				}
+			}
 		}
-
 		if (currentPlay[7] == '\0') break;
 		currentPlayMarker += 8;
 	}
