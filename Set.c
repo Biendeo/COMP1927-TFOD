@@ -25,6 +25,7 @@ SetNode getLast(Set set);
 Set newSet () {
 	Set newSet = malloc(sizeof(struct Set));
 	newSet->size = 0;
+	newSet->start = NULL;
 	return newSet;
 }
 
@@ -47,9 +48,11 @@ void setAdd(Set set, LocationID place) {
 		if (end == NULL) {
 			set->start = malloc(sizeof(struct SetNode));
 			set->start->value = place;
+			set->start->next = NULL;
 		} else {
 			end->next = malloc(sizeof(struct SetNode));
 			end->next->value = place;
+			end->next->next = NULL;
 		}
 		set->size++;
 	}
@@ -73,6 +76,7 @@ void setRemove(Set set, LocationID place) {
 			previousNode->next = nextNode;
 		}
 		free(currentNode);
+		set->size--;
 	}
 }
 
@@ -89,7 +93,7 @@ LocationID *copySetToArray(Set set) {
 	int size = 0;
 	for (SetNode node = set->start; node != NULL; node = node->next) {
 		size++;
-	}
+	} // could call getSetSize(set) here?
 	LocationID *arr = malloc(sizeof(LocationID) * size);
 	int i = 0;
 	for (SetNode node = set->start; node != NULL; node = node->next) {
@@ -97,6 +101,11 @@ LocationID *copySetToArray(Set set) {
 		i++;
 	}
 	return arr;
+}
+
+// Returns the size.
+int getSetSize(Set set) {
+	return set->size;
 }
 
 // Creates a set with all the elements of the array (but with no duplicates).

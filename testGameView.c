@@ -10,9 +10,9 @@ int main()
 {
 	int i;
 	GameView gv;
-
+	
 	printf("Test basic empty initialisation\n");
-	PlayerMessage messages1[] = {'\0'};
+	PlayerMessage messages1[] = {{'\0'}};
 	gv = newGameView("", messages1);
 	assert(getCurrentPlayer(gv) == PLAYER_LORD_GODALMING);
 	assert(getRound(gv) == 0);
@@ -22,7 +22,7 @@ int main()
 	assert(getLocation(gv,PLAYER_LORD_GODALMING) == UNKNOWN_LOCATION);
 	printf("passed\n");
 	disposeGameView(gv);
-
+	
 	printf("Test for Dracula trail and basic functions\n");
 	PlayerMessage messages2[] = {"Hello","Rubbish","Stuff","","Mwahahah"};
 	gv = newGameView("GST.... SAO.... HZU.... MBB.... DC?....", messages2);
@@ -34,10 +34,10 @@ int main()
 	assert(getLocation(gv,PLAYER_MINA_HARKER) == BAY_OF_BISCAY);
 	//assert(getLocation(gv,PLAYER_DRACULA) == CITY_UNKNOWN);
 	assert(getHealth(gv,PLAYER_DRACULA) == GAME_START_BLOOD_POINTS);
-    assert(getScore(gv) == GAME_START_SCORE - 5);
+        assert(getScore(gv) == (GAME_START_SCORE - 1));
 	printf("passed\n");
 	disposeGameView(gv);
-
+	
 	printf("Test for encountering Dracula and hunter history\n");
 	PlayerMessage messages3[] = {"Hello","Rubbish","Stuff","","Mwahahah","Aha!"};
 	gv = newGameView("GST.... SAO.... HCD.... MAO.... DGE.... GGED...", messages3);
@@ -56,8 +56,8 @@ int main()
 	getHistory(gv,PLAYER_DR_SEWARD,history);
 	assert(history[0] == ATLANTIC_OCEAN);
 	assert(history[1] == UNKNOWN_LOCATION);
-    assert(getScore(gv) == GAME_START_SCORE - 6);
-	printf("passed\n");
+        assert(getScore(gv) == (GAME_START_SCORE - 1));
+	printf("passed\n");        
 	disposeGameView(gv);
 
 	printf("Test for Dracula doubling back at sea, and losing blood points (Hunter View)\n");
@@ -70,7 +70,7 @@ int main()
 	assert(history[1] == SEA_UNKNOWN);
 	assert(getHealth(gv,PLAYER_DRACULA) == GAME_START_BLOOD_POINTS - 4);
 	assert(getCurrentPlayer(gv) == 0);
-    assert(getScore(gv) == GAME_START_SCORE - 10);
+        assert(getScore(gv) == (GAME_START_SCORE - 2));
 	printf("passed\n");
 	disposeGameView(gv);
 
@@ -84,32 +84,13 @@ int main()
 	assert(history[1] == ENGLISH_CHANNEL);
 	assert(getHealth(gv,PLAYER_DRACULA) == GAME_START_BLOOD_POINTS - 4);
 	assert(getCurrentPlayer(gv) == 0);
-    assert(getScore(gv) == GAME_START_SCORE - 10);
+        assert(getScore(gv) == (GAME_START_SCORE - 2));
 	printf("passed\n");
 	disposeGameView(gv);
 
-	printf("Test for hunter dying"\n);
-	//insert moves where hunter meets dracula twice
-	//hunter health should be 0
-	//hunter should be at hospital
-
-    printf("Test for hunter dying, then reviving on next turn"\n);
-	//insert moves where hunter meets dracula twice, then makes next move.
-	//hunter health should be 9
-
-	printf("Test for dracula double backing into hunter\n");
-	//insert moves where dracula backs into hunter
-	//hunter health should have decreased
-	//Drac hp decreased
-
-	printf("Test for teleporty things\n");
-	//insert string where dracula teleports
-	//Dracula location should be Castle Dracula
-	//Dracula should have 10 more blood points
-
 	printf("Test for connections\n");
 	int size, seen[NUM_MAP_LOCATIONS], *edges;
-	gv = newGameView("", messages1);
+	gv = newGameView("", messages1);    
 	printf("Checking Galatz road connections\n");
 	edges = connectedLocations(gv,&size,GALATZ,PLAYER_LORD_GODALMING,0,1,0,0);
 	memset(seen, 0, NUM_MAP_LOCATIONS*sizeof(int));

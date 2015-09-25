@@ -14,3 +14,4 @@ void setRemove (Set set, LocationID place);
 int isElem (Set set, LocationID place);
 LocationID *copySetToArray (Set set);
 Set copyArrayToSet (LocationID *arr, int size);
+int getSetSize(Set set);
