@@ -94,6 +94,8 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 					case 'V':
 						dracView->vampLocation = NOWHERE;
 						break;
+					default:
+						break;
 				}
 			}
 		}
