@@ -13,3 +13,4 @@ Trail newTrail (int size);
 void disposeTrail (Trail trail);
 void prepend (Trail trail, LocationID place);
 LocationID showElement (Trail trail, int index);
+void removeElement (Trail trail, LocationID place);
