@@ -75,7 +75,8 @@ void setRemove(Set set, LocationID place) {
 		} else {
 			previousNode->next = nextNode;
 		}
-		free(currentNode); // set->size--?
+		free(currentNode);
+		set->size--;
 	}
 }
 
