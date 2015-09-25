@@ -12,7 +12,7 @@ int main()
 	GameView gv;
 	
 	printf("Test basic empty initialisation\n");
-	PlayerMessage messages1[] = {'\0'};
+	PlayerMessage messages1[] = {{'\0'}};
 	gv = newGameView("", messages1);
 	assert(getCurrentPlayer(gv) == PLAYER_LORD_GODALMING);
 	assert(getRound(gv) == 0);
@@ -34,6 +34,7 @@ int main()
 	assert(getLocation(gv,PLAYER_MINA_HARKER) == BAY_OF_BISCAY);
 	//assert(getLocation(gv,PLAYER_DRACULA) == CITY_UNKNOWN);
 	assert(getHealth(gv,PLAYER_DRACULA) == GAME_START_BLOOD_POINTS);
+        assert(getScore(gv) == (GAME_START_SCORE - 1));
 	printf("passed\n");
 	disposeGameView(gv);
 	
