@@ -82,32 +82,54 @@ int numE (Map m, TransportID type) {
 
 
 //find a path from src to dest with breadth-first search. *sizeArr is the size of the returned path 
-LocationID *BFS (Map m, LocationID src, LocationID dest, int *sizeArr) {
+LocationID *BFS (Map m, LocationID src, TransportID type, int *sizeArr) {
+	LocationID *path = malloc((NUM_MAP_LOCATIONS+5)*sizeof(int);	//a big number because i dont know how long the path could be
+	int *sizeArr = 0;
+	int i, j = 0;
+	
+	for (i = 0; i < m->nV; i++) {
+		if(m->edges[src][i][type] == 1) {
+			path[j] = i;
+			*sizeArr++;
+			j++;
+		}
+	}
+	return path;
+}
+
+void BFSr (Map m, LocationID src, int length, TransportID type,
+			*LocationID arr0, *LocationID arr1, *LocationID arr2) {
+				
 	Queue toDo = newQueue(); //new queue
 	enterQueue(toDo, src); //put first thing in the queue
-	LocationID *path = malloc((NUM_MAP_LOCATIONS+5)*sizeof(int);		//a big number because i dont know how long the path could be
 	Set seenPlaces = newSet(); //seen set
 	insertInto(seenPlaces, src); //we've seen where we started
     LocationID next = src;
-	path[0] = src; //the zeroth place is always the best place to start
-	int *sizeArr = 1;
-	int i, j = 1;
+	int numTimes = 0; //counts interations
+	int i, k = 0;
 	
-	while (!emptyQueue(toDo) && path[j] != dest) {
+	while (!emptyQueue(toDo) && numTimes < length) {
 		for (i = 0; i < m->nV; i++) {
-			if(m->edges[next][i][ANY] == 1 && !isElem(seenPlaces, i)) { //checks if src and i (which is a location ID)
+			if(m->edges[next][i][type] == 1 && !isElem(seenPlaces, i)) { //checks if src and i (which is a location ID)
 				setAdd (seenPlaces, i);									//are connected, and not already seen.
 				enterQueue (toDo, i);
-			}
+				if (i == 0) {
+					arr0[k] = i;
+					k++;
+				} else if (i == 1) {
+					arr1[k] = i;
+					k++;
+				} else if (i == 2) {
+					arr2[k] = i;
+					k++;
+				}
 		}
 		next = leaveQueue(toDo); //pop next location to search
-		path[j] = next;
-		*sizeArr++;
-		j++;
+		numTimes++;
+		k = 0;
 	}
 	disposeQueue(toDo);
 	disposeSet (seenPlaces);
-	return path;
 }
 
 //find a path from src to dest with depth first search. *sizeArr is the size of the returned path

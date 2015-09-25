@@ -22,9 +22,18 @@ void disposeMap (Map m);
 void showMap (Map m); 
 int  numV (Map m);
 int  numE (Map m, TransportID t);
-LocationID *BFS (Map m, LocationID src, LocationID dest, int *sizeArr);	//uses BFS to find shortest path from src to dest and stores in order
-																			//in returned array. size of array in sizeArr
-LocationID *DFS (Map m, LocationID src, LocationID dest, int *sizeArr); //same deal except use DFS. Include both maybe itll be good to use both
+
+//in returned array. size of array in sizeArr
+//uses BFS to find shortest path from src to dest and stores in order
+LocationID *BFS (Map m, LocationID src, TransportID type, int *sizeArr);
+
+//BFS for rail!
+void BFSr (Map m, LocationID src, int length, TransportID type,
+			LocationID *arr0, LocationID *arr1, LocationID *arr2);
+										
+//same deal except use DFS. Include both maybe itll be good to use both										
+LocationID *DFS (Map m, LocationID src, LocationID dest, int *sizeArr); 
+
 //prototypes for possible future functions
 //int hasPathK (Map m, LocationID src, LocationID dest, int k); //uses some matrix multiplication to find if theres a path of length k. NOTE very expensive O(nV^2)
 
