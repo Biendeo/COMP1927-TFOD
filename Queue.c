@@ -62,6 +62,28 @@ LocationID showElement (Trail trail, int index) {
 	}
 }
 
+// This removes the oldest element containing a given value 
+void removeElement (Trail trail, LocationID place) {
+	int found = 0;
+	for (int i = trail-size - 1; found != 1 && i >= 0; i--) {
+		if (showElement (trail, i) == place) {
+			found = 1;
+		}
+	}
+	if (found == 0) {
+		return; // Element not found, return early
+	} else {
+		int elementIndex = i;
+		if (i = 0) { // If found element is already at the start of the list, can't slide
+			trail->trail[0] = UNKNOWN_LOCATION;
+		} else {
+			for (i = elementIndex; i >= 0; i--) {
+				slide(trail, i - 1);
+			}
+		}
+	}
+}
+
 
 // ---
 // EVERYTHING FROM HERE ON OUT IS NOT A PUBLIC FUNCTION.
