@@ -22,7 +22,7 @@ struct dracView {
 
 
 // Creates a new DracView to summarise the current state of the game
-DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
+DracView newDracView(char *pastPlays, PlayerMessage messages[]) {
 	DracView dracView = malloc(sizeof(struct dracView));
 	dracView->g = newGameView(pastPlays, messages);
 	dracView->vampLocation = NOWHERE;
@@ -40,14 +40,13 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 	while (currentPlayMarker != NULL) {
 		memcpy(currentPlay, currentPlayMarker, 8);
 
+		// We isolate the location part for easy access..
+		memcpy(givenLocation, currentPlay + 1, 2);
+
+		currentPlace = abbrevToID(givenLocation);
+
 		if (currentPlay[0] == 'D') {
-			// We isolate the location part for easy access..
-			memcpy(givenLocation, currentPlay + 1, 2);
-			
-			currentPlace = abbrevToID(givenLocation);
-			
 			// Then we parse each of the next four characters.
-			// TRAPS ARE TRACKED IN DRACVIEW, SO THERE'S EMPTY BITS HERE.
 			for (int i = 3; i < 6; i++) {
 				if (i == 3 || i == 4) {
 					switch (currentPlay[i]) {
@@ -82,23 +81,25 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 					}
 				}
 			}
-		} else { // currentPlay is by one of the hunters
+		} else {
+			// Then we parse each of the next four characters.
 			for (int i = 3; i < 7; i++) {
 				switch (currentPlay[i]) {
 					// TRAP FOUND
 					case 'T':
-						memcpy(givenLocation, currentPlay + 1, 2);
-						removeElement(dracView->traps, AbbrevToID(givenLocation));
+						removeElement(dracView->traps, abbrevToID(givenLocation));
 						break;
-					// VAMPIRE FOUND
+						// VAMPIRE FOUND
 					case 'V':
 						dracView->vampLocation = NOWHERE;
 						break;
+						// NOTHING
 					default:
 						break;
 				}
 			}
 		}
+
 		if (currentPlay[7] == '\0') break;
 		currentPlayMarker += 8;
 	}
@@ -107,7 +108,7 @@ DracView newDracView (char *pastPlays, PlayerMessage messages[]) {
 
 
 // Frees all memory previously allocated for the DracView toBeDeleted
-void disposeDracView (DracView toBeDeleted) {
+void disposeDracView(DracView toBeDeleted) {
 	disposeGameView(toBeDeleted->g);
 	disposeTrail(toBeDeleted->traps);
 	free(toBeDeleted);
@@ -143,7 +144,7 @@ LocationID whereIs(DracView currentView, PlayerID player) {
 // Get the most recent move of a given player
 // may need modification when Queue ADT is confirmed
 void lastMove(DracView currentView, PlayerID player,
-				 LocationID *start, LocationID *end) {
+			  LocationID *start, LocationID *end) {
 	LocationID *trail = malloc(sizeof(LocationID) * TRAIL_SIZE);
 	getHistory(currentView->g, player, trail);
 	*start = trail[1];
@@ -153,7 +154,7 @@ void lastMove(DracView currentView, PlayerID player,
 
 // Find out what minions are placed at the specified location
 void whatsThere(DracView currentView, LocationID where,
-						 int *numTraps, int *numVamps) {
+				int *numTraps, int *numVamps) {
 	if (where == currentView->vampLocation) {
 		*numVamps = 1;
 	} else {
@@ -173,7 +174,7 @@ void whatsThere(DracView currentView, LocationID where,
 
 // Fills the trail array with the location ids of the last 6 turns
 void giveMeTheTrail(DracView currentView, PlayerID player,
-							LocationID trail[TRAIL_SIZE]) {
+					LocationID trail[TRAIL_SIZE]) {
 	getHistory(currentView->g, player, trail);
 }
 

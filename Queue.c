@@ -21,14 +21,14 @@ typedef struct Node {
 	LocationID val;
 	Link  next;
 } Node;
-	
+
 typedef struct QueueRep {
 	Link  front;
 	Link  back;
 } QueueRep;
 
 // Makes a new trail of a given size
-Trail newTrail (int size) {
+Trail newTrail(int size) {
 	Trail newTrail = malloc(sizeof(struct Trail));
 	newTrail->trail = malloc(sizeof(LocationID) * size);
 	newTrail->size = size;
@@ -40,13 +40,13 @@ Trail newTrail (int size) {
 }
 
 // Deletes a trail.
-void disposeTrail (Trail trail) {
+void disposeTrail(Trail trail) {
 	free(trail->trail);
 	free(trail);
 }
 
 // This adds an element to the beginning of the queue.
-void prepend (Trail trail, LocationID place) {
+void prepend(Trail trail, LocationID place) {
 	for (int i = trail->size - 1; i >= 0; i--) {
 		slide(trail, i);
 	}
@@ -54,7 +54,7 @@ void prepend (Trail trail, LocationID place) {
 }
 
 // This returns the element of a given index.
-LocationID showElement (Trail trail, int index) {
+LocationID showElement(Trail trail, int index) {
 	if (index >= trail->size || index < 0) {
 		return UNKNOWN_LOCATION;
 	} else {
@@ -63,10 +63,11 @@ LocationID showElement (Trail trail, int index) {
 }
 
 // This removes the oldest element containing a given value 
-void removeElement (Trail trail, LocationID place) {
+void removeElement(Trail trail, LocationID place) {
 	int found = 0;
-	for (int i = trail-size - 1; found != 1 && i >= 0; i--) {
-		if (showElement (trail, i) == place) {
+	int i;
+	for (i = trail->size - 1; found != 1 && i >= 0; i--) {
+		if (showElement(trail, i) == place) {
 			found = 1;
 		}
 	}
@@ -74,7 +75,7 @@ void removeElement (Trail trail, LocationID place) {
 		return; // Element not found, return early
 	} else {
 		int elementIndex = i;
-		if (i = 0) { // If found element is already at the start of the list, can't slide
+		if (i == 0) { // If found element is already at the start of the list, can't slide
 			trail->trail[0] = UNKNOWN_LOCATION;
 		} else {
 			for (i = elementIndex; i >= 0; i--) {
@@ -83,7 +84,6 @@ void removeElement (Trail trail, LocationID place) {
 		}
 	}
 }
-
 
 // ---
 // EVERYTHING FROM HERE ON OUT IS NOT A PUBLIC FUNCTION.
