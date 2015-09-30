@@ -1,12 +1,15 @@
 CC = gcc
 CFLAGS = -Wall -Werror -g -std=c99
-BINS = testGameView testHunterView testDracView
+BINS = testGameView testHunterView testDracView dracula hunter
+COMMON = GameView.o Places.o Map.o Set.o Queue.o
 
 all : $(BINS)
 
-testGameView : testGameView.o Places.o Map.o Queue.o GameView.o Set.o
-testHunterView : testHunterView.o HunterView.o Places.o Map.o Queue.o GameView.o Set.o
-testDracView : testDracView.o DracView.o Places.o Map.o Queue.o GameView.o Set.o
+testGameView : testGameView.o $(COMMON)
+testHunterView : testHunterView.o HunterView.o $(COMMON)
+testDracView : testDracView.o DracView.o $(COMMON)
+dracula : dracPlayer.o dracula.o DracView.o $(COMMON) 
+hunter : huntPlayer.o hunter.o HunterView.o $(COMMON)
 
 Places.o : Places.c Places.h
 Map.o : Map.c Map.h
@@ -18,7 +21,12 @@ DracView.o : DracView.c DracView.h
 testGameView.o : testGameView.c
 testHunterView.o : testHunterView.c
 testDracView.o : testDracView.c
-
+dracPlayer.o : player.c
+	$(CC) $(CFLAGS) -D I_AM_DRACULA -c -o dracPlayer.o player.c
+huntPlayer.o : player.c
+	$(CC) $(CFLAGS) -c -o huntPlayer.o player.c
+dracula.o : dracula.c dracula.h
+hunter.o : hunter.c hunter.h
 
 clean :
 	rm -f $(BINS) *.o core
