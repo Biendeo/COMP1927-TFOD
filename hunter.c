@@ -6,9 +6,19 @@
 #include "Game.h"
 #include "HunterView.h"
 
-void decideHunterMove(HunterView gameState)
-{
-    // TODO ...
-    // Replace the line below by something better
-    registerBestPlay("GE","I'm on holiday in Geneva");
+char *givePresetMessage(HunterView gameState);
+
+void decideHunterMove(HunterView gameState) {
+	// TODO ...
+	// Replace the line below by something better
+	registerBestPlay("GE", givePresetMessage(gameState));
+}
+
+// Returns a witty message depending on game features.
+// As Dracula, this is pretty useless, but it'll be funny to read later.
+char *givePresetMessage(HunterView gameState) {
+	switch (giveMeTheRound(gameState)) {
+		default:
+			return "The hunt is back in action.";
+	}
 }
