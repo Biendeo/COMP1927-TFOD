@@ -31,7 +31,7 @@ void decideDraculaMove(DracView gameState) {
 		LocationID *options = whereCanIgo(gameState, numOptions, TRUE, FALSE);
 		// If the array contains only current location, explore sea options
 		if (*numOptions <= 1) {
-			LocationID *options = whereCanIgo(gameState, numOptions, TRUE, TRUE);	
+			options = whereCanIgo(gameState, numOptions, TRUE, TRUE);	
 		}
 		// If there there is no sea options either, staying in current location is
 		// the only option (if even HIDE is unavailable game engine would have automatically
