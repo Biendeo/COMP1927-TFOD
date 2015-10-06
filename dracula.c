@@ -28,7 +28,7 @@ void decideDraculaMove(DracView gameState) {
 		// Note: current location is always in the array given by whereCanIgo()
 		// but HIDE is not always available
 		int *numOptions = 0;
-		LocationID *option = whereCanIgo(gameState, numOptions, TRUE, FALSE);
+		LocationID *options = whereCanIgo(gameState, numOptions, TRUE, FALSE);
 		// If the array contains only current location, explore sea options
 		if (*numOptions <= 1) {
 			LocationID *options = whereCanIgo(gameState, numOptions, TRUE, TRUE);	
