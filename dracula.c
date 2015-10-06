@@ -44,7 +44,7 @@ void decideDraculaMove(DracView gameState) {
 			int counter;
 			int surroundedByHunters = TRUE;
 			for (counter=1; counter < *numOptions; counter++) {
-				if (options[counter] != GLocation || options[counter] != SLocationS ||
+				if (options[counter] != GLocation || options[counter] != SLocation ||
 					options[counter] != HLocation || options[counter] != MLocation) {
 						surroundedByHunters = FALSE;
 					}
