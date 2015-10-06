@@ -13,10 +13,10 @@ void decideDraculaMove(DracView gameState) {
 	// TODO ...
 	// Replace the line below by something better
 	Round roundNum = giveMeTheRound(gameState);
-	//LocationID GLocation = whereIs(gameState, PLAYER_LORD_GODALMING);
-	//LocationID SLocation = whereIs(gameState, PLAYER_DR_SEWARD);
-	//LocationID HLocation = whereIs(gameState, PLAYER_VAN_HELSING);
-	//LocationID MLocation = whereIs(gameState, PLAYER_MINA_HARKER);
+	LocationID GLocation = whereIs(gameState, PLAYER_LORD_GODALMING);
+	LocationID SLocation = whereIs(gameState, PLAYER_DR_SEWARD);
+	LocationID HLocation = whereIs(gameState, PLAYER_VAN_HELSING);
+	LocationID MLocation = whereIs(gameState, PLAYER_MINA_HARKER);
 	LocationID DLocation = whereIs(gameState, PLAYER_DRACULA);
 	if (roundNum == 0) {
 		// starting at Sofia since it's far from dracula's castle and
@@ -40,11 +40,26 @@ void decideDraculaMove(DracView gameState) {
 			char * currentLocation = idToAbbrev(DLocation);
 			registerBestPlay(currentLocation, givePresetMessage(gameState));
 		} else {
-			// avoid running into a hunter (unless it's the only option available)
-			// this part is waiting to be implemented
+			// avoid running into a hunter (unless Dracula is surrounded by hunters)
+			int counter;
+			int surroundedByHunters = TRUE;
+			for (counter=1; counter < *numOptions; counter++) {
+				if (options[counter] != GLocation || options[counter] != SLocationS ||
+					options[counter] != HLocation || options[counter] != MLocation) {
+						surroundedByHunters = FALSE;
+					}
+			}
 			int realnumOptions = *numOptions - 1; //excluding the current location "option"
 			srand(time(NULL));
 			int choiceIndex = rand() % realnumOptions + 1;
+			// keep rolling the choiceIndex if we know there is at least one connectedLocation that's
+			// free of hunters
+			if (surroundedByHunters == FALSE) {
+				while (options[choiceIndex] == GLocation || options[choiceIndex] == SLocation ||
+					   options[choiceIndex] == HLocation || options[choiceIndex] == MLocation) {
+					choiceIndex = rand() % realnumOptions + 1;
+				}
+			}
 			char * choice = idToAbbrev(options[choiceIndex]);
 			registerBestPlay(choice, givePresetMessage(gameState));
 		}
