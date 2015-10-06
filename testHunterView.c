@@ -12,7 +12,7 @@ int main()
     HunterView hv;
     
     printf("Test basic empty initialisation\n");
-    PlayerMessage messages1[] = {'\0'};
+    PlayerMessage messages1[] = {{'\0'}};
     hv = newHunterView("", messages1);
     assert(whoAmI(hv) == PLAYER_LORD_GODALMING);
     assert(giveMeTheRound(hv) == 0);

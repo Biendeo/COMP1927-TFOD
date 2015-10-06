@@ -5,3 +5,4 @@
 // Version: 1.0
 
 void decideHunterMove(HunterView gameState);
+char * LocNumToAbbrev(LocationID gameState);
