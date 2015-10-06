@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Werror -g -std=c99
+CFLAGS = -Wall -Werror -g -std=gnu99
 BINS = testGameView testHunterView testDracView dracula hunter
 COMMON = GameView.o Places.o Map.o Set.o Queue.o
 
