@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "Game.h"
 #include "DracView.h"
 
@@ -11,7 +12,43 @@ char *givePresetMessage(DracView gameState);
 void decideDraculaMove(DracView gameState) {
 	// TODO ...
 	// Replace the line below by something better
-	registerBestPlay("CD", givePresetMessage(gameState));
+	Round roundNum = giveMeTheRound(gameState);
+	//LocationID GLocation = whereIs(gameState, PLAYER_LORD_GODALMING);
+	//LocationID SLocation = whereIs(gameState, PLAYER_DR_SEWARD);
+	//LocationID HLocation = whereIs(gameState, PLAYER_VAN_HELSING);
+	//LocationID MLocation = whereIs(gameState, PLAYER_MINA_HARKER);
+	LocationID DLocation = whereIs(gameState, PLAYER_DRACULA);
+	if (roundNum == 0) {
+		// starting at Sofia since it's far from dracula's castle and
+		// not on the edge of the map so dracula is less likely to be cornered
+		registerBestPlay("SO", givePresetMessage(gameState));
+	} else {
+		// since this AI doesn't know how to self-heal yet, it's probably better
+		// to avoid sea travelling and confronting hunters whenever possible
+		// Note: current location is always in the array given by whereCanIgo()
+		// but HIDE is not always available
+		int *numOptions = 0;
+		LocationID *option = whereCanIgo(gameState, numOptions, TRUE, FALSE);
+		// If the array contains only current location, explore sea options
+		if (*numOptions <= 1) {
+			LocationID *options = whereCanIgo(gameState, numOptions, TRUE, TRUE);	
+		}
+		// If there there is no sea options either, staying in current location is
+		// the only option (if even HIDE is unavailable game engine would have automatically
+		// teleported Dracula back to his castle???)
+		if (*numOptions <= 1) {
+			char * currentLocation = idToAbbrev(DLocation);
+			registerBestPlay(currentLocation, givePresetMessage(gameState));
+		} else {
+			// avoid running into a hunter (unless it's the only option available)
+			// this part is waiting to be implemented
+			int realnumOptions = *numOptions - 1; //excluding the current location "option"
+			srand(time(NULL));
+			int choiceIndex = rand() % realnumOptions + 1;
+			char * choice = idToAbbrev(options[choiceIndex]);
+			registerBestPlay(choice, givePresetMessage(gameState));
+		}
+	}
 }
 
 // Returns a witty message depending on game features.
