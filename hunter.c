@@ -14,10 +14,10 @@
   other hunters converge on dracula.
 
   Pros:-Once we find Dracula, there is a pretty good chance we will win instantly
-       as all hunters will hit dracula for damage equivalent to his starting blood
+	   as all hunters will hit dracula for damage equivalent to his starting blood
   Cons:-Hard to find Dracula due to compactness of hunters
-       -If a hunter dies, they can get split up from the cluster and the algorithm
-        may waste time trying to regroup the hunters.
+	   -If a hunter dies, they can get split up from the cluster and the algorithm
+		may waste time trying to regroup the hunters.
 
 */
 
@@ -129,28 +129,28 @@ char * LocNumToAbbrev(LocationID p){
 
 void decideHunterMove(HunterView gameState){
 
-        /*srand(time(NULL));
+		/*srand(time(NULL));
 
-        int turnNo = giveMeTheRound(gameState);
-        //int curHunter = whoAmI(gameState);
+		int turnNo = giveMeTheRound(gameState);
+		//int curHunter = whoAmI(gameState);
 
-        if(turnNo <= 1){
+		if(turnNo <= 1){
 
 	   registerBestPlay("CD", givePresetMessage(gameState));
 
-        } else if(turnNo % 2 == 0) {
+		} else if(turnNo % 2 == 0) {
 
-           int * amountOfMoves = 0;//Just in case whereCanIGo does stuff with the "initial value"
-           LocationID *moves = whereCanIgo(gameState,amountOfMoves,TRUE,FALSE,TRUE);
-           int moveChoice = rand() % *amountOfMoves;
-           char * choice = idToAbbrev(moves[moveChoice]);
+		   int * amountOfMoves = 0;//Just in case whereCanIGo does stuff with the "initial value"
+		   LocationID *moves = whereCanIgo(gameState,amountOfMoves,TRUE,FALSE,TRUE);
+		   int moveChoice = rand() % *amountOfMoves;
+		   char * choice = idToAbbrev(moves[moveChoice]);
 
-           registerBestPlay(choice, givePresetMessage(gameState));
-           free(moves);
+		   registerBestPlay(choice, givePresetMessage(gameState));
+		   free(moves);
 
-        }else{*/
+		}else{*/
 
-            registerBestPlay("CD", givePresetMessage(gameState));
+			registerBestPlay("CD", givePresetMessage(gameState));
 
 }
 
