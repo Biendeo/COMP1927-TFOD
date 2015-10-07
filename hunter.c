@@ -31,8 +31,8 @@
 char *givePresetMessage(HunterView gameState);
 
 void decideHunterMove(HunterView gameState){
-/*
-        srand(time(NULL));
+
+/*        srand(time(NULL));
 
         int turnNo = giveMeTheRound(gameState);
         //int curHunter = whoAmI(gameState);
@@ -47,15 +47,15 @@ void decideHunterMove(HunterView gameState){
            LocationID *moves = whereCanIgo(gameState,amountOfMoves,TRUE,FALSE,TRUE);
 
            //int moveChoice = rand() % *amountOfMoves;
-           char * choice = idToAbbrev(moves[0]);
-
+           //char * choice = idToAbbrev(moves[0]);
+           printf("%d\n",moves[0]);
            free(moves);
 
-           registerBestPlay(choice, givePresetMessage(gameState));
+  */         registerBestPlay("CD", givePresetMessage(gameState));
 
-        }else{
-*/
-            registerBestPlay("CD", givePresetMessage(gameState));
+   //     }else{
+
+     //       registerBestPlay("CD", givePresetMessage(gameState));
 
   //      }
 
