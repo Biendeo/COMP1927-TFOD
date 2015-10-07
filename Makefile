@@ -2,14 +2,15 @@ CC = gcc
 CFLAGS = -Wall -Werror -g -std=gnu99
 BINS = testGameView testHunterView testDracView dracula hunter
 COMMON = GameView.o Places.o Map.o Set.o Queue.o
+LIBS = 
 
 all : $(BINS)
 
 testGameView : testGameView.o $(COMMON)
 testHunterView : testHunterView.o HunterView.o $(COMMON)
 testDracView : testDracView.o DracView.o $(COMMON)
-dracula : dracPlayer.o dracula.o DracView.o $(COMMON) 
-hunter : huntPlayer.o hunter.o HunterView.o $(COMMON)
+dracula : dracPlayer.o dracula.o DracView.o $(COMMON) $(LIBS) 
+hunter : huntPlayer.o hunter.o HunterView.o $(COMMON) $(LIBS)
 
 Places.o : Places.c Places.h
 Map.o : Map.c Map.h

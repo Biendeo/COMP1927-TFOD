@@ -138,14 +138,18 @@ void decideHunterMove(HunterView gameState){
 
 	   registerBestPlay("CD", givePresetMessage(gameState));
 
-        }else{
+        } else if(turnNo % 2 == 0) {
 
-           int * amountOfMoves = 0;
-           LocationID *moves = whereCanIgo(gameState,amountOfMoves,TRUE,TRUE,TRUE);
+           int * amountOfMoves = 0;//Just in case whereCanIGo does stuff with the "initial value"
+           LocationID *moves = whereCanIgo(gameState,amountOfMoves,TRUE,FALSE,TRUE);
            int moveChoice = rand() % *amountOfMoves;
            char * choice = idToAbbrev(moves[moveChoice]);
 
            registerBestPlay(choice, givePresetMessage(gameState));
+
+        }else{
+
+            registerBestPlay("CD", givePresetMessage(gameState));
 
         }
 }
@@ -155,6 +159,6 @@ void decideHunterMove(HunterView gameState){
 char *givePresetMessage(HunterView gameState) {
 	switch (giveMeTheRound(gameState)) {
 		default:
-			return "The hunt is back in action.";
+			return "Hey Guys, lets chill out at Castle Dracula!\n";
 	}
 }
