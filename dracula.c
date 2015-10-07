@@ -63,6 +63,7 @@ void decideDraculaMove(DracView gameState) {
 			char * choice = idToAbbrev(options[choiceIndex]);
 			registerBestPlay(choice, givePresetMessage(gameState));
 		}
+		free(options);
 	}
 }
 
