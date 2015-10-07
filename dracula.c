@@ -10,9 +10,26 @@
 char *givePresetMessage(DracView gameState);
 
 void decideDraculaMove(DracView gameState) {
+	
+	*Round roundNum = giveMeTheRound(gameState);
+	if (roundNum % 7 == 0) {
+		registerBestPlay("BR", givePresetMessage(gameState));
+	} else if (roundNum % 7 == 1) {
+		registerBestPlay("PR", givePresetMessage(gameState));
+	} else if (roundNum % 7 == 2) {
+		registerBestPlay("VI", givePresetMessage(gameState));
+	} else if (roundNum % 7 == 3) {
+		registerBestPlay("MU", givePresetMessage(gameState));
+	} else if (roundNum % 7 == 4) {
+		registerBestPlay("NU", givePresetMessage(gameState));
+	} else if (roundNum % 7 == 5) {
+		registerBestPlay("FR", givePresetMessage(gameState));
+	} else {
+		registerBestPlay("LI", givePresetMessage(gameState));
+	}
 	// TODO ...
 	// Replace the line below by something better
-	Round roundNum = giveMeTheRound(gameState);
+	/*Round roundNum = giveMeTheRound(gameState);
 	LocationID GLocation = whereIs(gameState, PLAYER_LORD_GODALMING);
 	LocationID SLocation = whereIs(gameState, PLAYER_DR_SEWARD);
 	LocationID HLocation = whereIs(gameState, PLAYER_VAN_HELSING);
@@ -63,7 +80,8 @@ void decideDraculaMove(DracView gameState) {
 			char * choice = idToAbbrev(options[choiceIndex]);
 			registerBestPlay(choice, givePresetMessage(gameState));
 		}
-	}
+		free(options);
+	}*/
 }
 
 // Returns a witty message depending on game features.
