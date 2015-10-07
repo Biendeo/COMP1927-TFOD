@@ -129,7 +129,7 @@ char * LocNumToAbbrev(LocationID p){
 
 void decideHunterMove(HunterView gameState){
 
-        srand(time(NULL));
+        /*srand(time(NULL));
 
         int turnNo = giveMeTheRound(gameState);
         //int curHunter = whoAmI(gameState);
@@ -148,11 +148,10 @@ void decideHunterMove(HunterView gameState){
            registerBestPlay(choice, givePresetMessage(gameState));
            free(moves);
 
-        }else{
+        }else{*/
 
             registerBestPlay("CD", givePresetMessage(gameState));
 
-        }
 }
 
 // Returns a witty message depending on game features.
