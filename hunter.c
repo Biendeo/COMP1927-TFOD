@@ -146,10 +146,12 @@ void decideHunterMove(HunterView gameState){
            char * choice = idToAbbrev(moves[moveChoice]);
 
            registerBestPlay(choice, givePresetMessage(gameState));
+           free(moves);
 
         }else{
 
             registerBestPlay("CD", givePresetMessage(gameState));
+            free(moves);
 
         }
 }
