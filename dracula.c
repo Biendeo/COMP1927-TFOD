@@ -11,7 +11,7 @@ char *givePresetMessage(DracView gameState);
 
 void decideDraculaMove(DracView gameState) {
 	
-	*Round roundNum = giveMeTheRound(gameState);
+	Round roundNum = giveMeTheRound(gameState);
 	if (roundNum % 7 == 0) {
 		registerBestPlay("BR", givePresetMessage(gameState));
 	} else if (roundNum % 7 == 1) {
