@@ -151,7 +151,6 @@ void decideHunterMove(HunterView gameState){
         }else{
 
             registerBestPlay("CD", givePresetMessage(gameState));
-            free(moves);
 
         }
 }
