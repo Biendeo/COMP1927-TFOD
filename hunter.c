@@ -43,7 +43,7 @@ void decideHunterMove(HunterView gameState){
 
         if(turnNo <= 1){
 
-	   registerBestPlay("CD", givePresetMessage(gameState));
+          registerBestPlay("CD", givePresetMessage(gameState));
 
         } else if(turnNo % 2 == 0) {
 
@@ -75,8 +75,9 @@ void decideHunterMove(HunterView gameState){
 // Returns a witty message depending on game features.
 // As Dracula, this is pretty useless, but it'll be funny to read later.
 char *givePresetMessage(HunterView gameState) {
-	switch (giveMeTheRound(gameState)) {
-		default:
-			return "Hey Guys, lets chill out at Castle Dracula!\n";
-	}
+       switch (giveMeTheRound(gameState)) {
+               default:
+                       return "Hey Guys, lets chill out at Castle Dracula!\n";
+       }
 }
+
