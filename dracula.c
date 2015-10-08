@@ -26,17 +26,17 @@ void decideDraculaMove(DracView gameState) {
 	
 	Round roundNum = giveMeTheRound(gameState);
 	if (roundNum % 7 == 0) {
-		registerBestPlay("BR", givePresetMessage(gameState));
+		registerBestPlay("BR", givePresetMessage(gameState,0));
 	} else if (roundNum % 7 == 1) {
-		registerBestPlay("PR", givePresetMessage(gameState));
+		registerBestPlay("PR", givePresetMessage(gameState,0)));
 	} else if (roundNum % 7 == 2) {
-		registerBestPlay("VI", givePresetMessage(gameState));
+		registerBestPlay("VI", givePresetMessage(gameState,0)));
 	} else if (roundNum % 7 == 3) {
-		registerBestPlay("MU", givePresetMessage(gameState));
+		registerBestPlay("MU", givePresetMessage(gameState,0)));
 	} else if (roundNum % 7 == 4) {
-		registerBestPlay("NU", givePresetMessage(gameState));
+		registerBestPlay("NU", givePresetMessage(gameState,0)));
 	} else if (roundNum % 7 == 5) {
-		registerBestPlay("FR", givePresetMessage(gameState));
+		registerBestPlay("FR", givePresetMessage(gameState,0)));
 	} else {
 		registerBestPlay("LI", givePresetMessage(gameState));
 	}
@@ -138,10 +138,6 @@ char *givePresetMessage(DracView gameState, DraculaMessage code) {
 			return "If you hit me, you'll be charged for bat-tery.";
 		case 4:
 			return "You know I'm bat, I'm bat, I'm really really bat.";
-		case 5:
-			return "Bat to the bone.";
-		case 13:
-			return "Fly my pretties!";
 		default:
 			return "Mwuhahahaha";
 	}
