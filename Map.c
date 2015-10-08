@@ -146,7 +146,6 @@ Set reachableLocations(LocationID from, PlayerID player, Round round, int road, 
 		railDistance = ((player + round) % 4);
 	}
 
-	LocationID *arrConnected;
 	switch (from) {
 		case NOWHERE:
 		case CITY_UNKNOWN:
@@ -206,8 +205,11 @@ void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
 }
 
 // Returns the closest location to a target than a given player can go to.
+// TODO: This function is not done. Do not rely on it in the AI yet.
 LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
+	Set possiblePlaces = reachableLocations(from, player, round, road, rail, sea);
 
+	disposeSet(possiblePlaces);
 	return 0;
 }
 

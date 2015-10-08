@@ -6,26 +6,16 @@
 #include "Places.h"
 #include "Queue.h"
 
+// Trail code
+
 void slide(Trail trail, int index);
 LocationID pop(Trail trail);
 
 // The queue is basically a filled list.
 struct Trail {
-	LocationID * trail;
+	LocationID *trail;
 	int size;
 };
-
-//QUEUE FOR GRAPH TRAVERSAL
-typedef struct Node *Link;
-typedef struct Node {
-	LocationID val;
-	Link  next;
-} Node;
-
-typedef struct QueueRep {
-	Link  front;
-	Link  back;
-} QueueRep;
 
 // Makes a new trail of a given size
 Trail newTrail(int size) {
@@ -104,4 +94,77 @@ LocationID pop(Trail trail) {
 	LocationID returnLocation = trail->trail[trail->size - 1];
 	trail->trail[trail->size - 1] = UNKNOWN_LOCATION;
 	return returnLocation;
+}
+
+
+// Queue code
+
+typedef struct QueueNode *QueueNode;
+
+struct QueueNode {
+	QueueNode next;
+	LocationID value;
+};
+
+struct Queue {
+	QueueNode first;
+	QueueNode last;
+	int size;
+};
+
+QueueNode newQueueNode(LocationID value);
+
+// Creates a new queue.
+Queue newQueue() {
+	Queue queue = malloc(sizeof(struct Queue));
+	queue->first = NULL;
+	queue->last = NULL;
+	queue->size = 0;
+
+	return queue;
+}
+
+// Deletes a queue.
+void disposeQueue(Queue queue) {
+	while (queue->first != NULL) {
+		queuePop(queue);
+	}
+	free(queue);
+}
+
+// Adds an element to the end of the queue.
+void queueAdd(Queue queue, LocationID value) {
+	QueueNode node = newQueueNode(value);
+	if (queue->size == 0) {
+		queue->last = node;
+		queue->first = node;
+	} else {
+		queue->last->next = node;
+	}
+	queue->size++;
+}
+
+// Removes the front element from the queue.
+LocationID queuePop(Queue queue) {
+	QueueNode popNode = queue->first;
+	LocationID popValue = queue->first->value;
+	queue->first = queue->first->next;
+	free(popNode);
+	return popValue;
+}
+
+// Returns the size of the queue.
+int getQueueSize(Queue queue) {
+	return queue->size;
+}
+
+// ---
+// EVERYTHING FROM HERE ON OUT IS NOT A PUBLIC FUNCTION.
+
+// Creates a new queue node.
+QueueNode newQueueNode(LocationID value) {
+	QueueNode node = malloc(sizeof(struct QueueNode));
+	node->value = value;
+	node->next = NULL;
+	return node;
 }

@@ -6,11 +6,14 @@
 #include "Game.h"
 #include "Places.h"
 #include "HunterView.h"
+#include "Queue.h"
 
 
 void decideHunterMove(HunterView gameState) {
 	int turnNo = giveMeTheRound(gameState);
 	// LocationID dracPos = whereIs(gameState, PLAYER_DRACULA); // UNUSED RIGHT NOW
+
+	Queue queue = newQueue();
 
 	if (turnNo < 1) {
 		registerBestPlay("CD","Let's begin at Castle Dracula");
