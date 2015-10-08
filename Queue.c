@@ -140,6 +140,7 @@ void queueAdd(Queue queue, LocationID value) {
 		queue->first = node;
 	} else {
 		queue->last->next = node;
+		queue->last = node;
 	}
 	queue->size++;
 }
@@ -147,6 +148,9 @@ void queueAdd(Queue queue, LocationID value) {
 // Removes the front element from the queue.
 LocationID queuePop(Queue queue) {
 	QueueNode popNode = queue->first;
+	if (popNode == NULL) {
+		return -1;
+	}
 	LocationID popValue = queue->first->value;
 	queue->first = queue->first->next;
 	free(popNode);

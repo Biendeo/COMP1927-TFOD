@@ -204,13 +204,122 @@ void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
 	disposeMap(g);
 }
 
+#define DISTANCE_BORDER -50
+
 // Returns the closest location to a target than a given player can go to.
 // TODO: This function is not done. Do not rely on it in the AI yet.
 LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
-	Set possiblePlaces = reachableLocations(from, player, round, road, rail, sea);
+	// Firstly, all the reachable locations are stored.
+	Set possiblePlacesSet = reachableLocations(from, player, round, road, rail, sea);
 
-	disposeSet(possiblePlaces);
-	return 0;
+	int numPossiblePlaces = getSetSize(possiblePlacesSet);
+	LocationID *possiblePlaces = copySetToArray(possiblePlacesSet);
+
+	// This just checks to see if the player can move to the destination immediately.
+	// If so, then we can skip this quickly.
+	for (int i = 0; i < numPossiblePlaces; i++) {
+		if (possiblePlaces[i] == to) {
+			disposeSet(possiblePlacesSet);
+			free(possiblePlaces);
+			return to;
+		}
+	}
+
+	// Then the big part. A bunch of variables are declared here.
+	Queue placesToCheck;
+	int turnDistance;
+	Set placesChecked;
+	Set tempSet;
+	LocationID *tempArr;
+	LocationID currentLocation;
+	int targetFound;
+
+	// TODO: Someone will tell me off for the parallel array usage.
+	int *distances = malloc(sizeof(int) * numPossiblePlaces);
+
+	// Checking every connected path.
+	for (int i = 0; i < numPossiblePlaces; i++) {
+		// We create a new queue and set for places we need to check.
+		placesToCheck = newQueue();
+		placesChecked = newSet();
+		// Currently, this is one turn away from where we are.
+		turnDistance = 1;
+		// We haven't found the target yet.
+		targetFound = FALSE;
+		// We add this location to check.
+		queueAdd(placesToCheck, possiblePlaces[i]);
+		// This is placed in the queue just to indicate that it will take another turn to reach this.
+		queueAdd(placesToCheck, DISTANCE_BORDER);
+		// Initialise this value.
+		distances[i] = 1000;
+
+		// While we haven't found the target...
+		// The getQueueSize is a fail-safe.
+		while (getQueueSize(placesToCheck) > 0 && targetFound == FALSE) {
+			// So we get the next location to check.
+			currentLocation = queuePop(placesToCheck);
+
+			// If it's the DISTANCE_BORDER, we just up the turnDistance and continue.
+			if (currentLocation == DISTANCE_BORDER) {
+				turnDistance++;
+				// If the queue is empty (run out of options, then we break).
+				if (getQueueSize(placesToCheck) == 0) {
+					break;
+				}
+				// Otherwise, we can do this again at the end.
+				queueAdd(placesToCheck, DISTANCE_BORDER);
+				continue;
+			}
+
+			// Then we add this location to the places we've checked.
+			setAdd(placesChecked, currentLocation);
+
+			// Then we get all the reachable locations from this location.
+			// Note, the round has increased, so that'll automatically detect that.
+			tempSet = reachableLocations(currentLocation, player, round + turnDistance, road, rail, sea);
+			tempArr = copySetToArray(tempSet);
+
+			// Now, for every element connected here.
+			for (int j = 0; j < getSetSize(tempSet); j++) {
+				// If it's our goal, we mark it as being found, and store the distance.
+				// Then this breaks, and the loop exits early.
+				if (tempArr[j] == to) {
+					targetFound = TRUE;
+					distances[i] = turnDistance + 1;
+					break;
+				}
+				// Otherwise, if we haven't seen it already, we'll add it to the queue.
+				if (!isElem(placesChecked, tempArr[j])) {
+					queueAdd(placesToCheck, tempArr[j]);
+				}
+			}
+
+			// Then we free the temporary set and array that we used.
+			free(tempArr);
+			disposeSet(tempSet);
+		}
+		// At the end of this whole bit, we reset the places checked.
+		// If any optimisation is needed, it'll be here. This step means we'll have to check
+		// every location again. It's convenient in memory usage, but in terms of time, it may add up.
+		disposeSet(placesChecked);
+		disposeQueue(placesToCheck);
+	}
+
+	// Finally, the shortest path is chosen.
+	LocationID decidedLocation = NOWHERE;
+	int shortestDistance = 1000;
+	for (int i = 0; i < numPossiblePlaces; i++) {
+		if (distances[i] < shortestDistance) {
+			shortestDistance = distances[i];
+			decidedLocation = possiblePlaces[i];
+		}
+	}
+
+	// And a bit of cleaning.
+	disposeSet(possiblePlacesSet);
+	free(possiblePlaces);
+	free(distances);
+	return decidedLocation;
 }
 
 // Add edges to Graph representing map of Europe
