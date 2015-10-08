@@ -38,7 +38,7 @@ void decideHunterMove(HunterView gameState) {
 	switch (IAm) {
 		case PLAYER_LORD_GODALMING:
 		default:
-			if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) {
@@ -51,7 +51,7 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_DR_SEWARD:
-			if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) {
@@ -63,7 +63,7 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_VAN_HELSING:
-			if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) {
@@ -75,7 +75,7 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_MINA_HARKER:
-			if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else {
