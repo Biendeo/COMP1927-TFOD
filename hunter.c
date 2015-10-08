@@ -30,6 +30,7 @@ void decideHunterMove(HunterView gameState) {
 	LocationID myPos = whereIs(gameState, IAm);
 	LocationID dracPos = whereIs(gameState, PLAYER_DRACULA);
 	LocationID decidedLocation;
+	LocationID nextLocation;
 	char *place;
 	char *message;
 
@@ -38,10 +39,10 @@ void decideHunterMove(HunterView gameState) {
 	switch (IAm) {
 		case PLAYER_LORD_GODALMING:
 		default:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) {
+			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
 				// TODO: Make them do something useful here.
 				decidedLocation = BRUSSELS;
 				message = givePresetMessage(gameState, SITTING_TIGHT);
@@ -51,10 +52,10 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_DR_SEWARD:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) {
+			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
 				decidedLocation = MADRID;
 				message = givePresetMessage(gameState, SITTING_TIGHT);
 			} else {
@@ -63,10 +64,10 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_VAN_HELSING:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) {
+			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
 				decidedLocation = VENICE;
 				message = givePresetMessage(gameState, SITTING_TIGHT);
 			} else {
@@ -75,7 +76,7 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_MINA_HARKER:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN) && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else {
@@ -91,7 +92,11 @@ void decideHunterMove(HunterView gameState) {
 
 	// STOP DETERMINING A GOAL HERE
 
-	LocationID nextLocation = findClosestLocationToTarget(myPos, decidedLocation, IAm, round, TRUE, TRUE, TRUE);
+	if (myPos != NOWHERE) {
+		nextLocation = findClosestLocationToTarget(myPos, decidedLocation, IAm, round, TRUE, TRUE, TRUE);
+	} else {
+		nextLocation = decidedLocation;
+	}
 
 	place = idToAbbrev(nextLocation);
 	registerBestPlay(place, message);
