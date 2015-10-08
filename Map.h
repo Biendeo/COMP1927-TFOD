@@ -3,8 +3,8 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include "Globals.h"
 #include "Places.h"
-
 #include "Set.h"
 
 typedef struct vNode *VList;
@@ -20,5 +20,6 @@ int  numV(Map g);
 int  numE(Map g, TransportID t);
 
 void fillPlacesOneAway(Set set, LocationID place, TransportID type);
+LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
 
 #endif

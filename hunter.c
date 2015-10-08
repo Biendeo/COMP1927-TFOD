@@ -10,7 +10,7 @@
 
 void decideHunterMove(HunterView gameState) {
 	int turnNo = giveMeTheRound(gameState);
-	LocationID dracPos = whereIs(gameState, PLAYER_DRACULA);
+	// LocationID dracPos = whereIs(gameState, PLAYER_DRACULA); // UNUSED RIGHT NOW
 
 	if (turnNo < 1) {
 		registerBestPlay("CD","Let's begin at Castle Dracula");

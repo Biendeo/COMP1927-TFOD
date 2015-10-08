@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include "Map.h"
 #include "Places.h"
+#include "Globals.h"
+#include "GameView.h"
 
 #include "Queue.h"
 #include "Set.h"
@@ -144,6 +146,11 @@ void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
 	}
 
 	disposeMap(g);
+}
+
+// Returns the closest location to a target than a given player can go to.
+LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
+	return 0;
 }
 
 // Add edges to Graph representing map of Europe
