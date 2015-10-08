@@ -4,11 +4,13 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Game.h"
+#include "Places.h"
 #include "HunterView.h"
 
 
 void decideHunterMove(HunterView gameState) {
 	int turnNo = giveMeTheRound(gameState);
+	LocationID dracPos = whereIs(gameState, PLAYER_DRACULA);
 
 	if (turnNo < 1) {
 		registerBestPlay("CD","Let's begin at Castle Dracula");
@@ -22,4 +24,3 @@ void decideHunterMove(HunterView gameState) {
 	   free(moves);
 	}
 }
-

@@ -16,7 +16,6 @@
 
 int IDToType(GameView g, LocationID p);
 LocationID getTrueLocation(GameView g, LocationID p);
-LocationID AbbrevToID(char *abbrev);
 
 // This struct stores data that is common to each player.
 struct playerData {
@@ -338,6 +337,7 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 
 // This converts a location ID to a type. Unlike the Places.c version, it
 // also returns unknown places.
+// It's mostly used to calculate whether Dracula uses a special move to go to sea.
 int IDToType(GameView g, LocationID p) {
 	switch (p) {
 		case CITY_UNKNOWN:
@@ -389,31 +389,5 @@ LocationID getTrueLocation(GameView g, LocationID p) {
 			return CASTLE_DRACULA;
 		default:
 			return p;
-	}
-}
-
-// This converts an abbreviation to a location ID. Unlike the Places.c version,
-// it also converts non-city places.
-LocationID AbbrevToID(char *abbrev) {
-	if (strcmp(abbrev, "C?") == 0) {
-		return CITY_UNKNOWN;
-	} else if (strcmp(abbrev, "S?") == 0) {
-		return SEA_UNKNOWN;
-	} else if (strcmp(abbrev, "HI") == 0) {
-		return HIDE;
-	} else if (strcmp(abbrev, "D1") == 0) {
-		return DOUBLE_BACK_1;
-	} else if (strcmp(abbrev, "D2") == 0) {
-		return DOUBLE_BACK_2;
-	} else if (strcmp(abbrev, "D3") == 0) {
-		return DOUBLE_BACK_3;
-	} else if (strcmp(abbrev, "D4") == 0) {
-		return DOUBLE_BACK_4;
-	} else if (strcmp(abbrev, "D5") == 0) {
-		return DOUBLE_BACK_5;
-	} else if (strcmp(abbrev, "TP") == 0) {
-		return TELEPORT;
-	} else {
-		return abbrevToID(abbrev);
 	}
 }
