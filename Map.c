@@ -215,7 +215,6 @@ LocationID findClosestToTarget(Set possiblePlacesSet, LocationID from, LocationI
 	// If so, then we can skip this quickly.
 	for (int i = 0; i < numPossiblePlaces; i++) {
 		if (possiblePlaces[i] == to) {
-			disposeSet(possiblePlacesSet);
 			free(possiblePlaces);
 			return to;
 		}
