@@ -3,7 +3,6 @@
 // This is specifically for the the graph.
 
 #include <stdlib.h>
-#include <stdio.h>
 #include "Places.h"
 #include "Set.h"
 
@@ -106,10 +105,7 @@ LocationID *copySetToArray(Set set) {
 
 // Returns the size.
 int getSetSize(Set set) {
-        printf("SET START\n");
-	int setSize =  set->size;
-        printf("SET END\n");
-        return setSize;
+	return set->size;
 }
 
 // Creates a set with all the elements of the array (but with no duplicates).

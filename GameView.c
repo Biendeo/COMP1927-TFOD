@@ -1,7 +1,6 @@
 // GameView.c ... GameView ADT implementation
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <assert.h>
 #include <string.h>
 #include "Globals.h"
@@ -272,9 +271,6 @@ void getHistory (GameView currentView, PlayerID player,
 LocationID *connectedLocations (GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
 							   int road, int rail, int sea) {
-
-
-        printf("CL1\n");
 	int railDistance = 0;
 	if (rail == TRUE) {
 		railDistance = ((player + round) % 4);
@@ -298,20 +294,14 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 			*arrConnected = from;
 			*numLocations = 1;
 			return arrConnected;
-                        printf("CL2\n");
 		default:
-                        printf("CL3\n");
 			if (road == 1) {
-                                printf("CL4\n");
 				fillPlacesOneAway(set, from, ROAD);
 			}
 			if (sea == 1) {
-                                printf("CL5\n");
 				fillPlacesOneAway(set, from, BOAT);
-                                printf("CL5.5\n");
 			}
 			if (rail == 1) {
-                                printf("CL6\n");
 				Set setRail = newSet();
 				setAdd(setRail, from);
 				LocationID *arrRail;
@@ -330,12 +320,8 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 				}
 				disposeSet(setRail);
 			}
-                        printf("CL7\n");
 			arrConnected = copySetToArray(set);
-                        printf("CL7.5\n");
-                        printf("numLoc addr = %p\n", numLocations);
 			*numLocations = getSetSize(set);
-                        printf("CL8\n");
 			if (player == PLAYER_DRACULA && isElem(set, ST_JOSEPH_AND_ST_MARYS)) {
 				setRemove(set, ST_JOSEPH_AND_ST_MARYS);
 				*numLocations -= 1;
