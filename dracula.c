@@ -24,80 +24,93 @@ char *givePresetMessage(DracView gameState, DraculaMessage code);
 
 void decideDraculaMove(DracView gameState) {
 	
-	Round roundNum = giveMeTheRound(gameState);
-	if (roundNum % 7 == 0) {
+	
+    /*BACKUP STRATEGY
+    Round roundNum = giveMeTheRound(gameState);
+    if (roundNum % 7 == 0) {
 		registerBestPlay("BR", givePresetMessage(gameState,0));
 	} else if (roundNum % 7 == 1) {
-		registerBestPlay("PR", givePresetMessage(gameState,0)));
+		registerBestPlay("PR", givePresetMessage(gameState,0));
 	} else if (roundNum % 7 == 2) {
-		registerBestPlay("VI", givePresetMessage(gameState,0)));
+		registerBestPlay("VI", givePresetMessage(gameState,0));
 	} else if (roundNum % 7 == 3) {
-		registerBestPlay("MU", givePresetMessage(gameState,0)));
+		registerBestPlay("MU", givePresetMessage(gameState,0));
 	} else if (roundNum % 7 == 4) {
-		registerBestPlay("NU", givePresetMessage(gameState,0)));
+		registerBestPlay("NU", givePresetMessage(gameState,0));
 	} else if (roundNum % 7 == 5) {
-		registerBestPlay("FR", givePresetMessage(gameState,0)));
+		registerBestPlay("FR", givePresetMessage(gameState,0));
 	} else {
-		registerBestPlay("LI", givePresetMessage(gameState));
-	}
+		registerBestPlay("LI", givePresetMessage(gameState,0));
+	}*/
 	// TODO ...
 	// Replace the line below by something better
-	/*Round roundNum = giveMeTheRound(gameState);
+	Round roundNum = giveMeTheRound(gameState);
 	LocationID GLocation = whereIs(gameState, PLAYER_LORD_GODALMING);
 	LocationID SLocation = whereIs(gameState, PLAYER_DR_SEWARD);
 	LocationID HLocation = whereIs(gameState, PLAYER_VAN_HELSING);
 	LocationID MLocation = whereIs(gameState, PLAYER_MINA_HARKER);
-	LocationID DLocation = whereIs(gameState, PLAYER_DRACULA);
+	//LocationID DLocation = whereIs(gameState, PLAYER_DRACULA);
 	if (roundNum == 0) {
 		// starting at Sofia since it's far from dracula's castle and
 		// not on the edge of the map so dracula is less likely to be cornered
-		registerBestPlay("SO", givePresetMessage(gameState));
+		registerBestPlay("SO", givePresetMessage(gameState,0));
 	} else {
-		// since this AI doesn't know how to self-heal yet, it's probably better
-		// to avoid sea travelling and confronting hunters whenever possible
-		// Note: current location is always in the array given by whereCanIgo()
-		// but HIDE is not always available
-		int *numOptions = 0;
-		LocationID *options = whereCanIgo(gameState, numOptions, TRUE, FALSE);
-		// If the array contains only current location, explore sea options
-		if (*numOptions <= 1) {
-			options = whereCanIgo(gameState, numOptions, TRUE, TRUE);	
-		}
-		// If there there is no sea options either, staying in current location is
-		// the only option (if even HIDE is unavailable game engine would have automatically
-		// teleported Dracula back to his castle???)
-		if (*numOptions <= 1) {
-			char * currentLocation = idToAbbrev(DLocation);
-			registerBestPlay(currentLocation, givePresetMessage(gameState));
-		} else {
-			// avoid running into a hunter (unless Dracula is surrounded by hunters)
-			int counter;
-			int surroundedByHunters = TRUE;
-			for (counter=1; counter < *numOptions; counter++) {
-				if (options[counter] != GLocation || options[counter] != SLocation ||
-					options[counter] != HLocation || options[counter] != MLocation) {
-						surroundedByHunters = FALSE;
-					}
-			}
-			int realnumOptions = *numOptions - 1; //excluding the current location "option"
-			srand(time(NULL));
-			int choiceIndex = rand() % realnumOptions + 1;
-			// keep rolling the choiceIndex if we know there is at least one connectedLocation that's
-			// free of hunters
-			if (surroundedByHunters == FALSE) {
-				while (options[choiceIndex] == GLocation || options[choiceIndex] == SLocation ||
-					   options[choiceIndex] == HLocation || options[choiceIndex] == MLocation) {
-					choiceIndex = rand() % realnumOptions + 1;
-				}
-			}
-			char * choice = idToAbbrev(options[choiceIndex]);
-			registerBestPlay(choice, givePresetMessage(gameState));
-		}
+		int numConnections = 0;
+		LocationID *connections = whereCanIgo(gameState, &numConnections, TRUE, TRUE);
+        LocationID *options = malloc(sizeof(LocationID)*numConnections);
+        // create a new array options[] which copies all connectedLocations except
+        // for the ones which are currently in the trail
+        LocationID trail[TRAIL_SIZE];
+        giveMeTheTrail(gameState, PLAYER_DRACULA, trail);
+        int i,j;
+        int k=0;
+        int inTheTrail;
+        for (i = 0; i < numConnections; i++) {
+            inTheTrail = FALSE;
+            for (j = 0; j < TRAIL_SIZE; j++) {
+                if (connections[i] == trail[j]) {
+                    inTheTrail = TRUE;
+                    break;
+                }
+            }
+            if (inTheTrail == TRUE) {
+                continue;
+            } else {
+                options[k] = connections[i];
+                k++;
+            }
+        }
+        // since k is incremented lastly in the loop, its value after the loop is the
+        // final index of the options array plus one, which is the same as
+        // the number of elements in the options array
+        int numOptions = k;
+
+        // avoid running into a hunter (unless Dracula is surrounded by hunters)
+        int surroundedByHunters = TRUE;
+        for (k = 0; k < numOptions; k++) {
+            if (options[k] != GLocation || options[k] != SLocation ||
+                options[k] != HLocation || options[k] != MLocation) {
+                    surroundedByHunters = FALSE;
+                }
+        }
+        srand(time(NULL));
+        int choiceIndex = rand() % numOptions;
+        // keep rolling the choiceIndex if we know there is at least one option that's
+        // free of hunters
+        if (surroundedByHunters == FALSE) {
+            while (options[choiceIndex] == GLocation || options[choiceIndex] == SLocation ||
+                   options[choiceIndex] == HLocation || options[choiceIndex] == MLocation) {
+                choiceIndex = rand() % numOptions;
+            }
+        }
+        char * choice = idToAbbrev(options[choiceIndex]);
+        registerBestPlay(choice, givePresetMessage(gameState,0));
+        free(connections);
 		free(options);
-	}*/
+	}
 }
 
-LocationID findClosestLocationToTarget(DracView gameState, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
+/*LocationID findClosestLocationToTarget(DracView gameState, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
 	// Firstly, all the reachable locations are stored.
 	Set possiblePlacesSet = reachableLocations(from, player, round, road, rail, sea);
 
@@ -122,7 +135,7 @@ LocationID findClosestLocationToTarget(DracView gameState, LocationID from, Loca
 	LocationID decidedLocation = findClosestToTarget(possiblePlacesSet, from, to, player, round, road, rail, sea);
 	disposeSet(possiblePlacesSet);
 	return decidedLocation;
-}
+}*/
 
 // Returns a witty message depending on game features.
 // As Dracula, this is pretty useless, but it'll be funny to read later.
