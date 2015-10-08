@@ -4,5 +4,6 @@
 // Date: 1 January 2012
 // Version: 1.0
 
+#include "HunterView.h"
+
 void decideHunterMove(HunterView gameState);
-char * LocNumToAbbrev(LocationID gameState);

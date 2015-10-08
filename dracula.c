@@ -11,8 +11,16 @@
 #include "Queue.h"
 #include "Set.h"
 
+typedef enum DRACULA_MESSAGE {
+	PLACING_TRAP,
+	PLACING_VAMPIRE,
+	HIDING,
+	DOUBLE_BACKING,
+	NOTHING
+} DraculaMessage;
+
 LocationID findClosestLocationToTarget(DracView gameState, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
-char *givePresetMessage(DracView gameState);
+char *givePresetMessage(DracView gameState, DraculaMessage code);
 
 void decideDraculaMove(DracView gameState) {
 	
@@ -118,8 +126,8 @@ LocationID findClosestLocationToTarget(DracView gameState, LocationID from, Loca
 
 // Returns a witty message depending on game features.
 // As Dracula, this is pretty useless, but it'll be funny to read later.
-char *givePresetMessage(DracView gameState) {
-	switch (giveMeTheRound(gameState)) {
+char *givePresetMessage(DracView gameState, DraculaMessage code) {
+	switch (code) {
 		case 0:
 			return "Quiet as a bat.";
 		case 1:

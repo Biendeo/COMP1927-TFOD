@@ -207,7 +207,6 @@ void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
 #define DISTANCE_BORDER -50
 
 // Returns the closest location to a target than a given player can go to.
-// TODO: This function is not done. Do not rely on it in the AI yet.
 LocationID findClosestToTarget(Set possiblePlacesSet, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
 	int numPossiblePlaces = getSetSize(possiblePlacesSet);
 	LocationID *possiblePlaces = copySetToArray(possiblePlacesSet);
