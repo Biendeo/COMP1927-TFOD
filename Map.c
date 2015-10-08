@@ -135,6 +135,63 @@ int numE(Map g, TransportID type) {
 	return nE;
 }
 
+// Creates and returns a set filled with all the reachable locations a certain
+// player can go in one turn.
+Set reachableLocations(LocationID from, PlayerID player, Round round, int road, int rail, int sea) {
+	Set set = newSet();
+	setAdd(set, from);
+
+	int railDistance = 0;
+	if (rail == TRUE) {
+		railDistance = ((player + round) % 4);
+	}
+
+	LocationID *arrConnected;
+	switch (from) {
+		case NOWHERE:
+		case CITY_UNKNOWN:
+		case SEA_UNKNOWN:
+		case HIDE:
+		case DOUBLE_BACK_1:
+		case DOUBLE_BACK_2:
+		case DOUBLE_BACK_3:
+		case DOUBLE_BACK_4:
+		case DOUBLE_BACK_5:
+			return set;
+		default:
+			if (road == 1) {
+				fillPlacesOneAway(set, from, ROAD);
+			}
+			if (sea == 1) {
+				fillPlacesOneAway(set, from, BOAT);
+			}
+			if (rail == 1) {
+				Set setRail = newSet();
+				setAdd(setRail, from);
+				LocationID *arrRail;
+				int railSize = 1;
+				for (int i = 0; i < railDistance; i++) {
+					railSize = getSetSize(setRail);
+					arrRail = copySetToArray(setRail);
+					for (int j = 0; j < railSize; j++) {
+						fillPlacesOneAway(set, arrRail[j], rail);
+					}
+					free(arrRail);
+				}
+				arrRail = copySetToArray(setRail);
+				for (int j = 0; j < getSetSize(setRail); j++) {
+					setAdd(set, arrRail[j]);
+				}
+				disposeSet(setRail);
+			}
+			if (player == PLAYER_DRACULA && isElem(set, ST_JOSEPH_AND_ST_MARYS)) {
+				setRemove(set, ST_JOSEPH_AND_ST_MARYS);
+			}
+	}
+
+	return set;
+}
+
 // Adds all the locations connected to place by type type to the set.
 void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
 	Map g = newMap();
@@ -150,6 +207,7 @@ void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
 
 // Returns the closest location to a target than a given player can go to.
 LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
+
 	return 0;
 }
 

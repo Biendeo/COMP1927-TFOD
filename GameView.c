@@ -270,63 +270,9 @@ void getHistory (GameView currentView, PlayerID player,
 LocationID *connectedLocations (GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
 							   int road, int rail, int sea) {
-	int railDistance = 0;
-	if (rail == TRUE) {
-		railDistance = ((player + round) % 4);
-	}
-
-	Set set = newSet();
-	setAdd(set, from);
-
-	LocationID *arrConnected;
-	switch (from) {
-		case NOWHERE:
-		case CITY_UNKNOWN:
-		case SEA_UNKNOWN:
-		case HIDE:
-		case DOUBLE_BACK_1:
-		case DOUBLE_BACK_2:
-		case DOUBLE_BACK_3:
-		case DOUBLE_BACK_4:
-		case DOUBLE_BACK_5:
-			arrConnected = malloc(sizeof(LocationID));
-			*arrConnected = from;
-			*numLocations = 1;
-			return arrConnected;
-		default:
-			if (road == 1) {
-				fillPlacesOneAway(set, from, ROAD);
-			}
-			if (sea == 1) {
-				fillPlacesOneAway(set, from, BOAT);
-			}
-			if (rail == 1) {
-				Set setRail = newSet();
-				setAdd(setRail, from);
-				LocationID *arrRail;
-				int railSize = 1;
-				for (int i = 0; i < railDistance; i++) {
-					railSize = getSetSize(setRail);
-					arrRail = copySetToArray(setRail);
-					for (int j = 0; j < railSize; j++) {
-						fillPlacesOneAway(set, arrRail[j], rail);
-					}
-					free(arrRail);
-				}
-				arrRail = copySetToArray(setRail);
-				for (int j = 0; j < getSetSize(setRail); j++) {
-					setAdd(set, arrRail[j]);
-				}
-				disposeSet(setRail);
-			}
-			arrConnected = copySetToArray(set);
-			*numLocations = getSetSize(set);
-			if (player == PLAYER_DRACULA && isElem(set, ST_JOSEPH_AND_ST_MARYS)) {
-				setRemove(set, ST_JOSEPH_AND_ST_MARYS);
-				*numLocations -= 1;
-			}
-	}
-
+	Set set = reachableLocations(from, player, round, road, rail, sea);
+	*numLocations = getSetSize(set);
+	LocationID *arrConnected = copySetToArray(set);
 	disposeSet(set);
 	return arrConnected;
 }
