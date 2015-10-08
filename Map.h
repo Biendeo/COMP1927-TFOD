@@ -21,6 +21,6 @@ int  numE(Map g, TransportID t);
 
 Set reachableLocations(LocationID from, PlayerID player, Round round, int road, int rail, int sea);
 void fillPlacesOneAway(Set set, LocationID place, TransportID type);
-LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
+LocationID findClosestToTarget(Set connectedLocationsSet, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
 
 #endif

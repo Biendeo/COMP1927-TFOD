@@ -208,10 +208,7 @@ void fillPlacesOneAway(Set set, LocationID place, TransportID type) {
 
 // Returns the closest location to a target than a given player can go to.
 // TODO: This function is not done. Do not rely on it in the AI yet.
-LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
-	// Firstly, all the reachable locations are stored.
-	Set possiblePlacesSet = reachableLocations(from, player, round, road, rail, sea);
-
+LocationID findClosestToTarget(Set possiblePlacesSet, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
 	int numPossiblePlaces = getSetSize(possiblePlacesSet);
 	LocationID *possiblePlaces = copySetToArray(possiblePlacesSet);
 
@@ -224,6 +221,7 @@ LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, 
 			return to;
 		}
 	}
+
 
 	// Then the big part. A bunch of variables are declared here.
 	Queue placesToCheck;
@@ -316,7 +314,6 @@ LocationID findClosestToTarget(LocationID from, LocationID to, PlayerID player, 
 	}
 
 	// And a bit of cleaning.
-	disposeSet(possiblePlacesSet);
 	free(possiblePlaces);
 	free(distances);
 	return decidedLocation;

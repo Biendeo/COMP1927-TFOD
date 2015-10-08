@@ -4,9 +4,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "Game.h"
 #include "DracView.h"
+#include "Game.h"
+#include "Map.h"
+#include "Places.h"
+#include "Queue.h"
+#include "Set.h"
 
+LocationID findClosestLocationToTarget(DracView gameState, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
 char *givePresetMessage(DracView gameState);
 
 void decideDraculaMove(DracView gameState) {
@@ -82,6 +87,33 @@ void decideDraculaMove(DracView gameState) {
 		}
 		free(options);
 	}*/
+}
+
+LocationID findClosestLocationToTarget(DracView gameState, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
+	// Firstly, all the reachable locations are stored.
+	Set possiblePlacesSet = reachableLocations(from, player, round, road, rail, sea);
+
+	if (player == PLAYER_DRACULA) {
+		LocationID dracTrail[TRAIL_SIZE];
+		// We just check to see if he's not trying to move into his trail.
+		giveMeTheTrail(gameState, player, dracTrail);
+		for (int i = 0; i < TRAIL_SIZE; i++) {
+			// Don't let this part run. We should always check to see if to is not in his trail
+			// before we even get here.
+			if (dracTrail[i] == to) {
+				disposeSet(possiblePlacesSet);
+				return NOWHERE;
+			}
+			// If his trail is a possible move, we rule it out.
+			if (isElem(possiblePlacesSet, dracTrail[i])) {
+				setRemove(possiblePlacesSet, dracTrail[i]);
+			}
+		}
+	}
+
+	LocationID decidedLocation = findClosestToTarget(possiblePlacesSet, from, to, player, round, road, rail, sea);
+	disposeSet(possiblePlacesSet);
+	return decidedLocation;
 }
 
 // Returns a witty message depending on game features.

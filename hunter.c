@@ -4,12 +4,15 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Game.h"
-#include "Places.h"
 #include "HunterView.h"
-#include "Queue.h"
 #include "Map.h"
+#include "Places.h"
+#include "Queue.h"
+#include "Set.h"
 
 #include <stdio.h>
+
+LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
 
 void decideHunterMove(HunterView gameState) {
 	int turnNo = giveMeTheRound(gameState);
@@ -19,9 +22,9 @@ void decideHunterMove(HunterView gameState) {
 
 	// THIS PART JUST DEMONSTRATES THE FUNCTION. REMOVE IT IN SUBMISSION.
 	if (TRUE) {
-		dracPos = ATHENS;
+		dracPos = LISBON;
 		if (validPlace(dracPos)) {
-			LocationID decidedLocation = findClosestToTarget(myPos, dracPos, IAm, turnNo, TRUE, TRUE, TRUE);
+			LocationID decidedLocation = findClosestLocationToTarget(myPos, dracPos, IAm, turnNo, TRUE, TRUE, TRUE);
 			printf("DECIDED = %d\n", decidedLocation);
 		}
 	}
@@ -37,4 +40,13 @@ void decideHunterMove(HunterView gameState) {
 		registerBestPlay(choice,"I don't think he's showing up...");
 		free(moves);
 	}
+}
+
+LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
+	// Firstly, all the reachable locations are stored.
+	Set possiblePlacesSet = reachableLocations(from, player, round, road, rail, sea);
+
+	LocationID decidedLocation = findClosestToTarget(possiblePlacesSet, from, to, player, round, road, rail, sea);
+	disposeSet(possiblePlacesSet);
+	return decidedLocation;
 }
