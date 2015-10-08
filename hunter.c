@@ -22,13 +22,14 @@ typedef enum HUNTER_MESSAGE {
 
 LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
 LocationID getGoal(HunterView gameState);
+LocationID whereWasDraculaLastSeen(HunterView gameState);
 char *givePresetMessage(HunterView gameState, HunterMessage goal);
 
 void decideHunterMove(HunterView gameState) {
 	Round round = giveMeTheRound(gameState);
 	PlayerID IAm = whoAmI(gameState);
 	LocationID myPos = whereIs(gameState, IAm);
-	LocationID dracPos = whereIs(gameState, PLAYER_DRACULA);
+	LocationID dracPos = whereWasDraculaLastSeen(gameState);
 	LocationID decidedLocation;
 	LocationID nextLocation;
 	char *place;
@@ -39,7 +40,7 @@ void decideHunterMove(HunterView gameState) {
 	switch (IAm) {
 		case PLAYER_LORD_GODALMING:
 		default:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5 && whereWasDraculaLastSeen(gameState) == NOWHERE) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
@@ -52,7 +53,7 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_DR_SEWARD:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5 && whereWasDraculaLastSeen(gameState) == NOWHERE) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
@@ -64,7 +65,7 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_VAN_HELSING:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5 && whereWasDraculaLastSeen(gameState) == NOWHERE) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
@@ -76,7 +77,7 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_MINA_HARKER:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5) {
+			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5 && whereWasDraculaLastSeen(gameState) == NOWHERE) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else {
@@ -110,6 +111,19 @@ LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID 
 	disposeSet(possiblePlacesSet);
 	return decidedLocation;
 }
+
+// Returns the last place Dracula was seen, or NOWHERE if they don't know.
+LocationID whereWasDraculaLastSeen(HunterView gameState) {
+	LocationID dracTrail[TRAIL_SIZE];
+	giveMeTheTrail(gameState, PLAYER_DRACULA, dracTrail);
+	for (int i = 0; i < TRAIL_SIZE; i++) {
+		if (!(dracTrail[i] == CITY_UNKNOWN || dracTrail[i] == SEA_UNKNOWN || dracTrail[i] == NOWHERE)) {
+			return dracTrail[i];
+		}
+	}
+	return NOWHERE;
+}
+
 
 // Returns a witty message depending on game features.
 // As Dracula, this is pretty useless, but it'll be funny to read later.
