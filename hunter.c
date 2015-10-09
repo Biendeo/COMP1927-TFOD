@@ -20,10 +20,12 @@ typedef enum HUNTER_MESSAGE {
 	CAMPING_THE_CASTLE
 } HunterMessage;
 
-LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
-LocationID getGoal(HunterView gameState);
-LocationID whereWasDraculaLastSeen(HunterView gameState);
-char *givePresetMessage(HunterView gameState, HunterMessage goal);
+//given source, destination, player, round numer, and travel method, will find closest location to target
+static LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
+//tells where dracula was last seen
+static LocationID whereWasDraculaLastSeen(HunterView gameState);
+
+static char *givePresetMessage(HunterView gameState, HunterMessage goal);
 
 void decideHunterMove(HunterView gameState) {
 	Round round = giveMeTheRound(gameState);
@@ -103,7 +105,7 @@ void decideHunterMove(HunterView gameState) {
 	registerBestPlay(place, message);
 }
 
-LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
+static LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
 	// Firstly, all the reachable locations are stored.
 	Set possiblePlacesSet = reachableLocations(from, player, round, road, rail, sea);
 
@@ -113,7 +115,7 @@ LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID 
 }
 
 // Returns the last place Dracula was seen, or NOWHERE if they don't know.
-LocationID whereWasDraculaLastSeen(HunterView gameState) {
+static LocationID whereWasDraculaLastSeen(HunterView gameState) {
 	LocationID dracTrail[TRAIL_SIZE];
 	giveMeTheTrail(gameState, PLAYER_DRACULA, dracTrail);
 	for (int i = 0; i < TRAIL_SIZE; i++) {
@@ -127,7 +129,7 @@ LocationID whereWasDraculaLastSeen(HunterView gameState) {
 
 // Returns a witty message depending on game features.
 // As Dracula, this is pretty useless, but it'll be funny to read later.
-char *givePresetMessage(HunterView gameState, HunterMessage code) {
+static char *givePresetMessage(HunterView gameState, HunterMessage code) {
 	switch (code) {
 		case WAITING_FOR_THE_UNKNOWN:
 			return "Systematic research time!";
