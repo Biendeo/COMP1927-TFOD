@@ -42,10 +42,10 @@ void decideHunterMove(HunterView gameState) {
 	switch (IAm) {
 		case PLAYER_LORD_GODALMING:
 		default:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5 && whereWasDraculaLastSeen(gameState) == NOWHERE) {
+			if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
+			} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
 				// TODO: Make them do something useful here.
 				decidedLocation = BRUSSELS;
 				message = givePresetMessage(gameState, SITTING_TIGHT);
@@ -55,10 +55,10 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_DR_SEWARD:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5 && whereWasDraculaLastSeen(gameState) == NOWHERE) {
+			if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
+			} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
 				decidedLocation = MADRID;
 				message = givePresetMessage(gameState, SITTING_TIGHT);
 			} else {
@@ -67,10 +67,10 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_VAN_HELSING:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5 && whereWasDraculaLastSeen(gameState) == NOWHERE) {
+			if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-			} else if (dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) {
+			} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
 				decidedLocation = VENICE;
 				message = givePresetMessage(gameState, SITTING_TIGHT);
 			} else {
@@ -79,7 +79,7 @@ void decideHunterMove(HunterView gameState) {
 			}
 			break;
 		case PLAYER_MINA_HARKER:
-			if ((dracPos == CITY_UNKNOWN || dracPos == SEA_UNKNOWN || dracPos == NOWHERE) && round > 5 && whereWasDraculaLastSeen(gameState) == NOWHERE) {
+			if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
 				decidedLocation = myPos;
 				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
 			} else {
