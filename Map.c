@@ -230,90 +230,82 @@ LocationID findClosestToTarget(Set possiblePlacesSet, LocationID from, LocationI
 	LocationID currentLocation;
 	int targetFound;
 
-	// TODO: Someone will tell me off for the parallel array usage.
-	int *distances = malloc(sizeof(int) * numPossiblePlaces);
+	LocationID decidedLocation;
 
-	// Checking every connected path.
-	for (int i = 0; i < numPossiblePlaces; i++) {
-		// We create a new queue and set for places we need to check.
-		placesToCheck = newQueue();
-		placesChecked = newSet();
-		// Currently, this is one turn away from where we are.
-		turnDistance = 1;
-		// We haven't found the target yet.
-		targetFound = FALSE;
-		// We add this location to check.
-		queueAdd(placesToCheck, possiblePlaces[i]);
-		// This is placed in the queue just to indicate that it will take another turn to reach this.
-		queueAdd(placesToCheck, DISTANCE_BORDER);
-		// Initialise this value.
-		distances[i] = 1000;
+	// We create a new queue and set for places we need to check.
+	placesToCheck = newQueue();
+	placesChecked = newSet();
+	// Currently, this is one turn away from where we are.
+	turnDistance = 1;
+	// We haven't found the target yet.
+	targetFound = FALSE;
+	// We add this location to check.
+	queueAdd(placesToCheck, to);
+	// This is placed in the queue just to indicate that it will take another turn to reach this.
+	queueAdd(placesToCheck, DISTANCE_BORDER);
 
-		// While we haven't found the target...
-		// The getQueueSize is a fail-safe.
-		while (getQueueSize(placesToCheck) > 0 && targetFound == FALSE) {
-			// So we get the next location to check.
-			currentLocation = queuePop(placesToCheck);
+	// While we haven't found the target...
+	// The getQueueSize is a fail-safe.
+	while (getQueueSize(placesToCheck) > 0 && targetFound == FALSE) {
+		// So we get the next location to check.
+		currentLocation = queuePop(placesToCheck);
 
-			// If it's the DISTANCE_BORDER, we just up the turnDistance and continue.
-			if (currentLocation == DISTANCE_BORDER) {
-				turnDistance++;
-				// If the queue is empty (run out of options, then we break).
-				if (getQueueSize(placesToCheck) == 0) {
-					break;
-				}
-				// Otherwise, we can do this again at the end.
-				queueAdd(placesToCheck, DISTANCE_BORDER);
-				continue;
+		// If it's the DISTANCE_BORDER, we just up the turnDistance and continue.
+		if (currentLocation == DISTANCE_BORDER) {
+			turnDistance++;
+			// If the queue is empty (run out of options, then we break).
+			if (getQueueSize(placesToCheck) == 0) {
+				break;
 			}
+			// Otherwise, we can do this again at the end.
+			queueAdd(placesToCheck, DISTANCE_BORDER);
+			continue;
+		}
 
-			// Then we add this location to the places we've checked.
-			setAdd(placesChecked, currentLocation);
+		// Then we add this location to the places we've checked.
+		setAdd(placesChecked, currentLocation);
 
-			// Then we get all the reachable locations from this location.
-			// Note, the round has increased, so that'll automatically detect that.
-			tempSet = reachableLocations(currentLocation, player, round + turnDistance, road, rail, sea);
-			tempArr = copySetToArray(tempSet);
+		// Then we get all the reachable locations from this location.
+		// Note, the round has increased, so that'll automatically detect that.
+		tempSet = reachableLocations(currentLocation, player, round + turnDistance, road, rail, sea);
+		tempArr = copySetToArray(tempSet);
 
-			// Now, for every element connected here.
-			for (int j = 0; j < getSetSize(tempSet); j++) {
-				// If it's our goal, we mark it as being found, and store the distance.
-				// Then this breaks, and the loop exits early.
-				if (tempArr[j] == to) {
+		// Now, for every element connected here.
+		for (int j = 0; j < getSetSize(tempSet); j++) {
+			// We check to see if one of those locations is a connectedLocation.
+			for (int i = 0; i < numPossiblePlaces; i++) {
+				if (tempArr[j] == possiblePlaces[i]) {
 					targetFound = TRUE;
-					distances[i] = turnDistance + 1;
+					decidedLocation = possiblePlaces[i];
 					break;
-				}
-				// Otherwise, if we haven't seen it already, we'll add it to the queue.
-				if (!isElem(placesChecked, tempArr[j])) {
-					queueAdd(placesToCheck, tempArr[j]);
 				}
 			}
 
-			// Then we free the temporary set and array that we used.
-			free(tempArr);
-			disposeSet(tempSet);
+			if (targetFound == TRUE) {
+				break;
+			}
+
+			// Otherwise, if we haven't seen it already, we'll add it to the queue.
+			if (!isElem(placesChecked, tempArr[j])) {
+				queueAdd(placesToCheck, tempArr[j]);
+			}
 		}
-		// At the end of this whole bit, we reset the places checked.
-		// If any optimisation is needed, it'll be here. This step means we'll have to check
-		// every location again. It's convenient in memory usage, but in terms of time, it may add up.
-		disposeSet(placesChecked);
-		disposeQueue(placesToCheck);
+
+		// Then we free the temporary set and array that we used.
+		free(tempArr);
+		disposeSet(tempSet);
 	}
 
-	// Finally, the shortest path is chosen.
-	LocationID decidedLocation = NOWHERE;
-	int shortestDistance = 1000;
-	for (int i = 0; i < numPossiblePlaces; i++) {
-		if (distances[i] < shortestDistance) {
-			shortestDistance = distances[i];
-			decidedLocation = possiblePlaces[i];
-		}
+	if (targetFound == FALSE) {
+		decidedLocation = NOWHERE;
 	}
+
+	disposeSet(placesChecked);
+	disposeQueue(placesToCheck);
+
 
 	// And a bit of cleaning.
 	free(possiblePlaces);
-	free(distances);
 	return decidedLocation;
 }
 
