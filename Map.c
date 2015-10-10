@@ -7,9 +7,16 @@
 #include <stdlib.h>
 #include "Map.h"
 #include "Places.h"
-#include "Queue.h"
+#include "MatrixQueue.h"
 #include "Set.h"
-#include "Stack.h"
+
+typedef unsigned char bool;
+struct MapRep {
+	int   nV;         // #vertices
+	int   nE;         // #edges
+	//adjacency matrix of edges containing transport type
+	bool edges[NUM_MAP_LOCATIONS][NUM_MAP_LOCATIONS][MAX_TRANSPORT+2];
+};
 
 static void addConnections(Map);
 static int inMatrix (Map m, LocationID src, LocationID dest, TransportID type);
@@ -19,11 +26,11 @@ static int inMatrix (Map m, LocationID src, LocationID dest, TransportID type);
 Map newMap (void) {
    Map m = malloc(sizeof(struct MapRep));
    m->nV = NUM_MAP_LOCATIONS;
-   assert(g != NULL);
+   assert(m != NULL);
    
-   int i, j, k
-   for (i = 0; i < g->nV; i++){
-	  for (j = 0;j < g->nV;i++) {
+   int i, j, k;
+   for (i = 0; i < m->nV; i++){
+	  for (j = 0; j < m->nV; j++) {
 		  for (k = 1; k <= ANY;k++) {
 			  m->edges[i][j][k] = 0; //initially no connections
 			  m->edges[i][j][NONE] = 1;
@@ -37,27 +44,31 @@ Map newMap (void) {
 
 // Remove an existing graph
 void disposeMap (Map m) {
-   int i;
    assert(m != NULL);
    free(m);
 }
 
 // Add a new edge to the Map/Graph
 void addLink (Map m, LocationID start, LocationID end, TransportID type) {
-	if (inMatrix(g, start, end, type) return;
+	if (inMatrix(m, start, end, type)) return;
 	m->edges[start][end][type] = m->edges[start][end][ANY] = 1;
 	m->edges[start][end][NONE] = 0;
+	m->edges[end][start][type] = m->edges[end][start][ANY] = 1;
+	m->edges[end][start][NONE] = 0;
+	m->nE++;
 }
 
 // Display content of Map/Graph
-void showMap (Map m) {
+void showMap (Map m, TransportID type) {
    assert(m != NULL);
    printf("V=%d, E=%d\n", m->nV, m->nE);
-   printf("Adjacency matrix in form [LocationID] road|rail|boat\n");
+   printf("Adjacency matrix in form [LocationID] TYPE\n");
    int i, j;
    for (i = 0; i < m->nV; i++) {
+	   if (i < 10) printf("0%d | ", i);
+	   else printf("%d | ", i);
 	  for (j = 0; j < m->nV; j++) {
-		printf("%c|%c|%c\/", m->edges[i][j][ROAD], m->edges[i][j][RAIL], m->edges[i][j][BOAT]);
+		printf("%u ", m->edges[i][j][type]);
 	  }
 		printf("\n");
 	}
@@ -69,107 +80,108 @@ int numV (Map m) {
    return m->nV;
 }
 
+int numE (Map m) {
+	assert(m != NULL);
+	return m->nE;
+}
+
 // Return count of edges of a particular type
-int numE (Map m, TransportID type) {
+int numEdgeType (Map m, TransportID type) {
 	int count = 0, i, j;
 	for (i = 0;i < NUM_MAP_LOCATIONS; i++) {
 		for (j = 0;j < NUM_MAP_LOCATIONS;j++) {
-			if (m->edges[i][j][type]) count += 1;
+			if (m->edges[i][j][type]) count++;
 		}
 	}
-	return count;
+	return count/2; //double counting
 }
 
-
-//find a path from src to dest with breadth-first search. *sizeArr is the size of the returned path 
-LocationID *BFS (Map m, LocationID src, TransportID type, int *sizeArr) {
-	LocationID *path = malloc((NUM_MAP_LOCATIONS+5)*sizeof(int);	//a big number because i dont know how long the path could be
-	int *sizeArr = 0;
-	int i, j = 0;
-	
-	for (i = 0; i < m->nV; i++) {
-		if(m->edges[src][i][type] == 1) {
-			path[j] = i;
-			*sizeArr++;
-			j++;
+//given src and dest, will return number of direct connections, and type[] has types of transport
+int connections (Map m, LocationID src, LocationID dest, TransportID type[]) {
+	int connCount = 0;
+	if (m->edges[src][dest][ANY]) {		//if there is any connection...
+		if (m->edges[src][dest][ROAD]) {
+			type[ROAD] = 1;				//find which ones there are...
+			connCount++;
+		} if (m->edges[src][dest][RAIL]) {
+			type[RAIL] = 1;				//and add them to the #connections, and to type[]
+			connCount++;
+		} if (m->edges[src][dest][BOAT]) {
+			type[BOAT] = 1;
+			connCount++;
 		}
-	}
-	return path;
-}
-
-void BFSr (Map m, LocationID src, int length, TransportID type,
-			*LocationID arr0, *LocationID arr1, *LocationID arr2) {
-				
-	Queue toDo = newQueue(); //new queue
-	enterQueue(toDo, src); //put first thing in the queue
-	Set seenPlaces = newSet(); //seen set
-	insertInto(seenPlaces, src); //we've seen where we started
-    LocationID next = src;
-	int numTimes = 0; //counts interations
-	int i, k = 0;
-	
-	while (!emptyQueue(toDo) && numTimes < length) {
-		for (i = 0; i < m->nV; i++) {
-			if(m->edges[next][i][type] == 1 && !isElem(seenPlaces, i)) { //checks if src and i (which is a location ID)
-				setAdd (seenPlaces, i);									//are connected, and not already seen.
-				enterQueue (toDo, i);
-				if (i == 0) {
-					arr0[k] = i;
-					k++;
-				} else if (i == 1) {
-					arr1[k] = i;
-					k++;
-				} else if (i == 2) {
-					arr2[k] = i;
-					k++;
-				}
-		}
-		next = leaveQueue(toDo); //pop next location to search
-		numTimes++;
-		k = 0;
-	}
-	disposeQueue(toDo);
-	disposeSet (seenPlaces);
-}
-
-//find a path from src to dest with depth first search. *sizeArr is the size of the returned path
-LocationID *DFS (Map m, LocationID src, LocationID dest, int *sizeArr) {
-	Stack toDo = newStack():
-	enterQueue(toDo, src);
-	LocationID *path = malloc((NUM_MAP_LOCATIONS+5)*4);		//a big number because i dont know how long the path could be
-	Set seenPlaces = newSet():
-	insertInto(seenPlaces, src);
-    LocationID next = src;
-	path[0] = src; //the zeroth place is always the best place to start
-	int *sizeArr = 1;
-	int i, j = 1;
-	
-	while (!emptyStack(toDo) && path[j] != dest) {
-		for (i = 0; i < m->nV; i++) {
-			if(m->edges[next][i][ANY] == 1 && !isElem(seenPlaces, i)) { //checks if src and i (which is a location ID)
-				setAdd (seenPlaces, i);									//are connected, and not already seen.
-				pushOnto (toDo, i);
+	} else if (m->edges[src][dest][NONE]) type[NONE] = 1;
+		
+	int i;								//this is to see if two cities are on
+	for (i = 0;i < NUM_MAP_LOCATIONS; i++) {		//the same sea
+		if (m->edges[src][i][BOAT] && isSea(i)) {
+			if (m->edges[dest][i][BOAT]) {
+				type[BOAT] = 1;
+				connCount++;
 			}
 		}
-		next = popFrom(toDo); //pop next location to search
-		path[j] = next;
-		*sizeArr++;
-		j++;
 	}
-	disposeStack(toDo);
+	return connCount;
+}		
+
+//find the places from src we can go to with BFS.
+Set reachableLocations (Map m, LocationID src, TransportID type) {
+	if (type == RAIL) return NULL;
+	Set canGoTo = newSet();
+	int i;
+	for (i = 0; i < m->nV; i++) {
+		if(m->edges[src][i][type]) setAdd(canGoTo, i);
+	}
+	return canGoTo;
+}
+
+//given src and type of travel, will give closest place to dest
+//length for rail
+LocationID getClosestToGoal (Map m, LocationID src, LocationID dest,
+							TransportID type, int length) {
+	if (length < 1) return -1;
+	if (type != RAIL && length != 1) return -1;
+	Queue toDo = newQueue(); //new queue
+	enterQueue(toDo, src); //put first thing in the queue
+	LocationID next;
+	Set seenPlaces = newSet(); //seen set
+	setAdd(seenPlaces, src); //we've seen where we started
+	int i, j, k;
+	LocationID path[NUM_MAP_LOCATIONS];
+	for (i = 0; i < NUM_MAP_LOCATIONS; i++) path[i] = -1;
+
+	while (!emptyQueue(toDo) && !isElem(seenPlaces, dest)) {
+		next = leaveQueue(toDo); //pop next location to search
+		for (i = 0; i < m->nV; i++) {
+			if (m->edges[next][i][type] && !isElem(seenPlaces, i)) { 
+			path[i] = next;
+			enterQueue(toDo, i);
+			setAdd(seenPlaces, i);
+			}
+		}
+	}
+	disposeQueue(toDo);
 	disposeSet(seenPlaces);
 	
-	return path;
+	if (path[dest] == -1) return path[dest];
+	i = j = k = dest;
+	while (path[i] != src) i = path[i];
+	if (length >= 2) {
+		while (path[j] != i) j = path[j];
+		if (length == 2) return j;
+	} if (length >= 3) {
+		while (path[k] != j) k = path[k];
+		return k;
+	} else return i;
 }
 
 static int inMatrix (Map m, LocationID src, LocationID dest, TransportID type) {
-	return (m->edges[src][dest][type]);
+	return (m->edges[src][dest][type] && m->edges[dest][src][type]);
 }
 	
 // Add edges to Graph representing map of Europe
-static void addConnections (Map g) {
+static void addConnections(Map g) {
    //### ROAD Connections ###
-
    addLink(g, ALICANTE, GRANADA, ROAD);
    addLink(g, ALICANTE, MADRID, ROAD);
    addLink(g, ALICANTE, SARAGOSSA, ROAD);
