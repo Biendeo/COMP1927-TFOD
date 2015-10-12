@@ -19,7 +19,7 @@ struct Set {
 	int size;
 };
 
-SetNode getLast(Set set);
+static SetNode getLast(Set set);
 
 // Makes a new set
 Set newSet () {
@@ -121,7 +121,7 @@ Set copyArrayToSet(LocationID *arr, int size) {
 // EVERYTHING FROM HERE ON OUT IS NOT A PUBLIC FUNCTION.
 
 // Gets the last node in the set.
-SetNode getLast(Set set) {
+static SetNode getLast(Set set) {
 	SetNode node = set->start;
 	if (set->size == 0) {
 		return NULL;

@@ -2,25 +2,29 @@
 
 #ifndef MAP_H
 #define MAP_H
-
-#include "Globals.h"
 #include "Places.h"
 #include "Set.h"
 
-typedef struct vNode *VList;
-
 // graph representation is hidden 
-typedef struct MapRep *Map;
+typedef struct MapRep *Map; 
 
 // operations on graphs 
-Map  newMap();
-void disposeMap(Map g);
-void showMap(Map g);
-int  numV(Map g);
-int  numE(Map g, TransportID t);
+Map newMap (void);  
+void disposeMap (Map m); 
+void showMap (Map m, TransportID type); 
+int  numV (Map m);
+int  numE (Map m);	//total number of edges
+int  numEdgeType (Map m, TransportID t); //edges of particular type
 
-Set reachableLocations(LocationID from, PlayerID player, Round round, int road, int rail, int sea);
-void fillPlacesOneAway(Set set, LocationID place, TransportID type);
-LocationID findClosestToTarget(Set connectedLocationsSet, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
+//given src and dest, return number of direct connections, and type[] has types of transport
+int connections (Map m, LocationID src, LocationID dest, TransportID type[]);
 
+//returns a set of places reachable immediately from src
+Set reachableLocations (Map m, LocationID src, TransportID type);
+
+//uses BFS to find closest place to dest from src
+//only use rail if src and dest are linked by railways
+LocationID getClosestToGoal (Map m, LocationID src, LocationID dest,
+							TransportID type, int length);
+										
 #endif
