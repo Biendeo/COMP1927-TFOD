@@ -16,7 +16,6 @@
 
 int IDToType(GameView g, LocationID p);
 LocationID getTrueLocation(GameView g, LocationID p);
-LocationID AbbrevToID(char *abbrev);
 
 // This struct stores data that is common to each player.
 struct playerData {
@@ -271,65 +270,9 @@ void getHistory (GameView currentView, PlayerID player,
 LocationID *connectedLocations (GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
 							   int road, int rail, int sea) {
-	int railDistance = 0;
-	if (rail == TRUE) {
-		railDistance = ((player + round) % 4);
-	}
-
-	Set set = newSet();
-	setAdd(set, from);
-
-	LocationID *arrConnected;
-	switch (from) {
-		case NOWHERE:
-		case CITY_UNKNOWN:
-		case SEA_UNKNOWN:
-		case HIDE:
-		case DOUBLE_BACK_1:
-		case DOUBLE_BACK_2:
-		case DOUBLE_BACK_3:
-		case DOUBLE_BACK_4:
-		case DOUBLE_BACK_5:
-			arrConnected = malloc(sizeof(LocationID));
-			*arrConnected = from;
-			*numLocations = 1;
-			return arrConnected;
-		default:
-			if (road == 1) {
-				fillPlacesOneAway(set, from, ROAD);
-			}
-			if (sea == 1) {
-				fillPlacesOneAway(set, from, BOAT);
-			}
-			if (rail == 1) {
-				Set setRail = newSet();
-				setAdd(setRail, from);
-				LocationID *arrRail;
-				int railSize = 1;
-				for (int i = 0; i < railDistance; i++) {
-					railSize = getSetSize(setRail);
-					arrRail = copySetToArray(setRail);
-					for (int j = 0; j < railSize; j++) {
-						fillPlacesOneAway(set, arrRail[j], rail);
-					}
-					free(arrRail);
-				}
-				arrRail = copySetToArray(setRail);
-				for (int j = 0; j < getSetSize(setRail); j++) {
-					setAdd(set, arrRail[j]);
-				}
-				disposeSet(setRail);
-			}
-
-			arrConnected = copySetToArray(set);
-			*numLocations = getSetSize(set);
-
-			if (player == PLAYER_DRACULA && isElem(set, ST_JOSEPH_AND_ST_MARYS)) {
-				setRemove(set, ST_JOSEPH_AND_ST_MARYS);
-				*numLocations -= 1;
-			}
-	}
-
+	Set set = reachableLocations(from, player, round, road, rail, sea);
+	*numLocations = getSetSize(set);
+	LocationID *arrConnected = copySetToArray(set);
 	disposeSet(set);
 	return arrConnected;
 }
@@ -340,6 +283,7 @@ LocationID *connectedLocations (GameView currentView, int *numLocations,
 
 // This converts a location ID to a type. Unlike the Places.c version, it
 // also returns unknown places.
+// It's mostly used to calculate whether Dracula uses a special move to go to sea.
 int IDToType(GameView g, LocationID p) {
 	switch (p) {
 		case CITY_UNKNOWN:
@@ -391,31 +335,5 @@ LocationID getTrueLocation(GameView g, LocationID p) {
 			return CASTLE_DRACULA;
 		default:
 			return p;
-	}
-}
-
-// This converts an abbreviation to a location ID. Unlike the Places.c version,
-// it also converts non-city places.
-LocationID AbbrevToID(char *abbrev) {
-	if (strcmp(abbrev, "C?") == 0) {
-		return CITY_UNKNOWN;
-	} else if (strcmp(abbrev, "S?") == 0) {
-		return SEA_UNKNOWN;
-	} else if (strcmp(abbrev, "HI") == 0) {
-		return HIDE;
-	} else if (strcmp(abbrev, "D1") == 0) {
-		return DOUBLE_BACK_1;
-	} else if (strcmp(abbrev, "D2") == 0) {
-		return DOUBLE_BACK_2;
-	} else if (strcmp(abbrev, "D3") == 0) {
-		return DOUBLE_BACK_3;
-	} else if (strcmp(abbrev, "D4") == 0) {
-		return DOUBLE_BACK_4;
-	} else if (strcmp(abbrev, "D5") == 0) {
-		return DOUBLE_BACK_5;
-	} else if (strcmp(abbrev, "TP") == 0) {
-		return TELEPORT;
-	} else {
-		return abbrevToID(abbrev);
 	}
 }

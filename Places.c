@@ -16,8 +16,7 @@ typedef struct Place {
 // Each entry should satisfy (places[i].id == i)
 // First real place must be at index MIN_MAP_LOCATION
 // Last real place must be at index MAX_MAP_LOCATION
-static Place places[] =
-{
+static Place places[] = {
    {"Adriatic Sea", "AS", ADRIATIC_SEA, SEA},
    {"Alicante", "AL", ALICANTE, LAND},
    {"Amsterdam", "AM", AMSTERDAM, LAND},
@@ -92,47 +91,77 @@ static Place places[] =
 };
 
 // given a Place number, return its name
-char *idToName(LocationID p)
-{
+char *idToName(LocationID p) {
    assert(validPlace(p));
    return places[p].name;
 }
 
 // given a Place number, return its type
-int idToType(LocationID p)
-{
+int idToType(LocationID p) {
    assert(validPlace(p));
    return places[p].type;
 }
 
+char *idToAbbrev(LocationID p) {
+   assert(validPlace(p));
+   return places[p].abbrev;
+}
+
 // given a Place name, return its ID number
 // binary search
-int nameToID(char *name)
-{
+int nameToID(char *name) {
    int lo = MIN_MAP_LOCATION, hi = MAX_MAP_LOCATION;
    while (lo <= hi) {
-      int mid = (hi+lo)/2;
-      int ord = strcmp(name,places[mid].name);
-      if (ord < 0)
-         hi = mid-1;
-      else if (ord > 0)
-         lo = mid+1;
-      else
-         return places[mid].id;
+	  int mid = (hi+lo)/2;
+	  int ord = strcmp(name,places[mid].name);
+	  if (ord < 0)
+		 hi = mid-1;
+	  else if (ord > 0)
+		 lo = mid+1;
+	  else
+		 return places[mid].id;
    }
    return NOWHERE;
 }
 
 // given a Place abbreviation (2 char), return its ID number
-int abbrevToID(char *abbrev)
-{
+// DO NOT CALL THIS ONE DIRECTLY.
+int abbrevToID(char *abbrev) {
    // an attempt to optimise a linear search
    Place *p;
    Place *first = &places[MIN_MAP_LOCATION];
    Place *last = &places[MAX_MAP_LOCATION];
    for (p = first; p <= last; p++) {
-      char *c = p->abbrev;
-      if (c[0] == abbrev[0] && c[1] == abbrev[1] && c[2] == '\0') return p->id;
+	  char *c = p->abbrev;
+	  if (c[0] == abbrev[0] && c[1] == abbrev[1] && c[2] == '\0') return p->id;
    }
    return NOWHERE;
+}
+
+
+// This converts an abbreviation to a location ID. Unlike the regular version,
+// it also converts non-city places.
+// PLEASE CALL THIS INSTEAD OF THE OTHER ONE.
+LocationID AbbrevToID(char *abbrev) {
+	if (strcmp(abbrev, "C?") == 0) {
+		return CITY_UNKNOWN;
+	} else if (strcmp(abbrev, "S?") == 0) {
+		return SEA_UNKNOWN;
+	} else if (strcmp(abbrev, "HI") == 0) {
+		return HIDE;
+	} else if (strcmp(abbrev, "D1") == 0) {
+		return DOUBLE_BACK_1;
+	} else if (strcmp(abbrev, "D2") == 0) {
+		return DOUBLE_BACK_2;
+	} else if (strcmp(abbrev, "D3") == 0) {
+		return DOUBLE_BACK_3;
+	} else if (strcmp(abbrev, "D4") == 0) {
+		return DOUBLE_BACK_4;
+	} else if (strcmp(abbrev, "D5") == 0) {
+		return DOUBLE_BACK_5;
+	} else if (strcmp(abbrev, "TP") == 0) {
+		return TELEPORT;
+	} else {
+		return abbrevToID(abbrev);
+	}
 }

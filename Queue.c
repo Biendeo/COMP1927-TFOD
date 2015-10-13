@@ -6,29 +6,19 @@
 #include "Places.h"
 #include "Queue.h"
 
+// Trail code
+
 void slide(Trail trail, int index);
 LocationID pop(Trail trail);
 
 // The queue is basically a filled list.
 struct Trail {
-	LocationID * trail;
+	LocationID *trail;
 	int size;
 };
 
-//QUEUE FOR GRAPH TRAVERSAL
-typedef struct Node *Link;
-typedef struct Node {
-	LocationID val;
-	Link  next;
-} Node;
-	
-typedef struct QueueRep {
-	Link  front;
-	Link  back;
-} QueueRep;
-
 // Makes a new trail of a given size
-Trail newTrail (int size) {
+Trail newTrail(int size) {
 	Trail newTrail = malloc(sizeof(struct Trail));
 	newTrail->trail = malloc(sizeof(LocationID) * size);
 	newTrail->size = size;
@@ -40,13 +30,13 @@ Trail newTrail (int size) {
 }
 
 // Deletes a trail.
-void disposeTrail (Trail trail) {
+void disposeTrail(Trail trail) {
 	free(trail->trail);
 	free(trail);
 }
 
 // This adds an element to the beginning of the queue.
-void prepend (Trail trail, LocationID place) {
+void prepend(Trail trail, LocationID place) {
 	for (int i = trail->size - 1; i >= 0; i--) {
 		slide(trail, i);
 	}
@@ -54,7 +44,7 @@ void prepend (Trail trail, LocationID place) {
 }
 
 // This returns the element of a given index.
-LocationID showElement (Trail trail, int index) {
+LocationID showElement(Trail trail, int index) {
 	if (index >= trail->size || index < 0) {
 		return UNKNOWN_LOCATION;
 	} else {
@@ -63,10 +53,11 @@ LocationID showElement (Trail trail, int index) {
 }
 
 // This removes the oldest element containing a given value 
-void removeElement (Trail trail, LocationID place) {
+void removeElement(Trail trail, LocationID place) {
 	int found = 0;
-	for (int i = trail-size - 1; found != 1 && i >= 0; i--) {
-		if (showElement (trail, i) == place) {
+	int i;
+	for (i = trail->size - 1; found != 1 && i >= 0; i--) {
+		if (showElement(trail, i) == place) {
 			found = 1;
 		}
 	}
@@ -74,7 +65,7 @@ void removeElement (Trail trail, LocationID place) {
 		return; // Element not found, return early
 	} else {
 		int elementIndex = i;
-		if (i = 0) { // If found element is already at the start of the list, can't slide
+		if (i == 0) { // If found element is already at the start of the list, can't slide
 			trail->trail[0] = UNKNOWN_LOCATION;
 		} else {
 			for (i = elementIndex; i >= 0; i--) {
@@ -83,7 +74,6 @@ void removeElement (Trail trail, LocationID place) {
 		}
 	}
 }
-
 
 // ---
 // EVERYTHING FROM HERE ON OUT IS NOT A PUBLIC FUNCTION.
@@ -105,3 +95,83 @@ LocationID pop(Trail trail) {
 	trail->trail[trail->size - 1] = UNKNOWN_LOCATION;
 	return returnLocation;
 }
+
+
+// Queue code
+/*
+
+typedef struct QueueNode *QueueNode;
+
+struct QueueNode {
+	QueueNode next;
+	LocationID value;
+};
+
+struct Queue {
+	QueueNode first;
+	QueueNode last;
+	int size;
+};
+
+QueueNode newQueueNode(LocationID value);
+
+// Creates a new queue.
+Queue newQueue() {
+	Queue queue = malloc(sizeof(struct Queue));
+	queue->first = NULL;
+	queue->last = NULL;
+	queue->size = 0;
+
+	return queue;
+}
+
+// Deletes a queue.
+void disposeQueue(Queue queue) {
+	while (queue->first != NULL) {
+		queuePop(queue);
+	}
+	free(queue);
+}
+
+// Adds an element to the end of the queue.
+void queueAdd(Queue queue, LocationID value) {
+	QueueNode node = newQueueNode(value);
+	if (queue->size == 0) {
+		queue->last = node;
+		queue->first = node;
+	} else {
+		queue->last->next = node;
+		queue->last = node;
+	}
+	queue->size++;
+}
+
+// Removes the front element from the queue.
+LocationID queuePop(Queue queue) {
+	QueueNode popNode = queue->first;
+	if (popNode == NULL) {
+		return -1;
+	}
+	LocationID popValue = queue->first->value;
+	queue->first = queue->first->next;
+	free(popNode);
+	return popValue;
+}
+
+// Returns the size of the queue.
+int getQueueSize(Queue queue) {
+	return queue->size;
+}
+
+// ---
+// EVERYTHING FROM HERE ON OUT IS NOT A PUBLIC FUNCTION.
+
+// Creates a new queue node.
+QueueNode newQueueNode(LocationID value) {
+	QueueNode node = malloc(sizeof(struct QueueNode));
+	node->value = value;
+	node->next = NULL;
+	return node;
+}
+
+*/
