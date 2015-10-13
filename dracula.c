@@ -95,6 +95,7 @@ void decideDraculaMove(DracView gameState) {
 		}
 		srand(time(NULL));
 		int choiceIndex = rand() % numOptions;
+		int messageCode = rand() % 6;
 		// keep rolling the choiceIndex if we know there is at least one option that's
 		// free of hunters
 		if (surroundedByHunters == FALSE) {
@@ -104,7 +105,7 @@ void decideDraculaMove(DracView gameState) {
 			}
 		}
 		char * choice = idToAbbrev(options[choiceIndex]);
-		registerBestPlay(choice, givePresetMessage(gameState, 0));
+		registerBestPlay(choice, givePresetMessage(gameState, messageCode));
 		free(connections);
 		free(options);
 	}*/
