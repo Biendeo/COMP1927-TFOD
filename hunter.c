@@ -96,7 +96,7 @@ void decideHunterMove(HunterView gameState) {
 	// STOP DETERMINING A GOAL HERE
 
 	if (myPos != NOWHERE) {
-		nextLocation = findClosestLocationToTarget(myPos, decidedLocation, IAm, round, TRUE, TRUE, TRUE);
+		nextLocation = findClosestLocationToTarget(myPos, decidedLocation, IAm, round, TRUE, FALSE, TRUE);
 	} else {
 		nextLocation = decidedLocation;
 	}
