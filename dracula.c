@@ -25,7 +25,7 @@ char *givePresetMessage(DracView gameState, DraculaMessage code);
 void decideDraculaMove(DracView gameState) {
 
 
-	/*BACKUP STRATEGY
+	//BACKUP STRATEGY
 	Round roundNum = giveMeTheRound(gameState);
 	if (roundNum % 7 == 0) {
 	registerBestPlay("BR", givePresetMessage(gameState,0));
@@ -41,8 +41,8 @@ void decideDraculaMove(DracView gameState) {
 	registerBestPlay("FR", givePresetMessage(gameState,0));
 	} else {
 	registerBestPlay("LI", givePresetMessage(gameState,0));
-	}*/
-	// TODO ...
+	}
+	/* TODO ...
 	// Replace the line below by something better
 	Round roundNum = giveMeTheRound(gameState);
 	LocationID GLocation = whereIs(gameState, PLAYER_LORD_GODALMING);
@@ -107,7 +107,7 @@ void decideDraculaMove(DracView gameState) {
 		registerBestPlay(choice, givePresetMessage(gameState, 0));
 		free(connections);
 		free(options);
-	}
+	}*/
 }
 
 /*LocationID findClosestLocationToTarget(DracView gameState, LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
