@@ -24,12 +24,8 @@ typedef enum HUNTER_MESSAGE {
 static LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea);
 //tells where dracula was last seen
 static LocationID whereWasDraculaLastSeen(HunterView gameState);
-static char *givePresetMessage(HunterView gameState, HunterMessage goal);
 
-static LocationID godalmTurn(HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round); 
-static LocationID sewardTurn(HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round);
-static LocationID helsingTurn(HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round);
-static LocationID minaTurn(HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round);
+static char *givePresetMessage(HunterView gameState, HunterMessage goal);
 
 void decideHunterMove(HunterView gameState) {
 	Round round = giveMeTheRound(gameState);
@@ -42,22 +38,63 @@ void decideHunterMove(HunterView gameState) {
 	char *message;
 
 	// START DETERMINING A GOAL HERE
+
 	switch (IAm) {
 		case PLAYER_LORD_GODALMING:
 		default:
-			decidedLocation = godalmTurn(gameState, message, dracPos, myPos, round);
+			if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
+				decidedLocation = myPos;
+				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
+			} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
+				// TODO: Make them do something useful here.
+				decidedLocation = BRUSSELS;
+				message = givePresetMessage(gameState, SITTING_TIGHT);
+			} else {
+				decidedLocation = dracPos;
+				message = givePresetMessage(gameState, ON_THE_TRAIL);
+			}
 			break;
 		case PLAYER_DR_SEWARD:
-			decidedLocation = sewardTurn(gameState, message, dracPos, myPos, round);
+			if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
+				decidedLocation = myPos;
+				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
+			} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
+				decidedLocation = MADRID;
+				message = givePresetMessage(gameState, SITTING_TIGHT);
+			} else {
+				decidedLocation = dracPos;
+				message = givePresetMessage(gameState, ON_THE_TRAIL);
+			}
 			break;
 		case PLAYER_VAN_HELSING:
-			decidedLocation = helsingTurn(gameState, message, dracPos, myPos, round);
+			if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
+				decidedLocation = myPos;
+				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
+			} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
+				decidedLocation = VENICE;
+				message = givePresetMessage(gameState, SITTING_TIGHT);
+			} else {
+				decidedLocation = dracPos;
+				message = givePresetMessage(gameState, ON_THE_TRAIL);
+			}
 			break;
 		case PLAYER_MINA_HARKER:
-			decidedLocation = helsingTurn(gameState, message, dracPos, myPos, round);
+			if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
+				decidedLocation = myPos;
+				message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
+			} else {
+				if (myPos == GALATZ) {
+					decidedLocation = KLAUSENBURG;
+				} else {
+					decidedLocation = GALATZ;
+				}
+				message = givePresetMessage(gameState, CAMPING_THE_CASTLE);
+			}
 			break;
 	}
+
 	// STOP DETERMINING A GOAL HERE
+
 	if (myPos != NOWHERE) {
 		nextLocation = findClosestLocationToTarget(myPos, decidedLocation, IAm, round, TRUE, TRUE, TRUE);
 	} else {
@@ -68,63 +105,10 @@ void decideHunterMove(HunterView gameState) {
 	registerBestPlay(place, message);
 }
 
-static LocationID godalmTurn (HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round) {
-	if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
-		message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-		return myPos;
-	} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
-	// TODO: Make them do something useful here.
-		message = givePresetMessage(gameState, SITTING_TIGHT);
-		return BRUSSELS;
-	} else {
-		message = givePresetMessage(gameState, ON_THE_TRAIL);
-		return dracPos;
-	}
-}
-
-static LocationID sewardTurn (HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round) {
-	if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
-		message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-		return myPos;
-	} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
-		message = givePresetMessage(gameState, SITTING_TIGHT);
-		return MADRID;
-	} else {
-		message = givePresetMessage(gameState, ON_THE_TRAIL);
-		return dracPos;
-	}
-}
-
-static LocationID helsingTurn (HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round) {
-	if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
-		message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-		return myPos;
-	} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
-		message = givePresetMessage(gameState, SITTING_TIGHT);
-		return VENICE;
-	} else {
-		message = givePresetMessage(gameState, ON_THE_TRAIL);
-		return dracPos;
-	}
-}
-
-static LocationID minaTurn (HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round) {
-	if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
-		message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
-		return myPos;
-	} else {
-		message = givePresetMessage(gameState, CAMPING_THE_CASTLE);
-		if (myPos == GALATZ) {
-			return KLAUSENBURG;
-		} else {
-			return GALATZ;
-		}
-	}
-}
-
 static LocationID findClosestLocationToTarget(LocationID from, LocationID to, PlayerID player, Round round, int road, int rail, int sea) {
 	// Firstly, all the reachable locations are stored.
 	Set possiblePlacesSet = reachableLocations(from, player, round, road, rail, sea);
+
 	LocationID decidedLocation = findClosestToTarget(possiblePlacesSet, from, to, player, round, road, rail, sea);
 	disposeSet(possiblePlacesSet);
 	return decidedLocation;

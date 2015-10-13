@@ -98,7 +98,6 @@ LocationID pop(Trail trail) {
 
 
 // Queue code
-/*
 
 typedef struct QueueNode *QueueNode;
 
@@ -173,5 +172,3 @@ QueueNode newQueueNode(LocationID value) {
 	node->next = NULL;
 	return node;
 }
-
-*/

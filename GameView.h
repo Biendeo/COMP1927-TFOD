@@ -102,7 +102,7 @@ LocationID getLocation(GameView currentView, PlayerID player);
 //   then moved to the current location of 29
 
 void getHistory(GameView currentView, PlayerID player,
-                 LocationID trail[TRAIL_SIZE]);
+				LocationID trail[TRAIL_SIZE]);
 
 
 //// Functions that query the map to find information about connectivity
@@ -119,7 +119,7 @@ void getHistory(GameView currentView, PlayerID player,
 // The destination 'from' should be included in the array
 
 LocationID *connectedLocations(GameView currentView, int *numLocations,
-                               LocationID from, PlayerID player, Round round,
-                               int road, int rail, int sea);
+							   LocationID from, PlayerID player, Round round,
+							   int road, int rail, int sea);
 
 #endif

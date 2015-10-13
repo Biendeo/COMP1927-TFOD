@@ -19,10 +19,10 @@ struct Set {
 	int size;
 };
 
-static SetNode getLast(Set set);
+SetNode getLast(Set set);
 
 // Makes a new set
-Set newSet () {
+Set newSet() {
 	Set newSet = malloc(sizeof(struct Set));
 	newSet->size = 0;
 	newSet->start = NULL;
@@ -30,7 +30,7 @@ Set newSet () {
 }
 
 // Deletes a set.
-void disposeSet (Set set) {
+void disposeSet(Set set) {
 	SetNode node = set->start;
 	SetNode nextNode;
 	while (node != NULL) {
@@ -121,7 +121,7 @@ Set copyArrayToSet(LocationID *arr, int size) {
 // EVERYTHING FROM HERE ON OUT IS NOT A PUBLIC FUNCTION.
 
 // Gets the last node in the set.
-static SetNode getLast(Set set) {
+SetNode getLast(Set set) {
 	SetNode node = set->start;
 	if (set->size == 0) {
 		return NULL;

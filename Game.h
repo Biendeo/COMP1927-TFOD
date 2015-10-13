@@ -23,6 +23,6 @@ typedef char PlayerMessage[MESSAGE_SIZE];
 //   digits, and/or punctuation characters before it, as the array 
 //   will be passed to printf("%s") when displaying messages to users.
 
-void registerBestPlay( char *play, PlayerMessage message );
+void registerBestPlay(char *play, PlayerMessage message);
 
 #endif
