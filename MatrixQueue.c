@@ -63,7 +63,7 @@ void enterQueue(Queue q, LocationID place) {
 // - return string at front of Queue
 LocationID leaveQueue(Queue q) {
 	assert (q->front != NULL);
-    LocationID place = q->front->val;
+	LocationID place = q->front->val;
 	Link old = q->front;
 	q->front = old->next;
 	if (q->front == NULL)

@@ -26,10 +26,10 @@ static LocationID findClosestLocationToTarget(LocationID from, LocationID to, Pl
 static LocationID whereWasDraculaLastSeen(HunterView gameState);
 static char *givePresetMessage(HunterView gameState, HunterMessage goal);
 
-static void godalmTurn (HunterView gameState, int *decidedLocation, char *message, int dracPos, int myPos, int round); 
-static void sewardTurn (HunterView gameState, int *decidedLocation, char *message, int dracPos, int myPos, int round);
-static void helsingTurn (HunterView gameState, int *decidedLocation, char *message, int dracPos, int myPos, int round);
-static void minaTurn (HunterView gameState, int *decidedLocation, char *message, int dracPos, int myPos, int round);
+static LocationID godalmTurn(HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round); 
+static LocationID sewardTurn(HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round);
+static LocationID helsingTurn(HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round);
+static LocationID minaTurn(HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round);
 
 void decideHunterMove(HunterView gameState) {
 	Round round = giveMeTheRound(gameState);
@@ -45,16 +45,16 @@ void decideHunterMove(HunterView gameState) {
 	switch (IAm) {
 		case PLAYER_LORD_GODALMING:
 		default:
-			godalmTurn (gameState, &decidedLocation, message, dracPos, myPos, round);
+			decidedLocation = godalmTurn(gameState, message, dracPos, myPos, round);
 			break;
 		case PLAYER_DR_SEWARD:
-			sewardTurn (gameState, &decidedLocation, message, dracPos, myPos, round);
+			decidedLocation = sewardTurn(gameState, message, dracPos, myPos, round);
 			break;
 		case PLAYER_VAN_HELSING:
-			helsingTurn (gameState, &decidedLocation, message, dracPos, myPos, round);
+			decidedLocation = helsingTurn(gameState, message, dracPos, myPos, round);
 			break;
 		case PLAYER_MINA_HARKER:
-			helsingTurn (gameState, &decidedLocation, message, dracPos, myPos, round);
+			decidedLocation = helsingTurn(gameState, message, dracPos, myPos, round);
 			break;
 	}
 	// STOP DETERMINING A GOAL HERE
@@ -68,57 +68,57 @@ void decideHunterMove(HunterView gameState) {
 	registerBestPlay(place, message);
 }
 
-static void godalmTurn (HunterView gameState, int *decidedLocation, char *message, int dracPos, int myPos, int round) {
+static LocationID godalmTurn (HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round) {
 	if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
-		decidedLocation = myPos;
 		message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
+		return myPos;
 	} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
 	// TODO: Make them do something useful here.
-		decidedLocation = BRUSSELS;
 		message = givePresetMessage(gameState, SITTING_TIGHT);
+		return BRUSSELS;
 	} else {
-		decidedLocation = dracPos;
 		message = givePresetMessage(gameState, ON_THE_TRAIL);
+		return dracPos;
 	}
 }
 
-static void sewardTurn (HunterView gameState, int *decidedLocation, char *message, int dracPos, int myPos, int round) {
+static LocationID sewardTurn (HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round) {
 	if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
-		decidedLocation = myPos;
 		message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
+		return myPos;
 	} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
-		decidedLocation = MADRID;
 		message = givePresetMessage(gameState, SITTING_TIGHT);
+		return MADRID;
 	} else {
-		decidedLocation = dracPos;
 		message = givePresetMessage(gameState, ON_THE_TRAIL);
+		return dracPos;
 	}
 }
 
-static void helsingTurn (HunterView gameState, int *decidedLocation, char *message, int dracPos, int myPos, int round) {
+static LocationID helsingTurn (HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round) {
 	if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
-		decidedLocation = myPos;
 		message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
+		return myPos;
 	} else if (dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) {
-		decidedLocation = VENICE;
 		message = givePresetMessage(gameState, SITTING_TIGHT);
+		return VENICE;
 	} else {
-		decidedLocation = dracPos;
 		message = givePresetMessage(gameState, ON_THE_TRAIL);
+		return dracPos;
 	}
 }
 
-static void minaTurn (HunterView gameState, int *decidedLocation, char *message, int dracPos, int myPos, int round) {
+static LocationID minaTurn (HunterView gameState, char *message, LocationID dracPos, LocationID myPos, Round round) {
 	if ((dracPos == NOWHERE || (dracPos >= DOUBLE_BACK_1 && dracPos <= DOUBLE_BACK_5) || dracPos == HIDE) && round > 5) {
-		decidedLocation = myPos;
 		message = givePresetMessage(gameState, WAITING_FOR_THE_UNKNOWN);
+		return myPos;
 	} else {
+		message = givePresetMessage(gameState, CAMPING_THE_CASTLE);
 		if (myPos == GALATZ) {
-			decidedLocation = KLAUSENBURG;
+			return KLAUSENBURG;
 		} else {
-			decidedLocation = GALATZ;
+			return GALATZ;
 		}
-				message = givePresetMessage(gameState, CAMPING_THE_CASTLE);
 	}
 }
 
