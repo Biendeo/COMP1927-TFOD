@@ -100,7 +100,6 @@ void whatsThere(DracView currentView, LocationID where,
 void giveMeTheTrail(DracView currentView, PlayerID player,
                         LocationID trail[TRAIL_SIZE]);
 
-
 //// Functions that query the map to find information about connectivity
 
 // whereCanIgo() returns an array of LocationIDs giving
@@ -110,7 +109,7 @@ void giveMeTheTrail(DracView currentView, PlayerID player,
 // The size of the array is stored in the variable pointed to by numLocations
 // The array can be in any order but must contain unique entries
 // Should not include the hospital nor any locations only reachable by rail
-// The current location should be included in the array
+// The current location should be included in the array********************our implementation doesn't include current location
 // The set of possible locations must be consistent with the rules on Dracula's
 //   movement (e.g. can't MOVE to a location currently in his trail)
 
@@ -126,9 +125,15 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 //   a player can travel by rail
 // If the given player is Dracula, this function calls whereCanIgo()
 //   to produce the answers
-// The player's current location should be included in the array
+// The player's current location should be included in the array****************our implementation doesn't include current location if player is Dracula
 
 LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
                            PlayerID player, int road, int rail, int sea);
+
+// returns TRUE if Dracula has done a HIDE move in his trail, otherwise FALSE;
+int doneHide(DracView currentView);
+
+// returns TRUE if Dracula has done a DOUBLE_BACK move in his trail, otherwise FALSE;
+int doneDoubleBack(DracView currentView);
 
 #endif
