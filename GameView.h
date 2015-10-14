@@ -104,7 +104,6 @@ LocationID getLocation(GameView currentView, PlayerID player);
 void getHistory(GameView currentView, PlayerID player,
 				LocationID trail[TRAIL_SIZE]);
 
-
 //// Functions that query the map to find information about connectivity
 
 // connectedLocations() returns an array of LocationID that represent
@@ -121,5 +120,12 @@ void getHistory(GameView currentView, PlayerID player,
 LocationID *connectedLocations(GameView currentView, int *numLocations,
 							   LocationID from, PlayerID player, Round round,
 							   int road, int rail, int sea);
+                               
+LocationID getTrueLocation(GameView g, LocationID p);
+                               
+// returns TRUE if Dracula has done a HIDE move in his trail, otherwise FALSE;
+int hideInTrail(GameView g);
 
+// returns TRUE if Dracula has done a DOUBLE_BACK move in his trail, otherwise FALSE;
+int doubleBackInTrail(GameView g);
 #endif
