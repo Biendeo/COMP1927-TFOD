@@ -92,10 +92,10 @@ void decideDraculaMove(DracView gameState) {
         } else if (optionsArray[choiceIndex] == TELEPORT) {
             choice = "TP";
         }
-		registerBestPlay(choice, givePresetMessage(gameState, messageCode));
+	registerBestPlay(choice, givePresetMessage(gameState, messageCode));
         free(optionsArray);
         disposeSet(options);
-		free(connections);
+	free(connections);
     }
 }
 
