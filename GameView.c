@@ -337,3 +337,26 @@ LocationID getTrueLocation(GameView g, LocationID p) {
 			return p;
 	}
 }
+
+int hideInTrail(GameView g) {
+    for (int i = 0; i < TRAIL_SIZE; i++) {
+        if(showElement(g->player[PLAYER_DRACULA].trail, i) == HIDE) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+int doubleBackInTrail(GameView g) {
+    for (int i = 0; i < TRAIL_SIZE; i++) {
+        switch (showElement(g->player[PLAYER_DRACULA].trail, i)) {
+            case DOUBLE_BACK_1:
+            case DOUBLE_BACK_2:
+            case DOUBLE_BACK_3:
+            case DOUBLE_BACK_4:
+            case DOUBLE_BACK_5:
+                return TRUE;
+        }
+    }
+    return FALSE;
+}

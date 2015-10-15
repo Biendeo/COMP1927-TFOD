@@ -137,8 +137,8 @@ int howHealthyIs(DracView currentView, PlayerID player) {
 // This function may need correction. getLocation() in GameView may return a special location
 // such as HIDE, DOUBLE_BACK_? and TELEPORT but this function shall return the exact location
 LocationID whereIs(DracView currentView, PlayerID player) {
-	return getLocation(currentView->g, player);
-	//use getHistory instead to identify exact location when getLocation() returns a special location
+	LocationID p = getLocation(currentView->g, player);
+	return getTrueLocation(currentView->g, p);
 }
 
 // Get the most recent move of a given player
@@ -211,4 +211,12 @@ LocationID *whereCanTheyGo(DracView currentView, int *numLocations, PlayerID pla
 		arrConnected = copySetToArray(setConnected);
 	}
 	return arrConnected;
+}
+
+int doneHide(DracView currentView) {
+    return hideInTrail(currentView->g);
+}
+
+int doneDoubleBack(DracView currentView) {
+    return doubleBackInTrail(currentView->g);
 }
